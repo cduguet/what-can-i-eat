@@ -11,6 +11,7 @@ import { OnboardingNavigator } from '@/screens/onboarding/OnboardingNavigator';
 import { HomeScreen } from '@/screens/main/HomeScreen';
 import { CameraScreen } from '@/screens/camera/CameraScreen';
 import { ResultsScreen } from '@/screens/results/ResultsScreen';
+import { authService, AuthState } from '@/services/auth/authService';
 
 // Temporary placeholder screen for Settings
 import { StyleSheet, Text, View } from 'react-native';
@@ -44,10 +45,46 @@ export default function App() {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean | null>(null);
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
+  const [authState, setAuthState] = useState<AuthState | null>(null);
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
-    checkOnboardingStatus();
+    initializeApp();
   }, []);
+
+  const initializeApp = async () => {
+    try {
+      // Initialize authentication first
+      console.log('Initializing authentication...');
+      const authResult = await authService.initializeAuth();
+      
+      if (!authResult.success) {
+        console.error('Authentication initialization failed:', authResult.error);
+      } else {
+        console.log('Authentication initialized successfully');
+      }
+
+      // Set up auth state listener
+      const unsubscribe = authService.onAuthStateChange((newAuthState) => {
+        setAuthState(newAuthState);
+        console.log('Auth state changed:', {
+          isAuthenticated: newAuthState.isAuthenticated,
+          isAnonymous: newAuthState.user?.is_anonymous,
+        });
+      });
+
+      // Check onboarding status
+      await checkOnboardingStatus();
+
+      setIsInitializing(false);
+
+      // Cleanup function
+      return unsubscribe;
+    } catch (error) {
+      console.error('App initialization failed:', error);
+      setIsInitializing(false);
+    }
+  };
 
   const checkOnboardingStatus = async () => {
     try {
@@ -74,13 +111,20 @@ export default function App() {
     setIsOnboardingComplete(true);
   };
 
-  // Show loading state while checking onboarding status
-  if (isOnboardingComplete === null) {
+  // Show loading state while initializing app and checking onboarding status
+  if (isInitializing || isOnboardingComplete === null || authState === null) {
     return (
       <SafeAreaProvider>
         <PaperProvider theme={theme}>
           <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>Loading...</Text>
+            <Text style={styles.loadingText}>
+              {isInitializing ? 'Initializing...' : 'Loading...'}
+            </Text>
+            {authState && (
+              <Text style={styles.authStatusText}>
+                {authState.isAuthenticated ? 'Authenticated' : 'Connecting...'}
+              </Text>
+            )}
           </View>
         </PaperProvider>
       </SafeAreaProvider>
@@ -156,6 +200,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#006064',
     fontWeight: '500',
+  },
+  authStatusText: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 8,
+    fontWeight: '400',
   },
   title: {
     fontSize: 28,
