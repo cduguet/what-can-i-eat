@@ -15,3 +15,6 @@ All tests and terminal executions should be perform automatically, without waiti
 
 # Stack 
 This application is made for Mobile and Web using Expo. Please be consistent with this stack. 
+
+# Per module git committing
+Every time an agent in coding mode, documentation mode, or any other mode that modifies the codebase finishes, it should add its data to git. No need to create a new branch, just stage the newly created and modified files, and commit them, with a comment on the developed features. Perform this step before coming back to the orchestrator or parent mode.
