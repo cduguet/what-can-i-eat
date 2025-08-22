@@ -191,3 +191,60 @@ export const parseAPIResponse = (response: string): any => {
     throw new Error(`Failed to parse API response: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
+
+/**
+ * Build multimodal prompt for menu analysis with images</search>
+</search_and_replace>
+ *
+ * @param preferences - User's dietary preferences
+ * @param contentParts - Array of content parts (text and images)
+ * @param requestId - Unique request identifier
+ * @param context - Additional context or instructions
+ * @returns Complete prompt for Gemini API
+ */
+export const buildMultimodalPrompt = (
+  preferences: UserPreferences,
+  contentParts: Array<{ type: 'text' | 'image'; data: string }>,
+  requestId: string,
+  context?: string
+): Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> => {
+  const parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> = [];
+
+  // Add system prompt as text
+  parts.push({
+    text: `${SYSTEM_PROMPT}
+
+${buildDietaryContext(preferences)}
+
+${buildAnalysisInstructions(requestId)}`
+  });
+
+  // Add all content parts (text and images)
+  for (const part of contentParts) {
+    if (part.type === 'text') {
+      parts.push({
+        text: part.data
+      });
+    } else if (part.type === 'image') {
+      // Extract MIME type from data URL
+      const matches = part.data.match(/^data:([^;]+);base64,(.+)$/);
+      if (matches) {
+        parts.push({
+          inlineData: {
+            mimeType: matches[1],
+            data: matches[2]
+          }
+        });
+      }
+    }
+  }
+
+  // Add additional context if provided
+  if (context) {
+    parts.push({
+      text: `ADDITIONAL CONTEXT: ${context}`
+    });
+  }
+
+  return parts;
+};

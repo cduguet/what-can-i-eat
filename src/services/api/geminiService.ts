@@ -6,9 +6,9 @@
  */
 
 import { GoogleGenAI } from '@google/genai';
-import { GeminiAPIConfig, GeminiRequest, GeminiResponse, AppError, ErrorSeverity } from '../../types';
+import { GeminiAPIConfig, GeminiRequest, GeminiResponse, MultimodalGeminiRequest, MultimodalContentPart, ContentType, ImageData, AppError, ErrorSeverity } from '../../types';
 import { getAPIConfig, validateAPIConfig, getSanitizedConfig } from './config';
-import { buildMenuAnalysisPrompt, parseAPIResponse } from '../../utils/prompts';
+import { buildMenuAnalysisPrompt, buildMultimodalPrompt, parseAPIResponse } from '../../utils/prompts';
 
 /**
  * Gemini API service class
@@ -221,7 +221,129 @@ export class GeminiService {
       };
     }
   }
-}
+
+  /**
+   * Analyze menu items using Gemini AI with multimodal input (text + images)
+   *
+   * @param request - Multimodal request with content parts (text and images)
+   * @returns Promise resolving to analysis results
+   */
+  async analyzeMenuMultimodal(request: MultimodalGeminiRequest): Promise<GeminiResponse> {
+    const startTime = Date.now();
+
+    try {
+      console.log(`Starting multimodal menu analysis for request ${request.requestId}`);
+
+      // Build multimodal prompt with images and text
+      const multimodalPrompt = buildMultimodalPrompt(
+        request.dietaryPreferences,
+        request.contentParts,
+        request.requestId,
+        request.context
+      );
+
+      // Make API request with retry logic for multimodal content
+      const response = await this.makeMultimodalRequestWithRetry(multimodalPrompt);
+
+      // Parse and validate response
+      const parsedResponse = parseAPIResponse(response);
+
+      // Build final response
+      const result: GeminiResponse = {
+        success: true,
+        results: parsedResponse.results || [],
+        confidence: parsedResponse.confidence || 0.8,
+        message: parsedResponse.message,
+        requestId: request.requestId,
+        processingTime: Date.now() - startTime,
+      };
+
+      console.log(`Multimodal menu analysis completed for request ${request.requestId} in ${result.processingTime}ms`);
+      return result;
+
+    } catch (error) {
+      console.error(`Multimodal menu analysis failed for request ${request.requestId}:`, error);
+
+      return {
+        success: false,
+        results: [],
+        confidence: 0,
+        message: error instanceof Error ? error.message : 'Unknown error occurred',
+        requestId: request.requestId,
+        processingTime: Date.now() - startTime,
+      };
+    }
+  }
+
+  /**
+   * Make multimodal API request with retry logic
+   *
+   * @param multimodalPrompt - Array of content parts (text and images)
+   * @returns Promise resolving to response text
+   */
+  private async makeMultimodalRequestWithRetry(
+    multimodalPrompt: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }>
+  ): Promise<string> {
+    let lastError: Error | null = null;
+
+    for (let attempt = 1; attempt <= this.config.maxRetries; attempt++) {
+      try {
+        console.log(`Multimodal API request attempt ${attempt}/${this.config.maxRetries}`);
+
+        // Create abort controller for timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
+
+        try {
+          const result = await this.genAI.models.generateContent({
+            model: 'gemini-1.5-flash-latest',
+            contents: multimodalPrompt,
+            config: {
+              temperature: 0.1, // Low temperature for consistent, factual responses
+              topK: 1,
+              topP: 0.8,
+              maxOutputTokens: 2048,
+              responseMimeType: 'application/json', // Request JSON response
+              abortSignal: controller.signal,
+            },
+          });
+
+          clearTimeout(timeoutId);
+
+          const text = result.text;
+
+          if (!text) {
+            throw new Error('Empty response from Gemini API');
+          }
+
+          return text;
+
+        } catch (error) {
+          clearTimeout(timeoutId);
+          throw error;
+        }
+
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error('Unknown error');
+        console.warn(`Multimodal API request attempt ${attempt} failed:`, lastError.message);
+
+        // Don't retry on certain errors
+        if (this.isNonRetryableError(lastError)) {
+          break;
+        }
+
+        // Wait before retry (exponential backoff)
+        if (attempt < this.config.maxRetries) {
+          const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
+          console.log(`Waiting ${delay}ms before retry...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+    }
+
+    throw lastError || new Error('All retry attempts failed');
+  }
+}</search>
 
 /**
  * Default Gemini service instance

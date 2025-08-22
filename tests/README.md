@@ -17,14 +17,14 @@ tests/
 
 ### `assets/`
 Contains test data files including:
-- Sample images for OCR testing
+- **test_menu.jpg** (180KB) - Real menu image for multimodal testing
 - Mock data files
 - Test fixtures
 
 ### `multimodal/`
 Tests specifically for multimodal functionality:
-- OCR text extraction validation
-- Image analysis capabilities
+- ✅ **Direct image analysis** with Gemini's multimodal API (recommended)
+- ⚠️ OCR text extraction validation (deprecated)
 - Gemini API multimodal responses
 - Camera integration tests
 
@@ -63,18 +63,24 @@ npm run test:coverage
 
 ### Integration Tests
 ```bash
-# Run integration tests only
-npm run test:integration
-
-# Run specific integration test
-npm test -- tests/integration/testGemini.js
+# Text-only Gemini API integration test
+node tests/integration/testGemini.js
 ```
 
-### Multimodal Tests
+### Multimodal Tests (Recommended)
 ```bash
-# Run multimodal-specific tests
-npm run test:multimodal
+# Multimodal Gemini API integration test (image + text)
+node tests/multimodal/testGeminiMultimodal.js
+
+# Note: Jest tests have React Native compatibility issues
+# Use Node.js integration tests for reliable testing
 ```
+
+### Test Results
+Recent multimodal test results:
+- **Vegan Analysis**: 24 items detected (5 good, 6 careful, 13 avoid)
+- **Vegetarian Analysis**: 18 items detected (16 good, 2 careful, 0 avoid)
+- **Processing**: Direct image analysis without OCR preprocessing
 
 ## Test Configuration
 
@@ -109,7 +115,23 @@ The following test files are currently available:
 - `src/services/api/__tests__/supabaseService.test.ts` - Unit tests for Supabase service
 - `src/components/results/__tests__/ResultCard.test.tsx` - Component tests for ResultCard
 - `src/components/results/__tests__/ResultsSummary.test.tsx` - Component tests for ResultsSummary
-- `tests/integration/testGemini.js` - Integration test for Gemini API
+- `tests/integration/testGemini.js` - Integration test for Gemini API (text-only)
+- `tests/multimodal/testGeminiMultimodal.js` - **Multimodal integration test** (image + text)
+- `tests/multimodal/geminiMultimodal.test.ts` - Jest tests for multimodal API (TypeScript)
+
+## Multimodal vs OCR Approach
+
+### 🚀 New Multimodal Approach (Recommended)
+- **Direct image analysis** with Gemini's multimodal API
+- **Better accuracy** - AI sees layout, formatting, and visual context
+- **Faster processing** - Single API call
+- **No OCR preprocessing** required
+- **Test**: `node tests/multimodal/testGeminiMultimodal.js`
+
+### 📜 Legacy OCR Approach (Deprecated)
+- Image → OCR → Text → Analysis pipeline
+- **Deprecated** in favor of multimodal approach
+- See `src/services/ocr/DEPRECATED.md` for migration guide
 
 ## Adding New Tests
 

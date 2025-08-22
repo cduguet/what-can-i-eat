@@ -994,3 +994,53 @@ export const isNetworkError = (error: AppError): error is NetworkError => {
 export const isValidationError = (error: AppError): error is ValidationError => {
   return 'field' in error && 'rule' in error;
 };
+// =============================================================================
+// MULTIMODAL API TYPES
+// =============================================================================
+
+/**
+ * Input content types for multimodal requests
+ */
+export enum ContentType {
+  TEXT = 'text',
+  IMAGE = 'image'
+}
+
+/**
+ * Multimodal content part for Gemini requests
+ */
+export interface MultimodalContentPart {
+  /** Type of content */
+  type: ContentType;
+  /** Content data - text string or image data */
+  data: string;
+}
+
+/**
+ * Multimodal Gemini request structure
+ */
+export interface MultimodalGeminiRequest {
+  /** User's dietary preferences */
+  dietaryPreferences: UserPreferences;
+  /** Multimodal content parts (text + images) */
+  contentParts: MultimodalContentPart[];
+  /** Additional context or instructions */
+  context?: string;
+  /** Request ID for tracking */
+  requestId: string;
+}
+
+/**
+ * Image data structure for multimodal requests
+ */
+export interface ImageData {
+  /** Base64 encoded image data */
+  base64Data: string;
+  /** MIME type of the image */
+  mimeType: string;
+  /** Image dimensions */
+  dimensions?: {
+    width: number;
+    height: number;
+  };
+}

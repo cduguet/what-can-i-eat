@@ -1,15 +1,25 @@
 import * as ImageManipulator from 'expo-image-manipulator';
-import { 
-  OCRResult, 
-  TextBoundingBox, 
-  AppError, 
+import {
+  OCRResult,
+  TextBoundingBox,
+  AppError,
   ErrorSeverity,
-  ImageProcessingOptions 
+  ImageProcessingOptions
 } from '@/types';
 
 /**
- * OCR service for text recognition from images
- * 
+ * @deprecated This OCR service is deprecated in favor of direct multimodal analysis with Gemini API.
+ *
+ * The new approach sends images directly to Gemini's multimodal API, which provides:
+ * - Better accuracy than OCR + text analysis
+ * - No intermediate text extraction step
+ * - Direct understanding of menu layout and context
+ * - Reduced processing time and complexity
+ *
+ * Use GeminiService.analyzeMenuMultimodal() instead.
+ *
+ * Legacy OCR service for text recognition from images
+ *
  * Features:
  * - Text extraction from menu images
  * - Image preprocessing for better OCR accuracy
@@ -32,6 +42,8 @@ export class OCRService {
   }
 
   /**
+   * @deprecated Use GeminiService.analyzeMenuMultimodal() instead for better accuracy and performance.
+   *
    * Extract text from image using OCR
    * Note: This is a mock implementation. In a real app, you would integrate with:
    * - Google Cloud Vision API
