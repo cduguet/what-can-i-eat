@@ -1,6 +1,7 @@
 import { Camera } from 'expo-camera';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
 import {
   CameraResult,
   CameraPermissionResult,
@@ -334,6 +335,28 @@ export class CameraService {
    */
   public cleanup(): void {
     this.cameraRef = null;
+  }
+
+  /**
+   * Convert image URI to base64 string
+   * @param imageUri - The URI of the image to convert
+   * @returns Promise resolving to base64 string
+   */
+  public async imageToBase64(imageUri: string): Promise<string> {
+    try {
+      const base64 = await FileSystem.readAsStringAsync(imageUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      return base64;
+    } catch (error) {
+      console.error('Failed to convert image to base64:', error);
+      throw this.createCameraError(
+        'Failed to read image data.',
+        'IMAGE_READ_FAILED',
+        ErrorSeverity.HIGH,
+        error
+      );
+    }
   }
 }
 

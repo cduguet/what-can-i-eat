@@ -90,6 +90,7 @@ export type RootStackParamList = {
     imageUri?: string;
     menuText?: string;
     menuUrl?: string;
+    analysis?: GeminiResponse;
   };
   Settings: undefined;
 };

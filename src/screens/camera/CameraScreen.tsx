@@ -26,12 +26,17 @@ import {
   CameraState,
   CameraPermissionStatus,
   CameraResult,
-  OCRResult,
   LoadingState,
   AppError,
+  ContentType,
+  UserPreferences,
+  MultimodalGeminiRequest,
+  MultimodalContentPart,
+  DietaryType,
+  GeminiResponse,
 } from '@/types';
 import { cameraService, CameraType, FlashMode } from '@/services/camera/cameraService';
-import { ocrService } from '@/services/ocr/ocrService';
+import { geminiService } from '@/services/api/geminiService';
 import { CameraPreview } from '@/components/camera/CameraPreview';
 import { CameraControls } from '@/components/camera/CameraControls';
 import { OCRProcessingIndicator } from '@/components/camera/OCRProcessingIndicator';
@@ -41,13 +46,13 @@ type CameraScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Camer
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 /**
- * Camera screen with live preview, controls, and OCR processing
+ * Camera screen with live preview, controls, and multimodal analysis
  *
  * Features:
  * - Live camera preview
  * - Permission handling
  * - Photo capture with feedback
- * - OCR text extraction
+ * - Direct image analysis with Gemini
  * - Flash and camera controls
  * - Error handling and recovery
  * - Navigation to results
@@ -61,7 +66,7 @@ export const CameraScreen: React.FC = () => {
     permissionStatus: CameraPermissionStatus.UNDETERMINED,
     cameraReady: false,
     takingPhoto: false,
-    ocrProcessing: {
+    ocrProcessing: { // Re-using this state for multimodal processing
       isLoading: false,
       progress: 0,
       message: '',
@@ -71,11 +76,17 @@ export const CameraScreen: React.FC = () => {
   // UI state
   const [showPermissionModal, setShowPermissionModal] = useState(false);
   const [capturedImage, setCapturedImage] = useState<CameraResult | null>(null);
-  const [ocrResult, setOcrResult] = useState<OCRResult | null>(null);
+  const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
 
   // Initialize camera on mount
   useEffect(() => {
     initializeCamera();
+    // TODO: Fetch user preferences from storage
+    setUserPreferences({
+      dietaryType: DietaryType.VEGAN,
+      lastUpdated: new Date().toISOString(),
+      onboardingCompleted: true,
+    });
     return () => {
       cameraService.cleanup();
     };
@@ -159,7 +170,7 @@ export const CameraScreen: React.FC = () => {
   };
 
   /**
-   * Take photo and process with OCR
+   * Take photo and process with multimodal analysis
    */
   const handleTakePhoto = async () => {
     if (!cameraState.cameraReady || cameraState.takingPhoto) {
@@ -184,8 +195,8 @@ export const CameraScreen: React.FC = () => {
 
       setCapturedImage(photo);
 
-      // Start OCR processing
-      await processImageWithOCR(photo.uri);
+      // Start multimodal analysis
+      await processImage(photo);
 
     } catch (error) {
       console.error('Failed to take photo:', error);
@@ -203,91 +214,78 @@ export const CameraScreen: React.FC = () => {
   };
 
   /**
-   * Process captured image with OCR
+   * Process captured image with multimodal analysis
    */
-  const processImageWithOCR = async (imageUri: string) => {
+  const processImage = async (photo: CameraResult) => {
     try {
-      // Set OCR processing state
+      // Set processing state
       setCameraState(prev => ({
         ...prev,
-        ocrProcessing: {
+        ocrProcessing: { // Re-using ocrProcessing state for general processing
           isLoading: true,
           progress: 0,
-          message: 'Processing image...',
+          message: 'Preparing image...',
         },
       }));
 
-      // Update progress
+      // Simulate progress
       setTimeout(() => {
         setCameraState(prev => ({
           ...prev,
-          ocrProcessing: {
-            ...prev.ocrProcessing,
-            progress: 30,
-            message: 'Extracting text...',
-          },
+          ocrProcessing: { ...prev.ocrProcessing, progress: 30, message: 'Analyzing menu...' },
         }));
       }, 500);
 
-      // Process image for OCR
-      const processedImageUri = await cameraService.processImageForOCR(imageUri, {
-        maxWidth: 1920,
-        maxHeight: 1080,
-        quality: 0.9,
-      });
+      // Convert image to base64
+      const base64 = await cameraService.imageToBase64(photo.uri);
+
+      const contentParts: MultimodalContentPart[] = [
+        {
+          type: ContentType.IMAGE,
+          data: `data:image/jpeg;base64,${base64}`,
+        },
+        {
+          type: ContentType.TEXT,
+          data: 'Analyze the attached menu image for dietary suitability.',
+        },
+      ];
+
+      const request: MultimodalGeminiRequest = {
+        dietaryPreferences: userPreferences || {
+          dietaryType: DietaryType.VEGAN,
+          lastUpdated: new Date().toISOString(),
+          onboardingCompleted: true,
+        },
+        contentParts,
+        requestId: `multimodal-${Date.now()}`,
+      };
+
+      const analysisResult = await geminiService.analyzeMenuMultimodal(request);
 
       // Update progress
       setCameraState(prev => ({
         ...prev,
-        ocrProcessing: {
-          ...prev.ocrProcessing,
-          progress: 60,
-          message: 'Analyzing menu...',
-        },
-      }));
-
-      // Extract text with OCR
-      const ocrResult = await ocrService.extractTextFromImage(processedImageUri, {
-        language: 'en',
-        preprocessImage: true,
-        includeConfidence: true,
-        includeBoundingBoxes: false,
-      });
-
-      setOcrResult(ocrResult);
-
-      // Update progress
-      setCameraState(prev => ({
-        ...prev,
-        ocrProcessing: {
-          ...prev.ocrProcessing,
-          progress: 90,
-          message: 'Finalizing...',
-        },
+        ocrProcessing: { ...prev.ocrProcessing, progress: 90, message: 'Finalizing...' },
       }));
 
       // Complete processing
       setTimeout(() => {
         setCameraState(prev => ({
           ...prev,
-          ocrProcessing: {
-            isLoading: false,
-            progress: 100,
-            message: 'Complete!',
-          },
+          ocrProcessing: { isLoading: false, progress: 100, message: 'Complete!' },
         }));
 
         // Navigate to results after a brief delay
         setTimeout(() => {
-          if (ocrResult.success) {
+          if (analysisResult.success) {
             navigation.navigate('Results', {
-              imageUri: capturedImage?.uri,
-              menuText: ocrResult.text,
+              imageUri: photo.uri,
+              analysis: analysisResult,
             });
           } else {
             Alert.alert(
-              'OCR Error',
-              'Failed to extract text from image. Please try again with better lighting.',
+              'Analysis Error',
+              analysisResult.message || 'Failed to analyze the menu. Please try again.',
               [{ text: 'OK' }]
             );
           }
@@ -295,14 +293,10 @@ export const CameraScreen: React.FC = () => {
       }, 500);
 
     } catch (error) {
-      console.error('OCR processing failed:', error);
+      console.error('Multimodal analysis failed:', error);
       setCameraState(prev => ({
         ...prev,
-        ocrProcessing: {
-          isLoading: false,
-          progress: 0,
-          message: '',
-        },
+        ocrProcessing: { isLoading: false, progress: 0, message: '' },
       }));
 
       Alert.alert(
@@ -509,13 +503,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 10,
+    padding: 16,
+    paddingTop: (StatusBar.currentHeight || 0) + 16,
   },
   headerButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   headerTitle: {
     color: '#FFFFFF',
@@ -526,24 +518,22 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    zIndex: 10,
   },
   ocrIndicator: {
     position: 'absolute',
-    top: '50%',
-    left: 20,
-    right: 20,
-    zIndex: 20,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   instructionsOverlay: {
     position: 'absolute',
-    bottom: 120,
-    left: 20,
-    right: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    borderRadius: 8,
-    padding: 12,
-    zIndex: 5,
+    bottom: 150,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   instructionsText: {
     color: '#FFFFFF',
@@ -553,19 +543,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
     padding: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   permissionCard: {
     width: '100%',
     maxWidth: 400,
-    backgroundColor: '#FFFFFF',
   },
   permissionText: {
     lineHeight: 22,
-    marginBottom: 16,
   },
   permissionActions: {
     justifyContent: 'flex-end',
+    paddingTop: 16,
   },
 });

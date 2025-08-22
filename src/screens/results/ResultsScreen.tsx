@@ -199,20 +199,25 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
   const loadResults = async () => {
     try {
       setLoading({ isLoading: true, message: 'Analyzing menu items...' });
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // TODO: Replace with actual API call based on route params
-      const mockResults = getMockResults();
-      setResults(mockResults);
-      
+
+      if (route.params?.analysis) {
+        const analysisResult = route.params.analysis;
+        if (analysisResult.success) {
+          setResults(analysisResult.results);
+          setSnackbarMessage(`Analysis complete! Found ${analysisResult.results.length} menu items.`);
+        } else {
+          throw new Error(analysisResult.message || 'Analysis failed');
+        }
+      } else {
+        // Fallback to mock results if no analysis is passed
+        const mockResults = getMockResults();
+        setResults(mockResults);
+        setSnackbarMessage(`Displaying mock results. Found ${mockResults.length} menu items.`);
+      }
+
       setLoading({ isLoading: false });
-      
-      // Show success message
-      setSnackbarMessage(`Analysis complete! Found ${mockResults.length} menu items.`);
       setSnackbarVisible(true);
-      
+
     } catch (err) {
       const appError: AppError = {
         code: 'ANALYSIS_FAILED',
