@@ -153,7 +153,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
       {/* Expandable Content */}
       {expanded && (
-        <>
+        <View>
           <Divider style={styles.headerDivider} />
           
           {hasResults ? (
@@ -175,7 +175,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
               </Text>
             </Card.Content>
           )}
-        </>
+        </View>
       )}
     </Card>
   );

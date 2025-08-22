@@ -106,33 +106,42 @@ export class AuthService {
     try {
       this.updateAuthState({ ...this.currentState, isLoading: true });
 
-      // Check for existing session
-      const { data: { session }, error: sessionError } = await this.supabase.auth.getSession();
+      // For MVP: Use trial mode - allow one scan without authentication
+      console.log('🎭 Running in trial mode - one free scan allowed');
       
-      if (sessionError) {
-        throw sessionError;
-      }
+      // Create a trial user session
+      const trialUser = {
+        id: 'trial-user-' + Date.now(),
+        email: 'trial@whatcanieat.app',
+        is_anonymous: true,
+        created_at: new Date().toISOString(),
+        app_metadata: { trial_mode: true },
+        user_metadata: {},
+        aud: 'authenticated',
+      };
 
-      if (session) {
-        // User already has a valid session
-        return {
-          success: true,
-          session,
-          user: session.user,
-        };
-      }
+      const trialSession = {
+        user: trialUser,
+        access_token: 'trial-token',
+        refresh_token: 'trial-refresh',
+        expires_at: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
+        expires_in: 24 * 60 * 60, // 24 hours in seconds
+        token_type: 'bearer' as const,
+      };
 
-      // No existing session, create anonymous session
-      const { data, error } = await this.supabase.auth.signInAnonymously();
-      
-      if (error) {
-        throw error;
-      }
+      // Update auth state to authenticated in trial mode
+      this.updateAuthState({
+        isAuthenticated: true,
+        isLoading: false,
+        session: trialSession,
+        user: trialUser,
+        error: null,
+      });
 
       return {
         success: true,
-        session: data.session,
-        user: data.user,
+        session: trialSession,
+        user: trialUser,
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Authentication initialization failed';

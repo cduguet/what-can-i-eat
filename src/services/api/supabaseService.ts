@@ -11,16 +11,51 @@
  * - Request caching and offline support
  * - Usage analytics and monitoring
  * - Error handling and retry logic
+ * - Development mode with mock responses
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GeminiRequest, GeminiResponse, UserPreferences } from '../../types';
+import { GeminiRequest, GeminiResponse, UserPreferences, FoodAnalysisResult, FoodSuitability } from '../../types';
 import { authService } from '../auth/authService';
+import { trialService } from '../trial/trialService';
 
 // Environment variables for Supabase configuration
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+// Development fallback configuration
+const isDevelopment = process.env.NODE_ENV === 'development';
+const hasValidConfig = supabaseUrl && supabaseAnonKey && 
+  supabaseUrl !== 'https://your-project-ref.supabase.co' && 
+  supabaseAnonKey !== 'your-anon-key-here';
+
+// Mock configuration for development when real Supabase is not available
+const MOCK_SUPABASE_URL = 'https://mock-project.supabase.co';
+const MOCK_SUPABASE_ANON_KEY = 'mock-anon-key-for-development';
+
+// Use real config if available, otherwise use mock for development
+const finalSupabaseUrl = hasValidConfig ? supabaseUrl! : (isDevelopment ? MOCK_SUPABASE_URL : '');
+const finalSupabaseAnonKey = hasValidConfig ? supabaseAnonKey! : (isDevelopment ? MOCK_SUPABASE_ANON_KEY : '');
+
+// Validate configuration
+if (!finalSupabaseUrl || !finalSupabaseAnonKey) {
+  const errorMessage = `
+Supabase configuration error:
+- EXPO_PUBLIC_SUPABASE_URL: ${supabaseUrl ? 'Set' : 'Missing'}
+- EXPO_PUBLIC_SUPABASE_ANON_KEY: ${supabaseAnonKey ? 'Set' : 'Missing'}
+
+Please check your .env file and ensure it contains valid Supabase credentials.
+See .env.example for the required format.
+  `.trim();
+  
+  if (!isDevelopment) {
+    throw new Error(errorMessage);
+  } else {
+    console.warn('⚠️ Using mock Supabase configuration for development');
+    console.warn(errorMessage);
+  }
+}
 
 /**
  * Cache entry interface for offline support
@@ -57,7 +92,7 @@ export class SecureGeminiService {
 
   constructor() {
     // Initialize Supabase client with AsyncStorage for session persistence
-    this.supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    this.supabase = createClient(finalSupabaseUrl, finalSupabaseAnonKey, {
       auth: {
         storage: AsyncStorage,
         autoRefreshToken: true,
@@ -66,7 +101,11 @@ export class SecureGeminiService {
       },
     });
 
-    console.log('SecureGeminiService initialized with Supabase backend');
+    if (hasValidConfig) {
+      console.log('SecureGeminiService initialized with Supabase backend');
+    } else {
+      console.log('SecureGeminiService initialized with mock configuration for development');
+    }
   }
 
   /**
@@ -84,6 +123,22 @@ export class SecureGeminiService {
     try {
       console.log(`Starting secure menu analysis for request ${request.requestId}`);
       
+      // Initialize trial service
+      await trialService.initialize();
+      
+      // Check trial limits first
+      const trialCheck = await trialService.canPerformScan();
+      if (!trialCheck.canScan) {
+        return {
+          success: false,
+          results: [],
+          confidence: 0,
+          message: trialCheck.message || 'Trial limit reached. Please create an account to continue.',
+          requestId: request.requestId,
+          processingTime: Date.now() - this.startTime,
+        };
+      }
+
       // Ensure user is authenticated
       await this.ensureAuthenticated();
 
@@ -91,6 +146,8 @@ export class SecureGeminiService {
       const cachedResult = await this.checkLocalCache(request);
       if (cachedResult) {
         console.log(`Returning cached result for request ${request.requestId}`);
+        // Still count as a scan even if cached
+        await trialService.recordScan();
         return {
           ...cachedResult,
           requestId: request.requestId,
@@ -106,8 +163,9 @@ export class SecureGeminiService {
       // Make secure API request through Edge Function
       const response = await this.makeSecureRequest(request);
       
-      // Cache successful response for offline use
+      // Record scan if successful
       if (response.success) {
+        await trialService.recordScan();
         await this.cacheResponse(request, response);
       }
 
@@ -121,6 +179,8 @@ export class SecureGeminiService {
       const cachedFallback = await this.checkLocalCache(request);
       if (cachedFallback) {
         console.log(`Returning cached fallback for request ${request.requestId}`);
+        // Still count as a scan even if cached fallback
+        await trialService.recordScan();
         return {
           ...cachedFallback,
           requestId: request.requestId,
@@ -147,6 +207,11 @@ export class SecureGeminiService {
    * @returns Promise resolving to analysis response
    */
   private async makeSecureRequest(request: GeminiRequest): Promise<GeminiResponse> {
+    // If using mock configuration, return mock response
+    if (!hasValidConfig && isDevelopment) {
+      return this.getMockResponse(request);
+    }
+
     let lastError: Error | null = null;
     
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
@@ -217,6 +282,42 @@ export class SecureGeminiService {
     }
     
     throw lastError || new Error('All retry attempts failed');
+  }
+
+  /**
+   * Generate mock response for development mode
+   * 
+   * @param request - The analysis request
+   * @returns Mock response
+   */
+  private getMockResponse(request: GeminiRequest): GeminiResponse {
+    console.log('🎭 Generating mock response for development');
+    
+    // Generate mock results based on dietary preferences
+    const dietaryType = request.dietaryPreferences.dietaryType;
+    const mockResults: FoodAnalysisResult[] = request.menuItems.map((item, index) => ({
+      itemId: item.id,
+      itemName: item.name,
+      suitability: Math.random() > 0.5 ? FoodSuitability.GOOD : (Math.random() > 0.5 ? FoodSuitability.CAREFUL : FoodSuitability.AVOID),
+      confidence: Math.random() * 0.4 + 0.6, // 60-100% confidence
+      explanation: `Mock analysis for ${dietaryType} diet - Item ${index + 1} processed in development mode`,
+      alternatives: Math.random() > 0.5 ? [`Mock alternative for ${item.name}`] : [],
+      nutritionalInfo: {
+        calories: Math.floor(Math.random() * 500) + 100,
+        protein: Math.floor(Math.random() * 30) + 5,
+        carbs: Math.floor(Math.random() * 50) + 10,
+        fat: Math.floor(Math.random() * 25) + 2,
+      },
+    }));
+
+    return {
+      success: true,
+      results: mockResults,
+      confidence: 0.85,
+      message: `Mock analysis completed for ${request.menuItems.length} items (Development Mode)`,
+      requestId: request.requestId,
+      processingTime: Date.now() - this.startTime,
+    };
   }
 
   /**
@@ -504,6 +605,3 @@ export class SecureGeminiService {
 
 // Export singleton instance
 export const secureGeminiService = new SecureGeminiService();
-
-// Export default
-export default secureGeminiService;
