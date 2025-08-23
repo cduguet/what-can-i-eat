@@ -24,9 +24,7 @@ export class GeminiService {
       throw new Error('Invalid Gemini API configuration');
     }
 
-    this.genAI = new GoogleGenAI({
-      apiKey: this.config.apiKey,
-    });
+    this.genAI = new GoogleGenAI({ apiKey: this.config.apiKey, vertexai: false });
 
     console.log('Gemini service initialized:', getSanitizedConfig(this.config));
   }
@@ -102,32 +100,21 @@ export class GeminiService {
         const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
         
         try {
-          // Create a mock model object that matches the expected API
-          const model = {
-            generateContent: async (config: any) => {
-              // The GoogleGenAI library expects a different structure
-              // We need to adapt our call to match the library's API
-              return this.genAI.generateContent(config);
-            }
-          };
-          
-          const result = await this.genAI.generateContent({
-            model: 'gemini-1.5-flash-latest',
+          const result = await this.genAI.models.generateContent({
+            model: 'gemini-1.5-flash',
             contents: prompt,
             config: {
-              temperature: 0.1, // Low temperature for consistent, factual responses
+              temperature: 0.1,
               topK: 1,
               topP: 0.8,
               maxOutputTokens: 2048,
-              responseMimeType: 'application/json', // Request JSON response
-              abortSignal: controller.signal,
             },
-          } as any);
+          });
           
           clearTimeout(timeoutId);
           
-          // Access the text property directly from result
-          const text = (result as any).text || (result as any).response?.text?.();
+          // Get the response text
+          const text = result.text;
           
           if (!text) {
             throw new Error('Empty response from Gemini API');
@@ -198,7 +185,7 @@ export class GeminiService {
     
     try {
       const result = await this.genAI.models.generateContent({
-        model: 'gemini-1.5-flash-latest',
+        model: 'gemini-1.5-flash',
         contents: 'Respond with "API connection successful"',
         config: {
           temperature: 0.1,
@@ -206,7 +193,7 @@ export class GeminiService {
         },
       });
       
-      const response = result.text;
+      const text = result.text;
       
       const latency = Date.now() - startTime;
       
@@ -305,23 +292,21 @@ export class GeminiService {
         const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
 
         try {
-          const result = await this.genAI.generateContent({
-            model: 'gemini-1.5-flash-latest',
+          const result = await this.genAI.models.generateContent({
+            model: 'gemini-1.5-flash',
             contents: multimodalPrompt,
             config: {
-              temperature: 0.1, // Low temperature for consistent, factual responses
+              temperature: 0.1,
               topK: 1,
               topP: 0.8,
               maxOutputTokens: 2048,
-              responseMimeType: 'application/json', // Request JSON response
-              abortSignal: controller.signal,
             },
-          } as any);
+          });
 
           clearTimeout(timeoutId);
 
-          // Access the text property directly from result
-          const text = (result as any).text || (result as any).response?.text?.();
+          // Get the response text
+          const text = result.text;
 
           if (!text) {
             throw new Error('Empty response from Gemini API');

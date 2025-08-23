@@ -53,26 +53,26 @@ describe('GeminiService', () => {
   describe('analyzeMenu', () => {
     it('should successfully analyze menu items', async () => {
       // Mock successful API response
-      const mockResponse = {
-        text: JSON.stringify({
-          success: true,
-          results: [
-            {
-              itemId: 'item-0',
-              itemName: 'Garden Salad',
-              suitability: 'good',
-              explanation: 'This salad contains only plant-based ingredients.',
-              confidence: 0.95,
-              concerns: [],
-            },
-          ],
-          confidence: 0.95,
-          requestId: 'test-request-id',
-          processingTime: 0,
-        }),
+      const mockResponseData = {
+        success: true,
+        results: [
+          {
+            itemId: 'item-0',
+            itemName: 'Garden Salad',
+            suitability: 'good',
+            explanation: 'This salad contains only plant-based ingredients.',
+            confidence: 0.95,
+            concerns: [],
+          },
+        ],
+        confidence: 0.95,
+        requestId: 'test-request-id',
+        processingTime: 0,
       };
 
-      mockGenerateContent.mockResolvedValue(mockResponse);
+      mockGenerateContent.mockResolvedValue({
+        text: JSON.stringify(mockResponseData)
+      });
 
       const request = {
         dietaryPreferences: {

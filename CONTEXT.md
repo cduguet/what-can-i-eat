@@ -584,10 +584,21 @@ The application features a comprehensive TypeScript type system organized into l
 - Camera performance may vary by device
 - Large images may need additional optimization
 
-### Gemini API Integration (Completed - 2025-08-21)
+### Gemini API Integration (Updated - 2025-08-23)
 
 #### Overview
 Successfully integrated Google's Gemini AI API for intelligent food analysis with comprehensive error handling, retry logic, and proper TypeScript typing. The integration provides real-time dietary restriction analysis with three-tier categorization (Good/Careful/Avoid).
+
+#### Recent Fix (2025-08-23)
+Fixed critical API integration issues:
+- **Package Import**: Corrected import from `@google/generative-ai` to `@google/genai`
+- **Class Name**: Updated from `GoogleGenerativeAI` to `GoogleGenAI`
+- **Initialization**: Fixed to use `new GoogleGenAI({ apiKey, vertexai: false })`
+- **API Calls**: Updated to use `genAI.models.generateContent()` pattern
+- **Response Access**: Fixed to use `result.text` instead of `result.response.text()`
+- **Configuration**: Changed from `generationConfig` to `config` parameter
+- **Test Updates**: Updated mock implementations to match new API structure
+- **Verified**: Both text-only and multimodal (image) analysis working correctly
 
 #### Core Components Created
 
