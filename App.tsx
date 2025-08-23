@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -12,6 +11,7 @@ import { HomeScreen } from '@/screens/main/HomeScreen';
 import { CameraScreen } from '@/screens/camera/CameraScreen';
 import { ResultsScreen } from '@/screens/results/ResultsScreen';
 import { authService, AuthState } from '@/services/auth/authService';
+import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 
 // Temporary placeholder screen for Settings
 import { StyleSheet, Text, View } from 'react-native';
@@ -28,20 +28,9 @@ const PlaceholderScreen = ({ route }: { route: { name: string } }) => (
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-// Custom theme for the app with deep teal primary color
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: '#006064',
-    accent: '#FF9800',
-    background: '#F5F5F5',
-    surface: '#FFFFFF',
-    text: '#212121',
-  },
-};
-
-export default function App() {
+// Main App component wrapped with theme
+function AppContent() {
+  const { theme } = useTheme();
   const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean | null>(null);
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
@@ -114,73 +103,75 @@ export default function App() {
   // Show loading state while initializing app and checking onboarding status
   if (isInitializing || isOnboardingComplete === null || authState === null) {
     return (
-      <SafeAreaProvider>
-        <PaperProvider theme={theme}>
-          <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>
-              {isInitializing ? 'Initializing...' : 'Loading...'}
-            </Text>
-            {authState && (
-              <Text style={styles.authStatusText}>
-                {authState.isAuthenticated ? 'Authenticated' : 'Connecting...'}
-              </Text>
-            )}
-          </View>
-        </PaperProvider>
-      </SafeAreaProvider>
+      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
+        <Text style={[styles.loadingText, { color: theme.colors.primary }]}>
+          {isInitializing ? 'Initializing...' : 'Loading...'}
+        </Text>
+        {authState && (
+          <Text style={[styles.authStatusText, { color: theme.colors.textSecondary }]}>
+            {authState.isAuthenticated ? 'Authenticated' : 'Connecting...'}
+          </Text>
+        )}
+      </View>
     );
   }
 
   return (
+    <NavigationContainer>
+      <StatusBar style={theme.mode === 'dark' ? 'light' : 'dark'} />
+      {!isOnboardingComplete ? (
+        <OnboardingNavigator onComplete={handleOnboardingComplete} />
+      ) : (
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: theme.colors.primary,
+            },
+            headerTintColor: theme.mode === 'light' ? '#ffffff' : theme.colors.background,
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        >
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              title: 'What Can I Eat?',
+              headerShown: false // Hide header as the screen has its own title
+            }}
+          />
+          <Stack.Screen
+            name="Camera"
+            component={CameraScreen}
+            options={{
+              title: 'Scan Menu',
+              headerShown: false // Hide header for full-screen camera
+            }}
+          />
+          <Stack.Screen
+            name="Results"
+            component={ResultsScreen}
+            options={{ title: 'Analysis Results' }}
+          />
+          <Stack.Screen
+            name="Settings"
+            component={PlaceholderScreen}
+            options={{ title: 'Settings' }}
+          />
+        </Stack.Navigator>
+      )}
+    </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
     <SafeAreaProvider>
-      <PaperProvider theme={theme}>
-        <NavigationContainer>
-          <StatusBar style="auto" />
-          {!isOnboardingComplete ? (
-            <OnboardingNavigator onComplete={handleOnboardingComplete} />
-          ) : (
-            <Stack.Navigator
-              initialRouteName="Home"
-              screenOptions={{
-                headerStyle: {
-                  backgroundColor: theme.colors.primary,
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                },
-              }}
-            >
-              <Stack.Screen
-                name="Home"
-                component={HomeScreen}
-                options={{
-                  title: 'What Can I Eat?',
-                  headerShown: false // Hide header as the screen has its own title
-                }}
-              />
-              <Stack.Screen
-                name="Camera"
-                component={CameraScreen}
-                options={{
-                  title: 'Scan Menu',
-                  headerShown: false // Hide header for full-screen camera
-                }}
-              />
-              <Stack.Screen
-                name="Results"
-                component={ResultsScreen}
-                options={{ title: 'Analysis Results' }}
-              />
-              <Stack.Screen
-                name="Settings"
-                component={PlaceholderScreen}
-                options={{ title: 'Settings' }}
-              />
-            </Stack.Navigator>
-          )}
-        </NavigationContainer>
-      </PaperProvider>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }
@@ -188,45 +179,38 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
   },
   loadingText: {
     fontSize: 18,
-    color: '#006064',
     fontWeight: '500',
   },
   authStatusText: {
     fontSize: 14,
-    color: '#666',
     marginTop: 8,
     fontWeight: '400',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#006064',
     marginBottom: 10,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#212121',
     marginBottom: 15,
     textAlign: 'center',
   },
   description: {
     fontSize: 16,
-    color: '#666',
     textAlign: 'center',
     lineHeight: 24,
   },
