@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet, ViewStyle, Dimensions } from 'react-native';
 import { IconButton, FAB, Text } from 'react-native-paper';
 import * as Haptics from 'expo-haptics';
 import { CameraType, FlashMode } from '@/services/camera/cameraService';
+
+const { width: screenWidth } = Dimensions.get('window');
+const isSmallDevice = screenWidth < 375;
 
 interface CameraControlsProps {
   /** Callback when take photo button is pressed */
@@ -122,7 +125,7 @@ export const CameraControls: React.FC<CameraControlsProps> = ({
           <IconButton
             icon={getFlashIcon()}
             iconColor="#FFFFFF"
-            size={28}
+            size={isSmallDevice ? 24 : 28}
             onPress={handleToggleFlash}
             disabled={takingPhoto}
             style={[
@@ -162,7 +165,7 @@ export const CameraControls: React.FC<CameraControlsProps> = ({
           <IconButton
             icon={getCameraTypeIcon()}
             iconColor="#FFFFFF"
-            size={28}
+            size={isSmallDevice ? 24 : 28}
             onPress={handleToggleCameraType}
             disabled={takingPhoto}
             style={[
@@ -196,6 +199,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingTop: 20,
     paddingHorizontal: 20,
+    position: 'relative',
   },
   overlay: {
     position: 'absolute',
@@ -204,12 +208,14 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    zIndex: -1,
   },
   controlsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
+    zIndex: 1,
   },
   sideControl: {
     alignItems: 'center',
@@ -218,6 +224,8 @@ const styles = StyleSheet.create({
   controlButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     marginBottom: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   disabledButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -234,9 +242,9 @@ const styles = StyleSheet.create({
   },
   captureButton: {
     backgroundColor: '#006064',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: isSmallDevice ? 70 : 80,
+    height: isSmallDevice ? 70 : 80,
+    borderRadius: isSmallDevice ? 35 : 40,
     marginBottom: 8,
     elevation: 8,
     shadowColor: '#006064',
@@ -246,6 +254,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   capturingButton: {
     backgroundColor: '#004D40',
@@ -258,6 +268,7 @@ const styles = StyleSheet.create({
   },
   instructionsContainer: {
     alignItems: 'center',
+    zIndex: 1,
   },
   instructionsText: {
     color: '#FFFFFF',

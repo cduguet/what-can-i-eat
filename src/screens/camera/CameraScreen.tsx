@@ -467,12 +467,14 @@ export const CameraScreen: React.FC = () => {
         />
       )}
 
-      {/* Instructions Overlay */}
-      <View style={styles.instructionsOverlay}>
-        <Text variant="bodyMedium" style={styles.instructionsText}>
-          Point your camera at a menu and tap the capture button
-        </Text>
-      </View>
+      {/* Instructions Overlay - Only show when not processing */}
+      {!cameraState.ocrProcessing.isLoading && !cameraState.takingPhoto && (
+        <View style={styles.instructionsOverlay}>
+          <Text variant="bodyMedium" style={styles.instructionsText}>
+            Point your camera at a menu and tap the capture button
+          </Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -505,6 +507,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     paddingTop: (StatusBar.currentHeight || 0) + 16,
+    zIndex: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   headerButton: {
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -518,6 +522,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    zIndex: 30,
   },
   ocrIndicator: {
     position: 'absolute',
@@ -525,15 +530,21 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    zIndex: 100,
   },
   instructionsOverlay: {
     position: 'absolute',
-    bottom: 150,
-    left: 0,
-    right: 0,
+    bottom: 200,
+    left: 20,
+    right: 20,
     alignItems: 'center',
     padding: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 8,
+    zIndex: 10,
   },
   instructionsText: {
     color: '#FFFFFF',

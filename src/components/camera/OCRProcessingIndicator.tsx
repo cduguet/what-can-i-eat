@@ -1,7 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet, ViewStyle, Dimensions } from 'react-native';
 import { Text, ProgressBar, Card, ActivityIndicator } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
+
+const { width: screenWidth } = Dimensions.get('window');
+const isSmallDevice = screenWidth < 375;
 
 interface OCRProcessingIndicatorProps {
   /** Processing progress (0-100) */
@@ -31,7 +34,7 @@ export const OCRProcessingIndicator: React.FC<OCRProcessingIndicatorProps> = ({
 
   return (
     <View style={[styles.container, style]}>
-      <Card style={styles.card} elevation={5}>
+      <Card style={styles.card}>
         <LinearGradient
           colors={['#006064', '#004D40']}
           style={styles.gradient}
@@ -145,18 +148,21 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 20,
   },
   card: {
     width: '100%',
-    maxWidth: 350,
+    maxWidth: isSmallDevice ? 300 : 350,
     borderRadius: 16,
     overflow: 'hidden',
+    backgroundColor: 'transparent',
+    elevation: 0,
   },
   gradient: {
     width: '100%',
   },
   content: {
-    padding: 24,
+    padding: isSmallDevice ? 16 : 24,
   },
   header: {
     flexDirection: 'row',
@@ -200,9 +206,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   stepIndicator: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: isSmallDevice ? 20 : 24,
+    height: isSmallDevice ? 20 : 24,
+    borderRadius: isSmallDevice ? 10 : 12,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
