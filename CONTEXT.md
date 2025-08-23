@@ -600,6 +600,19 @@ Fixed critical API integration issues:
 - **Test Updates**: Updated mock implementations to match new API structure
 - **Verified**: Both text-only and multimodal (image) analysis working correctly
 
+#### JSON Truncation Fix (2025-08-23)
+Fixed issues with truncated JSON responses from Gemini API:
+- **Increased Token Limit**: Changed `maxOutputTokens` from 2048 to 4096 to handle larger menu responses
+- **Improved JSON Parsing**: Enhanced `parseAPIResponse` function to better handle truncated JSON
+  - Added proper brace counting to find complete JSON objects
+  - Handles string escaping and nested structures correctly
+  - Provides better error messages for truncated responses
+- **Updated System Prompt**: Made prompt more concise to reduce response size
+  - Limited explanations to 50 words maximum
+  - Limited questions to 2 per "careful" item
+  - Limited concerns to 3 items maximum
+  - Added instruction to prioritize most important items if >20 items
+
 #### Core Components Created
 
 1. **API Configuration Service** (`src/services/api/config.ts`)
