@@ -100,6 +100,25 @@ The test suite uses mock data to simulate:
 
 Mock data is stored in the `utils/` directory and can be customized for different test scenarios.
 
+## Test Framework Usage
+
+### Jest Tests (Unit Tests)
+- **Location**: `src/**/__tests__/` directories
+- **Purpose**: Unit testing for services, utilities, and components
+- **Framework**: Jest with TypeScript support (ts-jest)
+- **Run with**: `npm test`
+
+### Node.js Scripts (Integration Tests)
+- **Location**: `tests/integration/` and `tests/multimodal/`
+- **Purpose**: Real API testing and integration validation
+- **Framework**: Plain Node.js scripts (no test framework)
+- **Run with**: `node tests/integration/testGemini.js`
+
+This dual approach allows:
+- Fast, mocked unit tests for development
+- Real API integration tests for validation
+- Flexibility in testing different scenarios
+
 ## Best Practices
 
 1. **Test Organization**: Place tests close to the code they test, using the `__tests__/` directory pattern for unit tests

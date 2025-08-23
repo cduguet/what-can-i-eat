@@ -102,7 +102,16 @@ export class GeminiService {
         const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
         
         try {
-          const result = await this.genAI.models.generateContent({
+          // Create a mock model object that matches the expected API
+          const model = {
+            generateContent: async (config: any) => {
+              // The GoogleGenAI library expects a different structure
+              // We need to adapt our call to match the library's API
+              return this.genAI.generateContent(config);
+            }
+          };
+          
+          const result = await this.genAI.generateContent({
             model: 'gemini-1.5-flash-latest',
             contents: prompt,
             config: {
@@ -113,11 +122,12 @@ export class GeminiService {
               responseMimeType: 'application/json', // Request JSON response
               abortSignal: controller.signal,
             },
-          });
+          } as any);
           
           clearTimeout(timeoutId);
           
-          const text = result.text;
+          // Access the text property directly from result
+          const text = (result as any).text || (result as any).response?.text?.();
           
           if (!text) {
             throw new Error('Empty response from Gemini API');
@@ -200,7 +210,7 @@ export class GeminiService {
       
       const latency = Date.now() - startTime;
       
-      if (response && response.toLowerCase().includes('successful')) {
+      if (text && text.toLowerCase().includes('successful')) {
         return {
           success: true,
           message: 'API connection test passed',
@@ -295,7 +305,7 @@ export class GeminiService {
         const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
 
         try {
-          const result = await this.genAI.models.generateContent({
+          const result = await this.genAI.generateContent({
             model: 'gemini-1.5-flash-latest',
             contents: multimodalPrompt,
             config: {
@@ -306,11 +316,12 @@ export class GeminiService {
               responseMimeType: 'application/json', // Request JSON response
               abortSignal: controller.signal,
             },
-          });
+          } as any);
 
           clearTimeout(timeoutId);
 
-          const text = result.text;
+          // Access the text property directly from result
+          const text = (result as any).text || (result as any).response?.text?.();
 
           if (!text) {
             throw new Error('Empty response from Gemini API');

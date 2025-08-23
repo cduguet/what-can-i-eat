@@ -166,28 +166,35 @@ This is a test request to verify API connectivity.`;
 };
 
 /**
- * Extract and validate response format
- * 
+ * Extract and validate response format from the Gemini API.
+ * This function is designed to be robust and handle cases where the API
+ * might return the JSON object wrapped in markdown or other text.
+ *
  * @param response - Raw API response text
  * @returns Parsed and validated response object
  */
 export const parseAPIResponse = (response: string): any => {
   try {
-    // Remove any markdown code blocks or extra formatting
-    const cleanResponse = response
-      .replace(/```json\s*/g, '')
-      .replace(/```\s*/g, '')
-      .trim();
-
-    const parsed = JSON.parse(cleanResponse);
+    // Find the start and end of the JSON object
+    const jsonStart = response.indexOf('{');
+    const jsonEnd = response.lastIndexOf('}');
     
-    // Basic validation
-    if (!parsed.success !== undefined || !Array.isArray(parsed.results)) {
-      throw new Error('Invalid response format: missing required fields');
+    if (jsonStart === -1 || jsonEnd === -1) {
+      throw new Error('No JSON object found in the response.');
+    }
+
+    const jsonString = response.substring(jsonStart, jsonEnd + 1);
+    
+    const parsed = JSON.parse(jsonString);
+    
+    // Basic validation to ensure the parsed object has the expected structure
+    if (typeof parsed.success !== 'boolean' || !Array.isArray(parsed.results)) {
+      throw new Error('Invalid response format: missing required fields (success, results).');
     }
 
     return parsed;
   } catch (error) {
+    console.error("Raw response that failed parsing:", response);
     throw new Error(`Failed to parse API response: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };

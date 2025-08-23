@@ -1326,3 +1326,51 @@ GEMINI_API_KEY=your_secure_gemini_api_key
 - Performance optimizations and caching strategies
 - Security best practices and authentication flow
 - Scalable architecture for future enhancements
+
+### Test Infrastructure Reorganization (Completed - 2025-08-23)
+- **Test Directory Structure**: Created organized `tests/` directory with subdirectories for different test types
+- **Test Organization**: Moved all test files from root to appropriate subdirectories
+- **Test Documentation**: Created comprehensive README.md for test infrastructure
+- **Jest Configuration**: Updated to support both React Native and Node.js test environments
+- **TypeScript Support**: Added ts-jest for TypeScript test support
+
+#### Test Directory Structure Created
+```
+tests/
+├── README.md              # Test documentation and guidelines
+├── assets/               # Test assets (images, data files)
+│   └── test_menu.jpg    # Sample menu image for testing
+├── integration/         # Integration tests
+│   └── testGemini.js   # Gemini API integration tests
+├── multimodal/         # Multimodal-specific tests
+│   ├── testGeminiMultimodal.js      # Multimodal API tests
+│   └── geminiMultimodal.test.ts     # TypeScript multimodal tests
+├── utils/              # Utility function tests
+│   └── prompts.test.ts # Prompt utility tests
+└── jest.config.node.js # Node.js Jest configuration
+```
+
+#### Test Infrastructure Features
+1. **Organized Structure**: Clear separation of test types (unit, integration, multimodal)
+2. **Asset Management**: Centralized test assets in dedicated directory
+3. **Multiple Environments**: Support for both React Native and Node.js test environments
+4. **TypeScript Testing**: Full TypeScript support with ts-jest
+5. **Documentation**: Comprehensive test documentation and guidelines
+
+#### Test Execution
+- **React Native Tests**: `npm test` (uses default jest.config.js)
+- **Node.js Tests**: `npx jest --config=jest.config.node.js`
+- **Specific Test**: `npx jest path/to/test.ts`
+- **Watch Mode**: `npm run test:watch`
+- **Coverage**: `npm run test:coverage`
+
+#### Key Test Files
+1. **testGeminiMultimodal.js**: Validates multimodal API functionality with real images
+2. **prompts.test.ts**: Tests prompt building and response parsing utilities
+3. **geminiMultimodal.test.ts**: TypeScript tests for multimodal service integration
+
+#### Testing Results
+- **Multimodal Tests**: ✅ All passing - Successfully analyzes menu images
+- **Prompt Utils**: ✅ All passing - Correctly parses API responses
+- **Integration Tests**: ✅ Working - API connectivity confirmed
+- **TypeScript Tests**: ✅ Configured - ts-jest properly set up
