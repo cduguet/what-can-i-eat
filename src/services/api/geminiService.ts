@@ -343,7 +343,7 @@ export class GeminiService {
 
     throw lastError || new Error('All retry attempts failed');
   }
-}</search>
+}
 
 /**
  * Default Gemini service instance
