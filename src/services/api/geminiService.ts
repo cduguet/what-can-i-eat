@@ -299,7 +299,7 @@ export class GeminiService {
               temperature: 0.1,
               topK: 1,
               topP: 0.8,
-              maxOutputTokens: 2048,
+              maxOutputTokens: 4096, // Increased from 2048 to handle larger menu responses
             },
           });
 

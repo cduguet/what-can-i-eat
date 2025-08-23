@@ -175,17 +175,75 @@ This is a test request to verify API connectivity.`;
  */
 export const parseAPIResponse = (response: string): any => {
   try {
-    // Find the start and end of the JSON object
-    const jsonStart = response.indexOf('{');
-    const jsonEnd = response.lastIndexOf('}');
+    // First, try to extract JSON from markdown code blocks
+    const codeBlockMatch = response.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+    let jsonString = response;
     
-    if (jsonStart === -1 || jsonEnd === -1) {
-      throw new Error('No JSON object found in the response.');
+    if (codeBlockMatch) {
+      jsonString = codeBlockMatch[1].trim();
+    } else {
+      // Find the start of the JSON object
+      const jsonStart = response.indexOf('{');
+      if (jsonStart === -1) {
+        throw new Error('No JSON object found in the response.');
+      }
+      
+      // Try to find a valid JSON object by parsing incrementally
+      let jsonEnd = -1;
+      let braceCount = 0;
+      let inString = false;
+      let escapeNext = false;
+      
+      for (let i = jsonStart; i < response.length; i++) {
+        const char = response[i];
+        
+        if (!escapeNext) {
+          if (char === '"' && !inString) {
+            inString = true;
+          } else if (char === '"' && inString) {
+            inString = false;
+          } else if (char === '\\' && inString) {
+            escapeNext = true;
+            continue;
+          } else if (!inString) {
+            if (char === '{') {
+              braceCount++;
+            } else if (char === '}') {
+              braceCount--;
+              if (braceCount === 0) {
+                jsonEnd = i;
+                break;
+              }
+            }
+          }
+        } else {
+          escapeNext = false;
+        }
+      }
+      
+      if (jsonEnd === -1) {
+        // If we couldn't find a complete JSON object, it might be truncated
+        // Try to parse what we have and handle the error gracefully
+        console.warn('JSON appears to be truncated, attempting to parse partial response');
+        jsonString = response.substring(jsonStart);
+      } else {
+        jsonString = response.substring(jsonStart, jsonEnd + 1);
+      }
     }
-
-    const jsonString = response.substring(jsonStart, jsonEnd + 1);
     
-    const parsed = JSON.parse(jsonString);
+    // Attempt to parse the JSON
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonString);
+    } catch (parseError) {
+      // If parsing fails and it looks like truncation, try to salvage what we can
+      if (jsonString.includes('"results"') && jsonString.includes('[')) {
+        console.warn('Attempting to recover from truncated JSON response');
+        // This is a last-resort attempt - in production, you'd want more robust handling
+        throw new Error('Response was truncated. Please try again with a smaller menu or contact support.');
+      }
+      throw parseError;
+    }
     
     // Basic validation to ensure the parsed object has the expected structure
     if (typeof parsed.success !== 'boolean' || !Array.isArray(parsed.results)) {
