@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, Icon, Chip, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
@@ -216,77 +216,6 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
     }
   };
 
-  /**
-   * Render recent activity item
-   */
-  const renderItem = ({ item }: { item: RecentActivityItem }) => (
-    <TouchableOpacity
-      onPress={() => handleItemPress(item)}
-      accessibilityRole="button"
-      accessibilityLabel={`${item.title} - ${item.subtitle}`}
-      accessibilityHint="Tap to view analysis results"
-    >
-      <Card style={styles.itemCard} elevation={3}>
-        <Card.Content style={styles.itemContent}>
-          <View style={styles.itemHeader}>
-            <View style={styles.itemIconContainer}>
-              <Icon
-                source={getTypeIcon(item.type)}
-                size={20}
-                color="#006064"
-              />
-            </View>
-            <View style={styles.itemTextContainer}>
-              <Text variant="titleSmall" style={styles.itemTitle}>
-                {item.title}
-              </Text>
-              <Text variant="bodySmall" style={styles.itemSubtitle}>
-                {item.subtitle}
-              </Text>
-            </View>
-          </View>
-          
-          {item.resultsSummary && (
-            <View style={styles.summaryContainer}>
-              <View style={styles.summaryChips}>
-                {item.resultsSummary.good > 0 && (
-                  <Chip
-                    icon="check-circle"
-                    style={styles.goodChip}
-                    textStyle={styles.goodChipText}
-                    compact
-                  >
-                    {item.resultsSummary.good}
-                  </Chip>
-                )}
-                {item.resultsSummary.careful > 0 && (
-                  <Chip
-                    icon="alert-circle"
-                    style={styles.carefulChip}
-                    textStyle={styles.carefulChipText}
-                    compact
-                  >
-                    {item.resultsSummary.careful}
-                  </Chip>
-                )}
-                {item.resultsSummary.avoid > 0 && (
-                  <Chip
-                    icon="close-circle"
-                    style={styles.avoidChip}
-                    textStyle={styles.avoidChipText}
-                    compact
-                  >
-                    {item.resultsSummary.avoid}
-                  </Chip>
-                )}
-              </View>
-            </View>
-          )}
-        </Card.Content>
-      </Card>
-    </TouchableOpacity>
-  );
-
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -347,13 +276,76 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
         )}
       </View>
       
-      <FlatList
-        data={recentItems}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        scrollEnabled={false}
-        showsVerticalScrollIndicator={false}
-      />
+      <View style={styles.itemsContainer}>
+        {recentItems.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            onPress={() => handleItemPress(item)}
+            accessibilityRole="button"
+            accessibilityLabel={`${item.title} - ${item.subtitle}`}
+            accessibilityHint="Tap to view analysis results"
+          >
+            <Card style={styles.itemCard} elevation={3}>
+              <Card.Content style={styles.itemContent}>
+                <View style={styles.itemHeader}>
+                  <View style={styles.itemIconContainer}>
+                    <Icon
+                      source={getTypeIcon(item.type)}
+                      size={20}
+                      color="#006064"
+                    />
+                  </View>
+                  <View style={styles.itemTextContainer}>
+                    <Text variant="titleSmall" style={styles.itemTitle}>
+                      {item.title}
+                    </Text>
+                    <Text variant="bodySmall" style={styles.itemSubtitle}>
+                      {item.subtitle}
+                    </Text>
+                  </View>
+                </View>
+                
+                {item.resultsSummary && (
+                  <View style={styles.summaryContainer}>
+                    <View style={styles.summaryChips}>
+                      {item.resultsSummary.good > 0 && (
+                        <Chip
+                          icon="check-circle"
+                          style={styles.goodChip}
+                          textStyle={styles.goodChipText}
+                          compact
+                        >
+                          {item.resultsSummary.good}
+                        </Chip>
+                      )}
+                      {item.resultsSummary.careful > 0 && (
+                        <Chip
+                          icon="alert-circle"
+                          style={styles.carefulChip}
+                          textStyle={styles.carefulChipText}
+                          compact
+                        >
+                          {item.resultsSummary.careful}
+                        </Chip>
+                      )}
+                      {item.resultsSummary.avoid > 0 && (
+                        <Chip
+                          icon="close-circle"
+                          style={styles.avoidChip}
+                          textStyle={styles.avoidChipText}
+                          compact
+                        >
+                          {item.resultsSummary.avoid}
+                        </Chip>
+                      )}
+                    </View>
+                  </View>
+                )}
+              </Card.Content>
+            </Card>
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 };
@@ -368,6 +360,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
+  itemsContainer: {
+    gap: 12,
+  },
   sectionTitle: {
     fontWeight: '600',
     color: '#212121',
@@ -377,13 +372,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   itemCard: {
-    marginBottom: 12,
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E0E0E0',
-    // Add overflow hidden to ensure shadows render properly on all sides
-    overflow: 'visible',
   },
   itemContent: {
     padding: 16,
@@ -447,7 +439,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E0E0E0',
-    overflow: 'visible',
   },
   loadingContent: {
     padding: 20,
@@ -461,7 +452,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E0E0E0',
-    overflow: 'visible',
   },
   emptyContent: {
     padding: 32,

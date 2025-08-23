@@ -1458,3 +1458,28 @@ tests/
   - Shadows now render consistently across all UI cards
   - Cleaner interface without redundant navigation headers
   - Better visual hierarchy with single title placement
+
+### RecentActivity Shadow Rendering Fix (Completed - 2025-08-23)
+- **Issue**: Shadows on Recent Activity menu items were being cropped on the sides
+- **Root Cause**: FlatList component was constraining the shadow overflow within its container boundaries
+- **Solution**: Refactored to render items directly without FlatList, matching the pattern used in "Other Options" section
+
+#### Technical Implementation
+- **Component Refactoring**:
+  - Removed FlatList component from RecentActivity
+  - Implemented direct rendering using map() function
+  - Added View container with `itemsContainer` style using `gap: 12` for consistent spacing
+  - Removed all overflow workarounds and margin adjustments
+  - Aligned card styling with InputCard component for visual consistency
+
+#### Code Changes
+- **Before**: Used FlatList with renderItem function, causing shadow clipping
+- **After**: Direct rendering in a View container with proper gap spacing
+- **Result**: Shadows now render properly on all sides without any clipping
+- **Pattern**: Follows the same rendering approach as InputCard components in "Other Options"
+
+#### Benefits
+- Cleaner implementation without workarounds
+- Better performance (no FlatList overhead for small lists)
+- Consistent shadow rendering across all card components
+- Simplified component structure and maintenance
