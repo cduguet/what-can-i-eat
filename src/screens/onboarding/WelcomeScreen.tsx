@@ -39,8 +39,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
         {/* Progress Indicator */}
         <ProgressIndicator
           currentStep={1}
-          totalSteps={5}
-          accessibilityLabel="Welcome screen, step 1 of 5"
+          totalSteps={4}
+          accessibilityLabel="Welcome screen, step 1 of 4"
         />
 
         {/* App Logo/Icon Placeholder */}

@@ -7,7 +7,7 @@ import { RouteProp } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
 import { ProgressIndicator, DietaryOptionCard } from '@/components/common';
-import { DietaryType } from '@/types';
+import { DietaryType, UserPreferences, UserSettings } from '@/types';
 import { OnboardingStackParamList } from './OnboardingNavigator';
 
 type DietarySelectionNavigationProp = StackNavigationProp<OnboardingStackParamList, 'DietarySelection'>;
@@ -44,8 +44,29 @@ export const DietarySelectionScreen: React.FC<DietarySelectionScreenProps> = ({
       // Navigate to custom restrictions screen
       navigation.navigate('CustomRestrictions', { dietaryType: selectedDietaryType });
     } else {
-      // Navigate to preferences screen
-      navigation.navigate('Preferences', { dietaryType: selectedDietaryType });
+      // Create user preferences object
+      const userPreferences: UserPreferences = {
+        dietaryType: selectedDietaryType,
+        customRestrictions: undefined,
+        userName: undefined,
+        lastUpdated: new Date().toISOString(),
+        onboardingCompleted: true,
+      };
+      
+      // Create default settings
+      const defaultSettings: UserSettings = {
+        hapticFeedback: true,
+        notifications: true,
+        highContrast: false,
+        textSize: 'medium',
+        language: 'en',
+      };
+      
+      // Navigate directly to completion screen
+      navigation.navigate('Completion', {
+        preferences: userPreferences,
+        settings: defaultSettings,
+      });
     }
   };
 
@@ -64,8 +85,8 @@ export const DietarySelectionScreen: React.FC<DietarySelectionScreenProps> = ({
         {/* Progress Indicator */}
         <ProgressIndicator
           currentStep={2}
-          totalSteps={5}
-          accessibilityLabel="Dietary selection screen, step 2 of 5"
+          totalSteps={4}
+          accessibilityLabel="Dietary selection screen, step 2 of 4"
         />
 
         {/* Header */}

@@ -5,8 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   WelcomeScreen,
   DietarySelectionScreen,
-  CustomRestrictionsScreen,
-  PreferencesScreen
+  CustomRestrictionsScreen
 } from './index';
 import { DietaryType, UserPreferences, UserSettings } from '@/types';
 import { CompletionScreenWrapper } from './CompletionScreenWrapper';
@@ -16,10 +15,6 @@ export type OnboardingStackParamList = {
   Welcome: undefined;
   DietarySelection: undefined;
   CustomRestrictions: { dietaryType: DietaryType };
-  Preferences: { 
-    dietaryType: DietaryType; 
-    customRestrictions?: string;
-  };
   Completion: {
     preferences: UserPreferences;
     settings: UserSettings;
@@ -111,10 +106,6 @@ export const OnboardingNavigator: React.FC<OnboardingNavigatorProps> = ({
       <OnboardingStack.Screen
         name="CustomRestrictions"
         component={CustomRestrictionsScreen}
-      />
-      <OnboardingStack.Screen
-        name="Preferences"
-        component={PreferencesScreen}
       />
       <OnboardingStack.Screen
         name="Completion"

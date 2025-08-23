@@ -357,28 +357,26 @@ The application features a comprehensive TypeScript type system organized into l
 #### Onboarding Screens Created
 1. **Welcome Screen** (`src/screens/onboarding/WelcomeScreen.tsx`)
    - App introduction with feature highlights and animated logo
-   - Progress indicator showing step 1 of 5
+   - Progress indicator showing step 1 of 4
    - Material Design cards showcasing key features
 
 2. **Dietary Selection Screen** (`src/screens/onboarding/DietarySelectionScreen.tsx`)
    - Interactive cards for Vegan, Vegetarian, and Custom dietary options
    - Visual selection states with haptic feedback
    - Conditional navigation based on selection
+   - Direct navigation to Completion for non-custom options
 
 3. **Custom Restrictions Screen** (`src/screens/onboarding/CustomRestrictionsScreen.tsx`)
    - Multi-line text input for custom dietary restrictions
    - Form validation (3-500 characters) with real-time feedback
    - Helpful examples and keyboard optimization
+   - Direct navigation to Completion after input
 
-4. **Preferences Screen** (`src/screens/onboarding/PreferencesScreen.tsx`)
-   - App settings configuration (haptic feedback, notifications, high contrast)
-   - Text size selection with visual previews
-   - Accessibility options for inclusive design
-
-5. **Completion Screen** (`src/screens/onboarding/CompletionScreenWrapper.tsx`)
+4. **Completion Screen** (`src/screens/onboarding/CompletionScreenWrapper.tsx`)
    - Success celebration with feature summary
    - Quick tips for app usage
    - Navigation to main app or settings review
+   - Uses default app settings for all users
 
 #### Common Components Created
 1. **Progress Indicator** (`src/components/common/ProgressIndicator.tsx`)
@@ -398,6 +396,29 @@ The application features a comprehensive TypeScript type system organized into l
 - **Accessibility**: Screen reader support, haptic feedback, and proper focus management
 - **Theme Integration**: Deep teal (#006064) primary color with Material Design
 - **Data Flow**: Seamless data passing between screens and persistence layer
+
+## Recent Changes
+
+### 2025-08-23: Simplified Onboarding Flow
+- **Removed PreferencesScreen**: The "Customize your experience" screen has been removed from the onboarding flow as requested
+- **Updated Navigation Flow**:
+  - Onboarding now has 4 steps instead of 5
+  - DietarySelectionScreen now navigates directly to CompletionScreen for Vegan/Vegetarian selections
+  - CustomRestrictionsScreen now navigates directly to CompletionScreen after input
+- **Default Settings**: App now uses default UserSettings when completing onboarding:
+  - Haptic feedback: enabled
+  - Notifications: enabled
+  - High contrast: disabled
+  - Text size: medium
+  - Language: English
+- **Updated Progress Indicators**: All screens now show correct step numbers (1-4 instead of 1-5)
+- **Files Modified**:
+  - `src/screens/onboarding/OnboardingNavigator.tsx`: Removed PreferencesScreen import and route
+  - `src/screens/onboarding/DietarySelectionScreen.tsx`: Added direct navigation to Completion with default settings
+  - `src/screens/onboarding/CustomRestrictionsScreen.tsx`: Added direct navigation to Completion with default settings
+  - `src/screens/onboarding/WelcomeScreen.tsx`: Updated progress indicator to show 4 total steps
+  - `src/screens/onboarding/CompletionScreenWrapper.tsx`: Updated progress indicator to show step 4 of 4
+  - `src/screens/onboarding/index.ts`: Removed PreferencesScreen export
 
 #### App Integration
 - **Conditional Navigation**: App.tsx updated to show onboarding for new users

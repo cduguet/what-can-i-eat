@@ -63,9 +63,9 @@ export const CompletionScreenWrapper: React.FC<CompletionScreenWrapperProps> = (
       >
         {/* Progress Indicator */}
         <ProgressIndicator
-          currentStep={5}
-          totalSteps={5}
-          accessibilityLabel="Onboarding complete, step 5 of 5"
+          currentStep={4}
+          totalSteps={4}
+          accessibilityLabel="Onboarding complete, step 4 of 4"
         />
 
         {/* Success Icon */}

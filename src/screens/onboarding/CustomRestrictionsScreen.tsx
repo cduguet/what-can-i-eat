@@ -7,7 +7,7 @@ import { RouteProp } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
 import { ProgressIndicator } from '@/components/common';
-import { DietaryType } from '@/types';
+import { DietaryType, UserPreferences, UserSettings } from '@/types';
 import { OnboardingStackParamList } from './OnboardingNavigator';
 
 type CustomRestrictionsNavigationProp = StackNavigationProp<OnboardingStackParamList, 'CustomRestrictions'>;
@@ -79,10 +79,28 @@ export const CustomRestrictionsScreen: React.FC<CustomRestrictionsScreenProps> =
     // Provide success haptic feedback
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     
-    // Navigate to preferences screen
-    navigation.navigate('Preferences', {
+    // Create user preferences object
+    const userPreferences: UserPreferences = {
       dietaryType,
-      customRestrictions: customRestrictions.trim()
+      customRestrictions: customRestrictions.trim(),
+      userName: undefined,
+      lastUpdated: new Date().toISOString(),
+      onboardingCompleted: true,
+    };
+    
+    // Create default settings
+    const defaultSettings: UserSettings = {
+      hapticFeedback: true,
+      notifications: true,
+      highContrast: false,
+      textSize: 'medium',
+      language: 'en',
+    };
+    
+    // Navigate directly to completion screen
+    navigation.navigate('Completion', {
+      preferences: userPreferences,
+      settings: defaultSettings,
     });
   };
 
@@ -108,8 +126,8 @@ export const CustomRestrictionsScreen: React.FC<CustomRestrictionsScreenProps> =
           {/* Progress Indicator */}
           <ProgressIndicator
             currentStep={3}
-            totalSteps={5}
-            accessibilityLabel="Custom restrictions screen, step 3 of 5"
+            totalSteps={4}
+            accessibilityLabel="Custom restrictions screen, step 3 of 4"
           />
 
           {/* Header */}
@@ -181,10 +199,10 @@ export const CustomRestrictionsScreen: React.FC<CustomRestrictionsScreenProps> =
               !isValid && styles.disabledButton
             ]}
             contentStyle={styles.buttonContent}
-            accessibilityLabel="Continue to preferences"
+            accessibilityLabel="Continue to completion"
             accessibilityHint={
-              isValid 
-                ? "Proceeds to preferences setup" 
+              isValid
+                ? "Proceeds to final onboarding step"
                 : "Enter valid dietary restrictions to continue"
             }
           >
