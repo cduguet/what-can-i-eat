@@ -1432,3 +1432,29 @@ tests/
 - **Prompt Utils**: ✅ All passing - Correctly parses API responses
 - **Integration Tests**: ✅ Working - API connectivity confirmed
 - **TypeScript Tests**: ✅ Configured - ts-jest properly set up
+
+### UI Improvements (Completed - 2025-08-23)
+
+#### Shadow Rendering Fix for RecentActivity Component
+- **Issue**: Shadow behind "Recent Activity" items appeared cropped to the sides
+- **Solution**: Updated card styling to match InputCard component implementation
+  - Added proper `borderRadius: 12` and `borderWidth: 1` with `borderColor: '#E0E0E0'`
+  - Set `overflow: 'visible'` to ensure shadows render properly on all sides
+  - Increased elevation from 2 to 3 for consistent shadow depth
+  - Applied same styling to loading and empty state cards
+
+#### Outdated Title Bar Removal
+- **Issue**: Redundant title bar at the top of HomeScreen from Stack.Navigator
+- **Solution**: Set `headerShown: false` for Home screen in App.tsx
+  - HomeScreen already displays "What Can I Eat?" title in the body content
+  - Provides cleaner, more modern interface without duplicate headers
+  - Consistent with Camera screen which also hides the navigation header
+
+#### Technical Changes
+- **Files Modified**:
+  - `src/components/common/RecentActivity.tsx`: Enhanced card shadow styling
+  - `App.tsx`: Disabled header for Home screen in Stack.Navigator
+- **Visual Improvements**:
+  - Shadows now render consistently across all UI cards
+  - Cleaner interface without redundant navigation headers
+  - Better visual hierarchy with single title placement

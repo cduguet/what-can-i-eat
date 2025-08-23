@@ -154,7 +154,10 @@ export default function App() {
               <Stack.Screen
                 name="Home"
                 component={HomeScreen}
-                options={{ title: 'What Can I Eat?' }}
+                options={{
+                  title: 'What Can I Eat?',
+                  headerShown: false // Hide header as the screen has its own title
+                }}
               />
               <Stack.Screen
                 name="Camera"

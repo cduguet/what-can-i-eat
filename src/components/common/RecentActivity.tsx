@@ -226,7 +226,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
       accessibilityLabel={`${item.title} - ${item.subtitle}`}
       accessibilityHint="Tap to view analysis results"
     >
-      <Card style={styles.itemCard} elevation={2}>
+      <Card style={styles.itemCard} elevation={3}>
         <Card.Content style={styles.itemContent}>
           <View style={styles.itemHeader}>
             <View style={styles.itemIconContainer}>
@@ -293,7 +293,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
         <Text variant="titleMedium" style={styles.sectionTitle}>
           Recent Activity
         </Text>
-        <Card style={styles.loadingCard}>
+        <Card style={styles.loadingCard} elevation={2}>
           <Card.Content style={styles.loadingContent}>
             <Text variant="bodyMedium" style={styles.loadingText}>
               Loading recent activity...
@@ -310,7 +310,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
         <Text variant="titleMedium" style={styles.sectionTitle}>
           Recent Activity
         </Text>
-        <Card style={styles.emptyCard}>
+        <Card style={styles.emptyCard} elevation={2}>
           <Card.Content style={styles.emptyContent}>
             <Icon
               source="history"
@@ -379,6 +379,11 @@ const styles = StyleSheet.create({
   itemCard: {
     marginBottom: 12,
     backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    // Add overflow hidden to ensure shadows render properly on all sides
+    overflow: 'visible',
   },
   itemContent: {
     padding: 16,
@@ -439,6 +444,10 @@ const styles = StyleSheet.create({
   },
   loadingCard: {
     backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    overflow: 'visible',
   },
   loadingContent: {
     padding: 20,
@@ -449,6 +458,10 @@ const styles = StyleSheet.create({
   },
   emptyCard: {
     backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    overflow: 'visible',
   },
   emptyContent: {
     padding: 32,
