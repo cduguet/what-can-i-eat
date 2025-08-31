@@ -40,6 +40,7 @@ import { geminiService } from '@/services/api/geminiService';
 import { CameraPreview } from '@/components/camera/CameraPreview';
 import { CameraControls } from '@/components/camera/CameraControls';
 import { OCRProcessingIndicator } from '@/components/camera/OCRProcessingIndicator';
+import { useTheme } from '@/theme/ThemeProvider';
 
 type CameraScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Camera'>;
 
@@ -59,6 +60,7 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
  */
 export const CameraScreen: React.FC = () => {
   const navigation = useNavigation<CameraScreenNavigationProp>();
+  const { theme } = useTheme();
   const cameraRef = useRef<any>(null);
 
   // Camera state
@@ -353,6 +355,8 @@ export const CameraScreen: React.FC = () => {
     );
   };
 
+  const styles = createStyles(theme);
+
   // Show permission modal if needed
   if (showPermissionModal) {
     return (
@@ -403,7 +407,7 @@ export const CameraScreen: React.FC = () => {
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor="#000000" />
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#006064" />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
           <Text variant="bodyLarge" style={styles.loadingText}>
             Initializing camera...
           </Text>
@@ -429,7 +433,7 @@ export const CameraScreen: React.FC = () => {
       <View style={styles.headerControls}>
         <IconButton
           icon="arrow-left"
-          iconColor="#FFFFFF"
+          iconColor={theme.colors.surface}
           size={24}
           onPress={handleGoBack}
           style={styles.headerButton}
@@ -438,9 +442,9 @@ export const CameraScreen: React.FC = () => {
           Scan Menu
         </Text>
         <IconButton
-          icon={cameraService.getFlashMode() === FlashMode.off ? 'flash-off' : 
+          icon={cameraService.getFlashMode() === FlashMode.off ? 'flash-off' :
                 cameraService.getFlashMode() === FlashMode.on ? 'flash' : 'flash-auto'}
-          iconColor="#FFFFFF"
+          iconColor={theme.colors.surface}
           size={24}
           onPress={handleToggleFlash}
           style={styles.headerButton}
@@ -479,10 +483,10 @@ export const CameraScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#000000', // Keep black for camera
   },
   cameraPreview: {
     flex: 1,
@@ -491,10 +495,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000',
+    backgroundColor: '#000000', // Keep black for camera
   },
   loadingText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     marginTop: 16,
   },
   headerControls: {
@@ -514,7 +518,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontWeight: 'bold',
   },
   cameraControls: {
@@ -547,7 +551,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   instructionsText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     textAlign: 'center',
   },
   permissionModalContainer: {
@@ -555,11 +559,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: theme.colors.backdrop,
   },
   permissionCard: {
     width: '100%',
     maxWidth: 400,
+    backgroundColor: theme.colors.surface,
   },
   permissionText: {
     lineHeight: 22,

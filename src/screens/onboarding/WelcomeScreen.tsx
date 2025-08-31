@@ -7,6 +7,7 @@ import { RouteProp } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
 import { ProgressIndicator } from '@/components/common';
+import { useTheme } from '@/theme/ThemeProvider';
 import { OnboardingStackParamList } from './OnboardingNavigator';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<OnboardingStackParamList, 'Welcome'>;
@@ -22,6 +23,8 @@ interface WelcomeScreenProps {
  * Introduces the app and its purpose to new users
  */
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
+  const { theme } = useTheme();
+  
   const handleGetStarted = async () => {
     // Provide haptic feedback
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -29,6 +32,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
     // Navigate to dietary selection screen
     navigation.navigate('DietarySelection');
   };
+
+  const styles = createStyles(theme);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -112,10 +117,10 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.background,
   },
   scrollContent: {
     flexGrow: 1,
@@ -129,7 +134,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#006064',
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
@@ -150,28 +155,28 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    color: '#006064',
+    color: theme.colors.primary,
     fontWeight: 'bold',
     marginBottom: 8,
   },
   subtitle: {
     textAlign: 'center',
-    color: '#666666',
+    color: theme.colors.textSecondary,
     marginBottom: 32,
   },
   featureCard: {
     width: '100%',
     marginBottom: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
     elevation: 2,
   },
   featureTitle: {
-    color: '#006064',
+    color: theme.colors.primary,
     fontWeight: 'bold',
     marginBottom: 8,
   },
   featureDescription: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
     lineHeight: 20,
   },
   buttonContainer: {
@@ -179,7 +184,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   getStartedButton: {
-    backgroundColor: '#006064',
+    backgroundColor: theme.colors.primary,
     borderRadius: 8,
   },
   buttonContent: {

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, Icon } from 'react-native-paper';
 import { DietaryType } from '@/types';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface DietaryOptionCardProps {
   /** Type of dietary option */
@@ -33,6 +34,7 @@ export const DietaryOptionCard: React.FC<DietaryOptionCardProps> = ({
   icon,
   disabled = false,
 }) => {
+  const { theme } = useTheme();
   const getDefaultContent = (dietaryType: DietaryType) => {
     switch (dietaryType) {
       case DietaryType.VEGAN:
@@ -73,6 +75,8 @@ export const DietaryOptionCard: React.FC<DietaryOptionCardProps> = ({
     }
   };
 
+  const styles = createStyles(theme);
+
   return (
     <TouchableOpacity
       onPress={handlePress}
@@ -95,14 +99,14 @@ export const DietaryOptionCard: React.FC<DietaryOptionCardProps> = ({
             <Icon
               source={cardIcon}
               size={32}
-              color={selected ? '#006064' : '#666666'}
+              color={selected ? theme.colors.primary : theme.colors.textSecondary}
             />
             {selected && (
               <View style={styles.checkIcon}>
                 <Icon
                   source="check-circle"
                   size={24}
-                  color="#006064"
+                  color={theme.colors.primary}
                 />
               </View>
             )}
@@ -132,16 +136,16 @@ export const DietaryOptionCard: React.FC<DietaryOptionCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   card: {
     marginVertical: 8,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
     borderWidth: 2,
     borderColor: 'transparent',
   },
   selectedCard: {
-    borderColor: '#006064',
-    backgroundColor: '#F0F9FF',
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.semantic.safeLight,
   },
   disabledCard: {
     opacity: 0.6,
@@ -161,16 +165,16 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#212121',
+    color: theme.colors.text,
   },
   selectedTitle: {
-    color: '#006064',
+    color: theme.colors.primary,
   },
   description: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
     lineHeight: 20,
   },
   disabledText: {
-    color: '#CCCCCC',
+    color: theme.colors.disabled,
   },
 });

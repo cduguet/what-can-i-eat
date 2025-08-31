@@ -28,7 +28,7 @@ const lightColors: ColorPalette = {
   accent: '#74a892',       // Cyan - Accent color
   
   // Base colors
-  background: '#fbf2c4',   // Light cream background
+  background: '#fff9de',   // Light cream background
   surface: '#ffffff',      // White surface
   text: '#331f00',         // Dark brown text
   textSecondary: '#5c4033', // Lighter brown for secondary text

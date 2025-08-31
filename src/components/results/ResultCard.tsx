@@ -11,6 +11,7 @@ import { Card, Text, Chip, IconButton, Divider } from 'react-native-paper';
 import * as Haptics from 'expo-haptics';
 
 import { FoodAnalysisResult, FoodSuitability } from '@/types';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface ResultCardProps {
   /** Analysis result data */
@@ -26,41 +27,41 @@ interface ResultCardProps {
 }
 
 /**
- * Get color scheme based on food suitability
+ * Get color scheme based on food suitability using theme colors
  */
-const getSuitabilityColors = (suitability: FoodSuitability) => {
+const getSuitabilityColors = (suitability: FoodSuitability, theme: any) => {
   switch (suitability) {
     case FoodSuitability.GOOD:
       return {
-        backgroundColor: '#E8F5E8',
-        borderColor: '#4CAF50',
-        chipColor: '#4CAF50',
+        backgroundColor: theme.colors.semantic.safeLight,
+        borderColor: theme.colors.semantic.safe,
+        chipColor: theme.colors.semantic.safe,
         icon: 'check-circle',
-        iconColor: '#4CAF50',
+        iconColor: theme.colors.semantic.safe,
       };
     case FoodSuitability.CAREFUL:
       return {
-        backgroundColor: '#FFF3E0',
-        borderColor: '#FF9800',
-        chipColor: '#FF9800',
+        backgroundColor: theme.colors.semantic.cautionLight,
+        borderColor: theme.colors.semantic.caution,
+        chipColor: theme.colors.semantic.caution,
         icon: 'alert-circle',
-        iconColor: '#FF9800',
+        iconColor: theme.colors.semantic.caution,
       };
     case FoodSuitability.AVOID:
       return {
-        backgroundColor: '#FFEBEE',
-        borderColor: '#F44336',
-        chipColor: '#F44336',
+        backgroundColor: theme.colors.semantic.avoidLight,
+        borderColor: theme.colors.semantic.avoid,
+        chipColor: theme.colors.semantic.avoid,
         icon: 'close-circle',
-        iconColor: '#F44336',
+        iconColor: theme.colors.semantic.avoid,
       };
     default:
       return {
-        backgroundColor: '#F5F5F5',
-        borderColor: '#9E9E9E',
-        chipColor: '#9E9E9E',
+        backgroundColor: theme.colors.background,
+        borderColor: theme.colors.border,
+        chipColor: theme.colors.border,
         icon: 'help-circle',
-        iconColor: '#9E9E9E',
+        iconColor: theme.colors.textSecondary,
       };
   }
 };
@@ -88,8 +89,10 @@ export const ResultCard: React.FC<ResultCardProps> = ({
   showConfidence = true,
   style,
 }) => {
+  const { theme } = useTheme();
   const [expanded, setExpanded] = useState(initialExpanded);
-  const colors = getSuitabilityColors(result.suitability);
+  const colors = getSuitabilityColors(result.suitability, theme);
+  const styles = createStyles(theme);
 
   const handlePress = () => {
     // Haptic feedback for interaction
@@ -215,7 +218,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   card: {
     marginVertical: 6,
     marginHorizontal: 16,
@@ -240,7 +243,7 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontWeight: '600',
-    color: '#212121',
+    color: theme.colors.text,
     marginBottom: 8,
     lineHeight: 22,
   },
@@ -253,33 +256,33 @@ const styles = StyleSheet.create({
     height: 28,
   },
   chipText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 12,
     fontWeight: '600',
   },
   confidenceChip: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: theme.colors.border,
     height: 28,
   },
   confidenceText: {
-    color: '#616161',
+    color: theme.colors.textSecondary,
     fontSize: 11,
     fontWeight: '500',
   },
   divider: {
     marginVertical: 12,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: theme.colors.border,
   },
   explanationSection: {
     marginBottom: 12,
   },
   sectionTitle: {
-    color: '#424242',
+    color: theme.colors.text,
     fontWeight: '600',
     marginBottom: 6,
   },
   explanation: {
-    color: '#616161',
+    color: theme.colors.textSecondary,
     lineHeight: 20,
   },
   questionsSection: {
@@ -289,7 +292,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   questionText: {
-    color: '#616161',
+    color: theme.colors.textSecondary,
     lineHeight: 18,
     paddingLeft: 8,
   },
@@ -303,11 +306,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   concernChip: {
-    backgroundColor: '#FFCDD2',
+    backgroundColor: theme.colors.semantic.avoidLight,
     height: 26,
   },
   concernText: {
-    color: '#C62828',
+    color: theme.colors.semantic.avoid,
     fontSize: 11,
     fontWeight: '500',
   },

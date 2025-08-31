@@ -33,6 +33,7 @@ import {
 import { CameraButton } from '@/components/common/CameraButton';
 import { InputCard } from '@/components/common/InputCard';
 import { RecentActivity } from '@/components/common/RecentActivity';
+import { useTheme } from '@/theme/ThemeProvider';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -51,6 +52,7 @@ interface HomeScreenProps {}
  */
 export const HomeScreen: React.FC<HomeScreenProps> = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const { theme } = useTheme();
   
   // State management
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
@@ -221,6 +223,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
     }
   };
 
+  const styles = createStyles(theme);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -241,7 +245,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
           <IconButton
             icon="cog"
             size={24}
-            iconColor="#006064"
+            iconColor={theme.colors.primary}
             onPress={handleSettingsPress}
             accessibilityLabel="Settings"
           />
@@ -438,10 +442,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.background,
   },
   scrollView: {
     flex: 1,
@@ -462,31 +466,31 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    color: '#006064',
+    color: theme.colors.primary,
     marginBottom: 4,
   },
   subtitle: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
     lineHeight: 22,
   },
   preferencesCard: {
     marginHorizontal: 20,
     marginBottom: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
   },
   preferencesContent: {
     paddingVertical: 12,
   },
   preferencesTitle: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
     marginBottom: 8,
   },
   preferencesChip: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E0F2F1',
+    backgroundColor: theme.colors.semantic.safeLight,
   },
   preferencesChipText: {
-    color: '#006064',
+    color: theme.colors.primary,
   },
   primarySection: {
     paddingHorizontal: 20,
@@ -498,7 +502,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontWeight: '600',
-    color: '#212121',
+    color: theme.colors.text,
     marginBottom: 16,
   },
   inputCardsContainer: {
@@ -511,7 +515,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
   },
   modalActions: {
     justifyContent: 'flex-end',
@@ -525,10 +529,10 @@ const styles = StyleSheet.create({
     minHeight: 120,
   },
   errorText: {
-    color: '#D32F2F',
+    color: theme.colors.error,
     marginBottom: 4,
   },
   helperText: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
   },
 });

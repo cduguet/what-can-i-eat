@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, Icon, Card } from 'react-native-paper';
 import * as Haptics from 'expo-haptics';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface CameraButtonProps {
   /** Callback when camera button is pressed */
@@ -30,6 +31,7 @@ export const CameraButton: React.FC<CameraButtonProps> = ({
   buttonText = 'Take Photo',
   description = 'Scan a menu with your camera',
 }) => {
+  const { theme } = useTheme();
   const handlePress = async () => {
     if (!disabled) {
       // Provide haptic feedback
@@ -37,6 +39,8 @@ export const CameraButton: React.FC<CameraButtonProps> = ({
       onPress();
     }
   };
+
+  const styles = createStyles(theme);
 
   return (
     <TouchableOpacity
@@ -61,7 +65,7 @@ export const CameraButton: React.FC<CameraButtonProps> = ({
               <Icon
                 source="camera"
                 size={48}
-                color={disabled ? '#CCCCCC' : '#FFFFFF'}
+                color={disabled ? theme.colors.disabled : theme.colors.surface}
               />
             </View>
           </View>
@@ -104,7 +108,7 @@ export const CameraButton: React.FC<CameraButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   touchable: {
     marginVertical: 8,
   },
@@ -112,14 +116,14 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: '#006064',
+    borderColor: theme.colors.primary,
   },
   disabledCard: {
-    borderColor: '#E0E0E0',
-    backgroundColor: '#F9F9F9',
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.background,
   },
   content: {
     padding: 24,
@@ -132,10 +136,10 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#006064',
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#006064',
+    shadowColor: theme.colors.primary,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -145,7 +149,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   disabledIconBackground: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: theme.colors.border,
     shadowOpacity: 0,
     elevation: 0,
   },
@@ -155,27 +159,27 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontWeight: 'bold',
-    color: '#006064',
+    color: theme.colors.primary,
     marginBottom: 8,
     textAlign: 'center',
   },
   description: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
     textAlign: 'center',
     lineHeight: 24,
   },
   hintContainer: {
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: theme.colors.border,
     width: '100%',
   },
   hint: {
-    color: '#999999',
+    color: theme.colors.placeholder,
     textAlign: 'center',
     fontStyle: 'italic',
   },
   disabledText: {
-    color: '#CCCCCC',
+    color: theme.colors.disabled,
   },
 });

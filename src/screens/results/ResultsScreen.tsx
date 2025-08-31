@@ -28,6 +28,7 @@ import {
 import { ResultsSummary } from '@/components/results/ResultsSummary';
 import { FilterBar } from '@/components/results/FilterBar';
 import { CategorySectionList } from '@/components/results/CategorySection';
+import { useTheme } from '@/theme/ThemeProvider';
 
 type ResultsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Results'>;
 type ResultsScreenRouteProp = RouteProp<RootStackParamList, 'Results'>;
@@ -165,6 +166,8 @@ const categorizeResults = (results: FoodAnalysisResult[]): CategorizedResults =>
 };
 
 export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route }) => {
+  const { theme } = useTheme();
+  
   // State management
   const [results, setResults] = useState<FoodAnalysisResult[]>([]);
   const [loading, setLoading] = useState<LoadingState>({
@@ -272,6 +275,8 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
     console.log('Result pressed:', result.itemName);
   };
 
+  const styles = createStyles(theme);
+
   // Loading state
   if (loading.isLoading) {
     return (
@@ -282,7 +287,7 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
         </Appbar.Header>
         
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#006064" />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
           <Text variant="titleMedium" style={styles.loadingText}>
             {loading.message}
           </Text>
@@ -378,13 +383,13 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.background,
   },
   header: {
-    backgroundColor: '#006064',
+    backgroundColor: theme.colors.primary,
   },
   content: {
     flex: 1,
@@ -406,7 +411,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 16,
-    color: '#006064',
+    color: theme.colors.primary,
     textAlign: 'center',
   },
   errorContainer: {
@@ -416,13 +421,13 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   errorTitle: {
-    color: '#F44336',
+    color: theme.colors.error,
     fontWeight: '600',
     marginBottom: 16,
     textAlign: 'center',
   },
   errorMessage: {
-    color: '#616161',
+    color: theme.colors.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 24,
@@ -432,16 +437,16 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   errorButton: {
-    backgroundColor: '#006064',
+    backgroundColor: theme.colors.primary,
   },
   fab: {
     position: 'absolute',
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: '#006064',
+    backgroundColor: theme.colors.primary,
   },
   snackbar: {
-    backgroundColor: '#323232',
+    backgroundColor: theme.colors.text,
   },
 });

@@ -12,6 +12,7 @@ import * as Haptics from 'expo-haptics';
 
 import { FoodAnalysisResult, FoodSuitability } from '@/types';
 import { ResultCard } from './ResultCard';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface CategorySectionProps {
   /** Category type */
@@ -31,48 +32,48 @@ interface CategorySectionProps {
 }
 
 /**
- * Get category configuration including colors, icons, and text
+ * Get category configuration including colors, icons, and text using theme colors
  */
-const getCategoryConfig = (category: FoodSuitability) => {
+const getCategoryConfig = (category: FoodSuitability, theme: any) => {
   switch (category) {
     case FoodSuitability.GOOD:
       return {
         title: 'Safe to Eat',
         description: 'These items are safe based on your dietary preferences',
-        backgroundColor: '#E8F5E8',
-        headerColor: '#4CAF50',
+        backgroundColor: theme.colors.semantic.safeLight,
+        headerColor: theme.colors.semantic.safe,
         icon: 'check-circle',
-        iconColor: '#4CAF50',
+        iconColor: theme.colors.semantic.safe,
         emptyMessage: 'No safe items found in this menu.',
       };
     case FoodSuitability.CAREFUL:
       return {
         title: 'Ask Questions',
         description: 'These items need clarification from restaurant staff',
-        backgroundColor: '#FFF3E0',
-        headerColor: '#FF9800',
+        backgroundColor: theme.colors.semantic.cautionLight,
+        headerColor: theme.colors.semantic.caution,
         icon: 'alert-circle',
-        iconColor: '#FF9800',
+        iconColor: theme.colors.semantic.caution,
         emptyMessage: 'No items requiring clarification.',
       };
     case FoodSuitability.AVOID:
       return {
         title: 'Avoid',
         description: 'These items should be avoided based on your dietary restrictions',
-        backgroundColor: '#FFEBEE',
-        headerColor: '#F44336',
+        backgroundColor: theme.colors.semantic.avoidLight,
+        headerColor: theme.colors.semantic.avoid,
         icon: 'close-circle',
-        iconColor: '#F44336',
+        iconColor: theme.colors.semantic.avoid,
         emptyMessage: 'No items to avoid found.',
       };
     default:
       return {
         title: 'Unknown',
         description: 'Items with unknown suitability',
-        backgroundColor: '#F5F5F5',
-        headerColor: '#9E9E9E',
+        backgroundColor: theme.colors.background,
+        headerColor: theme.colors.textSecondary,
         icon: 'help-circle',
-        iconColor: '#9E9E9E',
+        iconColor: theme.colors.textSecondary,
         emptyMessage: 'No items in this category.',
       };
   }
@@ -87,9 +88,11 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
   onResultPress,
   style,
 }) => {
+  const { theme } = useTheme();
   const [expanded, setExpanded] = useState(initialExpanded);
-  const config = getCategoryConfig(category);
+  const config = getCategoryConfig(category, theme);
   const hasResults = results.length > 0;
+  const styles = createStyles(theme);
 
   const handleToggleExpanded = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -207,6 +210,9 @@ export const CategorySectionList: React.FC<CategorySectionListProps> = ({
   onResultPress,
   style,
 }) => {
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
+  
   return (
     <ScrollView
       style={[styles.sectionList, style]}
@@ -243,7 +249,7 @@ export const CategorySectionList: React.FC<CategorySectionListProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   categoryCard: {
     marginVertical: 8,
     marginHorizontal: 16,
@@ -280,17 +286,17 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   countText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 12,
     fontWeight: '600',
   },
   categoryDescription: {
-    color: '#616161',
+    color: theme.colors.textSecondary,
     lineHeight: 18,
     marginLeft: 40, // Align with title text
   },
   headerDivider: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: theme.colors.border,
     marginHorizontal: 16,
   },
   resultsContainer: {
@@ -308,7 +314,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyMessage: {
-    color: '#9E9E9E',
+    color: theme.colors.placeholder,
     fontStyle: 'italic',
     textAlign: 'center',
   },
