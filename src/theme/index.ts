@@ -22,44 +22,44 @@ import {
  * Liquid Glass color palette - Light mode
  */
 const lightColors: ColorPalette = {
-  // Core brand colors
-  primary: '#008585',      // Teal - Primary brand color
-  secondary: '#c7522a',    // Burnt orange - Secondary brand color
-  accent: '#74a892',       // Cyan - Accent color
-  
+  // Core brand colors (modernized palette)
+  primary: '#14B8A6',      // Teal 500
+  secondary: '#F59E0B',    // Amber 500
+  accent: '#22D3EE',       // Cyan 400
+
   // Base colors
-  background: '#fff9de',   // Light cream background
-  surface: '#ffffff',      // White surface
-  text: '#331f00',         // Dark brown text
-  textSecondary: '#5c4033', // Lighter brown for secondary text
-  
+  background: '#F8FAFC',   // Slate 50
+  surface: '#FFFFFF',      // White surface
+  text: '#0F172A',         // Slate 900
+  textSecondary: '#475569', // Slate 600
+
   // UI colors
-  border: 'rgba(51, 31, 0, 0.12)',
-  error: '#d32f2f',
-  warning: '#f57c00',
-  success: '#388e3c',
-  info: '#0288d1',
-  disabled: 'rgba(51, 31, 0, 0.38)',
-  placeholder: 'rgba(51, 31, 0, 0.54)',
-  backdrop: 'rgba(0, 0, 0, 0.5)',
-  notification: '#ff6b6b',
-  
-  // Semantic colors for food categorization (pastelized)
+  border: '#E2E8F0',       // Slate 200
+  error: '#EF4444',
+  warning: '#F59E0B',
+  success: '#22C55E',
+  info: '#3B82F6',
+  disabled: 'rgba(15, 23, 42, 0.38)',
+  placeholder: 'rgba(15, 23, 42, 0.54)',
+  backdrop: 'rgba(2, 6, 23, 0.5)',
+  notification: '#F43F5E',
+
+  // Semantic colors for food categorization (modern, accessible)
   semantic: {
-    safe: '#81c784',        // Pastel green
-    caution: '#ffb74d',     // Pastel orange/yellow
-    avoid: '#e57373',       // Pastel red
-    safeLight: '#c8e6c9',   // Light pastel green
-    cautionLight: '#ffe0b2', // Light pastel orange
-    avoidLight: '#ffcdd2',  // Light pastel red
+    safe: '#22C55E',        // Green 500
+    caution: '#F59E0B',     // Amber 500
+    avoid: '#EF4444',       // Red 500
+    safeLight: '#DCFCE7',   // Green 100
+    cautionLight: '#FEF3C7', // Amber 100
+    avoidLight: '#FEE2E2',  // Red 100
   },
-  
+
   // Glass effect colors
   glass: {
     tint: 'rgba(255, 255, 255, 0.7)',
-    blur: 'rgba(251, 242, 196, 0.8)',
-    overlay: 'rgba(255, 255, 255, 0.1)',
-    shimmer: 'rgba(255, 255, 255, 0.3)',
+    blur: 'rgba(248, 250, 252, 0.8)',
+    overlay: 'rgba(255, 255, 255, 0.08)',
+    shimmer: 'rgba(255, 255, 255, 0.25)',
   },
 };
 
@@ -67,44 +67,44 @@ const lightColors: ColorPalette = {
  * Liquid Glass color palette - Dark mode
  */
 const darkColors: ColorPalette = {
-  // Core brand colors (adjusted for dark mode)
-  primary: '#00a6a6',      // Brighter teal for dark mode
-  secondary: '#e8743f',    // Brighter burnt orange
-  accent: '#8fbfad',       // Adjusted cyan
-  
+  // Core brand colors (brightened for dark surfaces)
+  primary: '#2DD4BF',      // Teal 400
+  secondary: '#F59E0B',    // Amber 500
+  accent: '#22D3EE',       // Cyan 400
+
   // Base colors
-  background: '#331f00',   // Dark brown background
-  surface: '#4a2f0f',      // Slightly lighter brown surface
-  text: '#fbf2c4',         // Light cream text
-  textSecondary: '#d4c896', // Darker cream for secondary text
-  
+  background: '#0B1220',   // Deep navy/ink
+  surface: '#111827',      // Gray 900
+  text: '#E5E7EB',         // Gray 200
+  textSecondary: '#94A3B8', // Gray 400
+
   // UI colors
-  border: 'rgba(251, 242, 196, 0.12)',
-  error: '#ef5350',
-  warning: '#ff9800',
-  success: '#66bb6a',
-  info: '#29b6f6',
-  disabled: 'rgba(251, 242, 196, 0.38)',
-  placeholder: 'rgba(251, 242, 196, 0.54)',
+  border: 'rgba(229, 231, 235, 0.12)',
+  error: '#F87171',
+  warning: '#F59E0B',
+  success: '#34D399',
+  info: '#60A5FA',
+  disabled: 'rgba(229, 231, 235, 0.38)',
+  placeholder: 'rgba(229, 231, 235, 0.54)',
   backdrop: 'rgba(0, 0, 0, 0.7)',
-  notification: '#ff8787',
-  
-  // Semantic colors for food categorization (adjusted for dark mode)
+  notification: '#FB7185',
+
+  // Semantic colors for food categorization (dark-optimized)
   semantic: {
-    safe: '#66bb6a',        // Brighter green
-    caution: '#ffa726',     // Brighter orange
-    avoid: '#ef5350',       // Brighter red
-    safeLight: '#4a7c59',   // Darker green
-    cautionLight: '#b87333', // Darker orange
-    avoidLight: '#a73a3a',  // Darker red
+    safe: '#34D399',        // Green 400
+    caution: '#F59E0B',     // Amber 500
+    avoid: '#F87171',       // Red 400
+    safeLight: '#14532D',   // Dark green overlay
+    cautionLight: '#78350F', // Dark amber overlay
+    avoidLight: '#7F1D1D',  // Dark red overlay
   },
-  
+
   // Glass effect colors
   glass: {
-    tint: 'rgba(0, 0, 0, 0.5)',
-    blur: 'rgba(51, 31, 0, 0.8)',
-    overlay: 'rgba(255, 255, 255, 0.05)',
-    shimmer: 'rgba(255, 255, 255, 0.1)',
+    tint: 'rgba(0, 0, 0, 0.45)',
+    blur: 'rgba(11, 18, 32, 0.75)',
+    overlay: 'rgba(255, 255, 255, 0.06)',
+    shimmer: 'rgba(255, 255, 255, 0.12)',
   },
 };
 

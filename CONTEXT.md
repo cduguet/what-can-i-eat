@@ -1686,3 +1686,6 @@ Next Suggestions
 - Create shared primitives (Surface/GlassCard) to standardize surfaces.
 - Add subtle press/enter animations per `theme.animation`.
 - Consider gradients (`expo-linear-gradient`) for hero/primary actions.
+- Color refresh (Modern 2025 palette):
+  - Updated in `src/theme/index.ts` with teal/amber/cyan accent and improved neutrals for readability in light/dark modes.
+  - Documented in `docs/design-system.md` under "Modern Palette (2025 refresh)".

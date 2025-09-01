@@ -8,6 +8,18 @@ Key Goals
 - Clear hierarchy: stronger headings, readable body text, and informative chips.
 - Dark mode parity: all tokens work in both light and dark modes.
 
+Modern Palette (2025 refresh)
+- Light mode:
+  - primary `#14B8A6`, secondary `#F59E0B`, accent `#22D3EE`
+  - background `#F8FAFC`, surface `#FFFFFF`
+  - text `#0F172A`, textSecondary `#475569`, border `#E2E8F0`
+  - semantic: safe `#22C55E`/`#DCFCE7`, caution `#F59E0B`/`#FEF3C7`, avoid `#EF4444`/`#FEE2E2`
+- Dark mode:
+  - primary `#2DD4BF`, secondary `#F59E0B`, accent `#22D3EE`
+  - background `#0B1220`, surface `#111827`
+  - text `#E5E7EB`, textSecondary `#94A3B8`, border `rgba(229,231,235,0.12)`
+  - semantic: safe `#34D399`/`#14532D`, caution `#F59E0B`/`#78350F`, avoid `#F87171`/`#7F1D1D`
+
 Theme Tokens
 - Colors: `primary`, `secondary`, `accent`, `background`, `surface`, `text`, `textSecondary`, `border`, semantic (`safe`, `caution`, `avoid` + light variants), and glass tint/overlay.
 - Typography: font families (regular, medium, bold, light), sizes (`xs`…`xxxl`), line heights, and letter spacing.
