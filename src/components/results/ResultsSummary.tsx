@@ -8,6 +8,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, ProgressBar, Chip } from 'react-native-paper';
+import { useTheme } from '@/theme/ThemeProvider';
 
 import { FoodAnalysisResult, FoodSuitability, ResultsSummary as ResultsSummaryType } from '@/types';
 
@@ -53,26 +54,26 @@ const calculateSummary = (results: FoodAnalysisResult[]): ResultsSummaryType => 
 /**
  * Get safety status configuration
  */
-const getSafetyConfig = (safetyPercentage: number) => {
+const getSafetyConfig = (safetyPercentage: number, colors: any) => {
   if (safetyPercentage >= 70) {
     return {
       status: 'Great Options',
-      color: '#4CAF50',
-      backgroundColor: '#E8F5E8',
+      color: colors.semantic.safe,
+      backgroundColor: colors.semantic.safeLight,
       description: 'This menu has many safe options for you',
     };
   } else if (safetyPercentage >= 40) {
     return {
       status: 'Some Options',
-      color: '#FF9800',
-      backgroundColor: '#FFF3E0',
+      color: colors.semantic.caution,
+      backgroundColor: colors.semantic.cautionLight,
       description: 'This menu has some options, but ask questions',
     };
   } else {
     return {
       status: 'Limited Options',
-      color: '#F44336',
-      backgroundColor: '#FFEBEE',
+      color: colors.semantic.avoid,
+      backgroundColor: colors.semantic.avoidLight,
       description: 'This menu has limited safe options',
     };
   }
@@ -81,23 +82,23 @@ const getSafetyConfig = (safetyPercentage: number) => {
 /**
  * Get confidence level text and color
  */
-const getConfidenceConfig = (confidence: number) => {
+const getConfidenceConfig = (confidence: number, colors: any) => {
   if (confidence >= 0.8) {
     return {
       level: 'High Confidence',
-      color: '#4CAF50',
+      color: colors.semantic.safe,
       description: 'Very reliable analysis',
     };
   } else if (confidence >= 0.6) {
     return {
       level: 'Medium Confidence',
-      color: '#FF9800',
+      color: colors.semantic.caution,
       description: 'Generally reliable analysis',
     };
   } else {
     return {
       level: 'Lower Confidence',
-      color: '#F44336',
+      color: colors.semantic.avoid,
       description: 'Consider double-checking with staff',
     };
   }
@@ -109,18 +110,19 @@ export const ResultsSummary: React.FC<ResultsSummaryProps> = ({
   showDetails = true,
   showConfidence = true,
 }) => {
+  const { theme } = useTheme();
   const summary = calculateSummary(results);
-  const safetyConfig = getSafetyConfig(summary.safetyPercentage);
-  const confidenceConfig = getConfidenceConfig(summary.averageConfidence);
+  const safetyConfig = getSafetyConfig(summary.safetyPercentage, theme.colors);
+  const confidenceConfig = getConfidenceConfig(summary.averageConfidence, theme.colors);
 
   if (summary.totalItems === 0) {
     return (
-      <Card style={[styles.summaryCard, style]} elevation={2}>
-        <Card.Content style={styles.emptyContent}>
-          <Text variant="titleMedium" style={styles.emptyTitle}>
+      <Card style={[styles(theme).summaryCard, style]} elevation={2}>
+        <Card.Content style={styles(theme).emptyContent}>
+          <Text variant="titleMedium" style={styles(theme).emptyTitle}>
             No Results
           </Text>
-          <Text variant="bodyMedium" style={styles.emptyDescription}>
+          <Text variant="bodyMedium" style={styles(theme).emptyDescription}>
             No menu items were found to analyze. Try taking a clearer photo or entering text manually.
           </Text>
         </Card.Content>
@@ -129,29 +131,29 @@ export const ResultsSummary: React.FC<ResultsSummaryProps> = ({
   }
 
   return (
-    <Card style={[styles.summaryCard, style]} elevation={2}>
-      <Card.Content style={styles.content}>
+    <Card style={[styles(theme).summaryCard, style]} elevation={2}>
+      <Card.Content style={styles(theme).content}>
         {/* Header Section */}
-        <View style={styles.header}>
-          <Text variant="titleLarge" style={styles.title}>
+        <View style={styles(theme).header}>
+          <Text variant="titleLarge" style={styles(theme).title}>
             Analysis Summary
           </Text>
-          <Text variant="bodyMedium" style={styles.subtitle}>
+          <Text variant="bodyMedium" style={styles(theme).subtitle}>
             {summary.totalItems} item{summary.totalItems !== 1 ? 's' : ''} analyzed
           </Text>
         </View>
 
         {/* Safety Overview */}
-        <View style={[styles.safetySection, { backgroundColor: safetyConfig.backgroundColor }]}>
-          <View style={styles.safetyHeader}>
-            <Text variant="titleMedium" style={[styles.safetyStatus, { color: safetyConfig.color }]}>
+        <View style={[styles(theme).safetySection, { backgroundColor: safetyConfig.backgroundColor }]}>
+          <View style={styles(theme).safetyHeader}>
+            <Text variant="titleMedium" style={[styles(theme).safetyStatus, { color: safetyConfig.color }]}>
               {safetyConfig.status}
             </Text>
-            <Text variant="headlineSmall" style={[styles.safetyPercentage, { color: safetyConfig.color }]}>
+            <Text variant="headlineSmall" style={[styles(theme).safetyPercentage, { color: safetyConfig.color }]}>
               {summary.safetyPercentage}%
             </Text>
           </View>
-          <Text variant="bodyMedium" style={styles.safetyDescription}>
+          <Text variant="bodyMedium" style={styles(theme).safetyDescription}>
             {safetyConfig.description}
           </Text>
           
@@ -159,37 +161,37 @@ export const ResultsSummary: React.FC<ResultsSummaryProps> = ({
           <ProgressBar
             progress={summary.safetyPercentage / 100}
             color={safetyConfig.color}
-            style={styles.progressBar}
+            style={styles(theme).progressBar}
           />
         </View>
 
         {/* Category Breakdown */}
         {showDetails && (
-          <View style={styles.breakdownSection}>
-            <Text variant="titleMedium" style={styles.breakdownTitle}>
+          <View style={styles(theme).breakdownSection}>
+            <Text variant="titleMedium" style={styles(theme).breakdownTitle}>
               Category Breakdown
             </Text>
-            <View style={styles.categoryChips}>
+            <View style={styles(theme).categoryChips}>
               <Chip
                 icon="check-circle"
-                style={[styles.categoryChip, styles.goodChip]}
-                textStyle={styles.chipText}
+                style={[styles(theme).categoryChip, { backgroundColor: theme.colors.semantic.safe }]}
+                textStyle={styles(theme).chipText}
                 compact
               >
                 {summary.counts.good} Safe
               </Chip>
               <Chip
                 icon="alert-circle"
-                style={[styles.categoryChip, styles.carefulChip]}
-                textStyle={styles.chipText}
+                style={[styles(theme).categoryChip, { backgroundColor: theme.colors.semantic.caution }]}
+                textStyle={styles(theme).chipText}
                 compact
               >
                 {summary.counts.careful} Ask
               </Chip>
               <Chip
                 icon="close-circle"
-                style={[styles.categoryChip, styles.avoidChip]}
-                textStyle={styles.chipText}
+                style={[styles(theme).categoryChip, { backgroundColor: theme.colors.semantic.avoid }]}
+                textStyle={styles(theme).chipText}
                 compact
               >
                 {summary.counts.avoid} Avoid
@@ -200,47 +202,47 @@ export const ResultsSummary: React.FC<ResultsSummaryProps> = ({
 
         {/* Confidence Section */}
         {showConfidence && (
-          <View style={styles.confidenceSection}>
-            <View style={styles.confidenceHeader}>
-              <Text variant="titleMedium" style={styles.confidenceTitle}>
+          <View style={styles(theme).confidenceSection}>
+            <View style={styles(theme).confidenceHeader}>
+              <Text variant="titleMedium" style={styles(theme).confidenceTitle}>
                 Analysis Confidence
               </Text>
               <Chip
-                style={[styles.confidenceChip, { backgroundColor: confidenceConfig.color }]}
-                textStyle={styles.confidenceChipText}
+                style={[styles(theme).confidenceChip, { backgroundColor: confidenceConfig.color }]}
+                textStyle={styles(theme).confidenceChipText}
                 compact
               >
                 {Math.round(summary.averageConfidence * 100)}%
               </Chip>
             </View>
-            <Text variant="bodySmall" style={styles.confidenceDescription}>
+            <Text variant="bodySmall" style={styles(theme).confidenceDescription}>
               {confidenceConfig.description}
             </Text>
           </View>
         )}
 
         {/* Quick Tips */}
-        <View style={styles.tipsSection}>
-          <Text variant="labelLarge" style={styles.tipsTitle}>
+        <View style={styles(theme).tipsSection}>
+          <Text variant="labelLarge" style={styles(theme).tipsTitle}>
             💡 Quick Tips
           </Text>
-          <View style={styles.tipsList}>
+          <View style={styles(theme).tipsList}>
             {summary.counts.careful > 0 && (
-              <Text variant="bodySmall" style={styles.tipText}>
+              <Text variant="bodySmall" style={styles(theme).tipText}>
                 • Ask staff about ingredients for "Ask Questions" items
               </Text>
             )}
             {summary.counts.avoid > 0 && (
-              <Text variant="bodySmall" style={styles.tipText}>
+              <Text variant="bodySmall" style={styles(theme).tipText}>
                 • Double-check "Avoid" items with restaurant staff
               </Text>
             )}
             {summary.averageConfidence < 0.7 && (
-              <Text variant="bodySmall" style={styles.tipText}>
+              <Text variant="bodySmall" style={styles(theme).tipText}>
                 • Consider retaking photo for better text clarity
               </Text>
             )}
-            <Text variant="bodySmall" style={styles.tipText}>
+            <Text variant="bodySmall" style={styles(theme).tipText}>
               • Always inform staff about your dietary restrictions
             </Text>
           </View>
@@ -250,12 +252,12 @@ export const ResultsSummary: React.FC<ResultsSummaryProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: any) => StyleSheet.create({
   summaryCard: {
     marginVertical: 8,
     marginHorizontal: 16,
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.surface,
   },
   content: {
     paddingVertical: 16,
@@ -266,12 +268,12 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
   emptyTitle: {
-    color: '#424242',
+    color: theme.colors.text,
     fontWeight: '600',
     marginBottom: 8,
   },
   emptyDescription: {
-    color: '#757575',
+    color: theme.colors.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
   },
@@ -279,16 +281,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   title: {
-    color: '#212121',
+    color: theme.colors.text,
     fontWeight: '700',
     marginBottom: 4,
   },
   subtitle: {
-    color: '#757575',
+    color: theme.colors.textSecondary,
   },
   safetySection: {
     padding: 16,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.sm,
     marginBottom: 16,
   },
   safetyHeader: {
@@ -304,7 +306,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   safetyDescription: {
-    color: '#616161',
+    color: theme.colors.textSecondary,
     marginBottom: 12,
   },
   progressBar: {
@@ -315,7 +317,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   breakdownTitle: {
-    color: '#424242',
+    color: theme.colors.text,
     fontWeight: '600',
     marginBottom: 12,
   },
@@ -327,17 +329,8 @@ const styles = StyleSheet.create({
   categoryChip: {
     height: 32,
   },
-  goodChip: {
-    backgroundColor: '#4CAF50',
-  },
-  carefulChip: {
-    backgroundColor: '#FF9800',
-  },
-  avoidChip: {
-    backgroundColor: '#F44336',
-  },
   chipText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 12,
     fontWeight: '600',
   },
@@ -351,29 +344,29 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   confidenceTitle: {
-    color: '#424242',
+    color: theme.colors.text,
     fontWeight: '600',
   },
   confidenceChip: {
     height: 28,
   },
   confidenceChipText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 11,
     fontWeight: '600',
   },
   confidenceDescription: {
-    color: '#757575',
+    color: theme.colors.textSecondary,
   },
   tipsSection: {
-    backgroundColor: '#F8F9FA',
+    backgroundColor: theme.mode === 'light' ? '#F8F9FA' : theme.colors.surface,
     padding: 12,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.sm,
     borderLeftWidth: 3,
-    borderLeftColor: '#006064',
+    borderLeftColor: theme.colors.primary,
   },
   tipsTitle: {
-    color: '#424242',
+    color: theme.colors.text,
     fontWeight: '600',
     marginBottom: 8,
   },
@@ -381,7 +374,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   tipText: {
-    color: '#616161',
+    color: theme.colors.textSecondary,
     lineHeight: 16,
   },
 });

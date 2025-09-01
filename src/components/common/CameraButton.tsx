@@ -117,9 +117,9 @@ const createStyles = (theme: any) => StyleSheet.create({
   },
   card: {
     backgroundColor: theme.colors.surface,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   disabledCard: {
     borderColor: theme.colors.border,

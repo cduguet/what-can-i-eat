@@ -8,6 +8,7 @@
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { ThemeProvider } from '@/theme/ThemeProvider';
 
 import { ResultCard } from '../ResultCard';
 import { FoodAnalysisResult, FoodSuitability } from '@/types';
@@ -24,7 +25,9 @@ jest.mock('expo-haptics', () => ({
 
 // Test wrapper with Paper provider
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <PaperProvider>{children}</PaperProvider>
+  <ThemeProvider>
+    <PaperProvider>{children}</PaperProvider>
+  </ThemeProvider>
 );
 
 // Mock data

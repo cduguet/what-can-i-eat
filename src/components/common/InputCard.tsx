@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, Icon } from 'react-native-paper';
+import { useTheme } from '@/theme/ThemeProvider';
 import * as Haptics from 'expo-haptics';
 import { MenuInputType } from '@/types';
 
@@ -40,6 +41,7 @@ export const InputCard: React.FC<InputCardProps> = ({
   disabled = false,
   style,
 }) => {
+  const { theme } = useTheme();
   const handlePress = async () => {
     if (!disabled) {
       // Provide haptic feedback
@@ -70,6 +72,8 @@ export const InputCard: React.FC<InputCardProps> = ({
     }
   };
 
+  const styles = createStyles(theme);
+
   return (
     <TouchableOpacity
       onPress={handlePress}
@@ -94,7 +98,7 @@ export const InputCard: React.FC<InputCardProps> = ({
               <Icon
                 source={icon}
                 size={24}
-                color={disabled ? '#CCCCCC' : '#006064'}
+                color={disabled ? theme.colors.disabled : theme.colors.primary}
               />
             </View>
           </View>
@@ -124,7 +128,7 @@ export const InputCard: React.FC<InputCardProps> = ({
             <Icon
               source="chevron-right"
               size={20}
-              color={disabled ? '#CCCCCC' : '#666666'}
+              color={disabled ? theme.colors.disabled : theme.colors.textSecondary}
             />
           </View>
         </Card.Content>
@@ -133,7 +137,7 @@ export const InputCard: React.FC<InputCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   touchable: {
     marginVertical: 6,
   },
@@ -141,14 +145,14 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: theme.colors.border,
   },
   disabledCard: {
-    backgroundColor: '#F9F9F9',
-    borderColor: '#F0F0F0',
+    backgroundColor: theme.colors.background,
+    borderColor: theme.colors.border,
   },
   content: {
     padding: 16,
@@ -162,12 +166,12 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: theme.colors.semantic.safeLight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   disabledIconBackground: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.border,
   },
   textContainer: {
     flex: 1,
@@ -175,11 +179,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: '600',
-    color: '#212121',
+    color: theme.colors.text,
     marginBottom: 4,
   },
   description: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
     lineHeight: 20,
   },
   arrowContainer: {
@@ -187,6 +191,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   disabledText: {
-    color: '#CCCCCC',
+    color: theme.colors.disabled,
   },
 });

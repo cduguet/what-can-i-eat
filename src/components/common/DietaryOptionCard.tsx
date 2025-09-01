@@ -138,33 +138,35 @@ export const DietaryOptionCard: React.FC<DietaryOptionCardProps> = ({
 
 const createStyles = (theme: any) => StyleSheet.create({
   card: {
-    marginVertical: 8,
+    marginVertical: theme.spacing.xs,
+    marginHorizontal: theme.spacing.sm,
     backgroundColor: theme.colors.surface,
-    borderWidth: 2,
-    borderColor: 'transparent',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: theme.borderRadius.md,
   },
   selectedCard: {
     borderColor: theme.colors.primary,
     backgroundColor: theme.colors.semantic.safeLight,
   },
   disabledCard: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
   content: {
-    padding: 20,
+    padding: theme.spacing.md,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: theme.spacing.sm,
   },
   checkIcon: {
-    marginLeft: 8,
+    marginLeft: theme.spacing.xs,
   },
   title: {
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: theme.spacing.xs,
     color: theme.colors.text,
   },
   selectedTitle: {

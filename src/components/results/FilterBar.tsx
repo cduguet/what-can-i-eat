@@ -8,6 +8,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Searchbar, Chip, Menu, Button, Divider, Text } from 'react-native-paper';
+import { useTheme } from '@/theme/ThemeProvider';
 import * as Haptics from 'expo-haptics';
 
 import { FoodSuitability, ResultsFilter } from '@/types';
@@ -34,31 +35,35 @@ interface FilterBarProps {
 /**
  * Get suitability display configuration
  */
-const getSuitabilityConfig = (suitability: FoodSuitability) => {
+const getSuitabilityConfig = (suitability: FoodSuitability, colors: any) => {
   switch (suitability) {
     case FoodSuitability.GOOD:
       return {
         label: 'Safe',
         icon: 'check-circle',
-        color: '#4CAF50',
+        color: colors.semantic.safe,
+        light: colors.semantic.safeLight,
       };
     case FoodSuitability.CAREFUL:
       return {
         label: 'Ask',
         icon: 'alert-circle',
-        color: '#FF9800',
+        color: colors.semantic.caution,
+        light: colors.semantic.cautionLight,
       };
     case FoodSuitability.AVOID:
       return {
         label: 'Avoid',
         icon: 'close-circle',
-        color: '#F44336',
+        color: colors.semantic.avoid,
+        light: colors.semantic.avoidLight,
       };
     default:
       return {
         label: 'Unknown',
         icon: 'help-circle',
-        color: '#9E9E9E',
+        color: colors.border,
+        light: colors.surface,
       };
   }
 };
@@ -90,6 +95,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   showSortOptions = true,
   style,
 }) => {
+  const { theme } = useTheme();
   const [sortMenuVisible, setSortMenuVisible] = useState(false);
 
   const handleSearchChange = (searchText: string) => {
@@ -157,6 +163,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
   const isFiltered = filteredResults < totalResults;
 
+  const styles = createStyles(theme);
+
   return (
     <View style={[styles.container, style]}>
       {/* Search Bar */}
@@ -167,7 +175,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           onChangeText={handleSearchChange}
           style={styles.searchBar}
           inputStyle={styles.searchInput}
-          iconColor="#006064"
+          iconColor={theme.colors.primary}
+          placeholderTextColor={theme.colors.placeholder}
         />
       )}
 
@@ -177,22 +186,24 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         {showCategoryFilters && (
           <View style={styles.categoryFilters}>
             {Object.values(FoodSuitability).map((suitability) => {
-              const config = getSuitabilityConfig(suitability);
-              const isSelected = filter.suitability?.includes(suitability) ?? true;
-              
+              const config = getSuitabilityConfig(suitability as FoodSuitability, theme.colors);
+              const isSelected = filter.suitability?.includes(suitability as FoodSuitability) ?? true;
+
               return (
                 <Chip
                   key={suitability}
                   icon={config.icon}
                   selected={isSelected}
-                  onPress={() => handleSuitabilityToggle(suitability)}
+                  onPress={() => handleSuitabilityToggle(suitability as FoodSuitability)}
                   style={[
                     styles.categoryChip,
+                    { borderColor: config.color },
                     isSelected && { backgroundColor: config.color },
+                    !isSelected && { backgroundColor: config.light },
                   ]}
                   textStyle={[
                     styles.categoryChipText,
-                    isSelected && { color: '#FFFFFF' },
+                    isSelected ? { color: theme.colors.surface } : { color: theme.colors.text }
                   ]}
                   compact
                 >
@@ -273,21 +284,22 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    backgroundColor: theme.colors.surface,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: theme.colors.border,
   },
   searchBar: {
-    marginBottom: 12,
-    backgroundColor: '#F5F5F5',
+    marginBottom: theme.spacing.sm,
+    backgroundColor: theme.mode === 'light' ? '#F5F7F8' : theme.colors.surface,
     elevation: 0,
   },
   searchInput: {
-    fontSize: 16,
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.text,
   },
   controlsContainer: {
     flexDirection: 'row',
@@ -304,12 +316,11 @@ const styles = StyleSheet.create({
   },
   categoryChip: {
     height: 32,
-    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
   },
   categoryChipText: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#616161',
   },
   actionControls: {
     flexDirection: 'row',
@@ -317,13 +328,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sortButton: {
-    borderColor: '#006064',
+    borderColor: theme.colors.primary,
     borderWidth: 1,
     height: 32,
   },
   sortButtonText: {
     fontSize: 12,
-    color: '#006064',
+    color: theme.colors.primary,
     fontWeight: '500',
   },
   resetButton: {
@@ -331,23 +342,23 @@ const styles = StyleSheet.create({
   },
   resetButtonText: {
     fontSize: 12,
-    color: '#F44336',
+    color: theme.colors.semantic.avoid,
     fontWeight: '500',
   },
   menuContent: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
   },
   divider: {
-    marginTop: 12,
-    backgroundColor: '#E0E0E0',
+    marginTop: theme.spacing.sm,
+    backgroundColor: theme.colors.border,
   },
   resultsCount: {
-    paddingTop: 8,
+    paddingTop: theme.spacing.xs,
     alignItems: 'center',
   },
   resultsText: {
-    color: '#757575',
+    color: theme.colors.textSecondary,
     fontStyle: 'italic',
   },
 });

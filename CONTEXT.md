@@ -1645,3 +1645,32 @@ While the theme infrastructure is complete, existing components and screens stil
 - Better performance (no FlatList overhead for small lists)
 - Consistent shadow rendering across all card components
 - Simplified component structure and maintenance
+## 2025-09-01 – UI Redesign Modernization (Liquid Glass) – Agent Log
+
+Summary
+- Introduced a more modern, cohesive design across key UI components using the existing Liquid Glass theme system.
+- Removed hardcoded colors and aligned components with `useTheme` tokens for colors, spacing, radius, and elevation.
+
+Changes
+- FilterBar: Refactored to theme-driven styles, semantic chip colors, improved container surface.
+  - File: `src/components/results/FilterBar.tsx`
+- InputCard: Migrated to theme tokens for colors, radii, and disabled state.
+  - File: `src/components/common/InputCard.tsx`
+- ResultsSummary: Migrated to theme tokens; semantic colors for safety/confidence; consistent surfaces.
+  - File: `src/components/results/ResultsSummary.tsx`
+- DietaryOptionCard: Polished spacing, radius, and borders to match theme.
+  - File: `src/components/common/DietaryOptionCard.tsx`
+- CameraButton: Softer, modern card styling using theme radius/border.
+  - File: `src/components/common/CameraButton.tsx`
+- Tests: Wrapped result-component tests with `ThemeProvider` for theme context.
+  - Files: `src/components/results/__tests__/ResultCard.test.tsx`, `src/components/results/__tests__/ResultsSummary.test.tsx`
+- Documentation: Added `docs/design-system.md` outlining tokens, usage, and guidelines.
+
+Environment & Testing
+- Node-focused tests (e.g., `src/utils/__tests__/prompts.test.ts`) pass via `jest.config.node.js`.
+- React Native test run in this sandbox hit a Babel/Flow transform issue coming from `@react-native/js-polyfills` when using the RN Jest preset. Locally, run RN tests with the project’s default `jest.config.js` in a full environment. Node tests can be run with: `./node_modules/.bin/jest -c jest.config.node.js`.
+
+Next Suggestions
+- Create shared primitives (Surface/GlassCard) to standardize surfaces.
+- Add subtle press/enter animations per `theme.animation`.
+- Consider gradients (`expo-linear-gradient`) for hero/primary actions.

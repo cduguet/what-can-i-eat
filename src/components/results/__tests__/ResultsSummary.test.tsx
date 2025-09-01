@@ -8,13 +8,16 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { ThemeProvider } from '@/theme/ThemeProvider';
 
 import { ResultsSummary } from '../ResultsSummary';
 import { FoodAnalysisResult, FoodSuitability } from '@/types';
 
 // Test wrapper with Paper provider
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <PaperProvider>{children}</PaperProvider>
+  <ThemeProvider>
+    <PaperProvider>{children}</PaperProvider>
+  </ThemeProvider>
 );
 
 // Mock data
