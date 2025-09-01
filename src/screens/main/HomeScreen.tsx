@@ -247,6 +247,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
             size={24}
             iconColor={theme.colors.primary}
             onPress={handleSettingsPress}
+            onLongPress={async () => {
+              Alert.alert(
+                'Reset Onboarding?',
+                'This will clear your onboarding status and preferences. You may need to restart the app to see onboarding screens again.',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  { 
+                    text: 'Reset', 
+                    style: 'destructive', 
+                    onPress: async () => {
+                      try {
+                        await AsyncStorage.removeItem('onboarding_completed');
+                        await AsyncStorage.removeItem('user_preferences');
+                        await AsyncStorage.removeItem('user_settings');
+                        Alert.alert('Onboarding reset', 'Restart the app to view the updated onboarding flow.');
+                      } catch (e) {
+                        console.error('Failed to reset onboarding:', e);
+                      }
+                    }
+                  }
+                ]
+              );
+            }}
             accessibilityLabel="Settings"
           />
         </View>
@@ -301,6 +324,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
               onPress={handleTextModalOpen}
               disabled={isLoading}
             />
+          </View>
+
+          {/* Developer helper to preview results UI */}
+          <View style={{ marginTop: 12 }}>
+            <Button
+              mode="outlined"
+              icon="eye"
+              onPress={() => navigation.navigate('Results')}
+              accessibilityLabel="Preview demo results"
+            >
+              View Demo Results
+            </Button>
           </View>
         </View>
 

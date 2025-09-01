@@ -1672,6 +1672,8 @@ Changes
   - File: `src/screens/onboarding/WelcomeScreen.tsx`
 - Primitive: Added `GlassCard` for reusable glass surfaces.
   - File: `src/components/common/GlassCard.tsx`
+- Developer helpers: Long-press settings icon on Home clears onboarding data; added a "View Demo Results" button to quickly navigate to Results mock view.
+  - File: `src/screens/main/HomeScreen.tsx`
 - Tests: Wrapped result-component tests with `ThemeProvider` for theme context.
   - Files: `src/components/results/__tests__/ResultCard.test.tsx`, `src/components/results/__tests__/ResultsSummary.test.tsx`
 - Documentation: Added `docs/design-system.md` outlining tokens, usage, and guidelines.
