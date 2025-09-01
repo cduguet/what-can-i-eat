@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, ViewStyle, Dimensions } from 'react-native';
 import { Text, ProgressBar, Card, ActivityIndicator } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '@/theme/ThemeProvider';
 
 const { width: screenWidth } = Dimensions.get('window');
 const isSmallDevice = screenWidth < 375;
@@ -30,13 +31,14 @@ export const OCRProcessingIndicator: React.FC<OCRProcessingIndicatorProps> = ({
   message,
   style,
 }) => {
+  const { theme } = useTheme();
   const progressValue = Math.max(0, Math.min(100, progress)) / 100;
 
   return (
     <View style={[styles.container, style]}>
-      <Card style={styles.card}>
+      <Card style={[styles.card, { borderRadius: theme.borderRadius.lg }]}>
         <LinearGradient
-          colors={['#006064', '#004D40']}
+          colors={[theme.colors.primary, theme.colors.accent]}
           style={styles.gradient}
         >
           <Card.Content style={styles.content}>
@@ -56,7 +58,7 @@ export const OCRProcessingIndicator: React.FC<OCRProcessingIndicatorProps> = ({
             <View style={styles.progressContainer}>
               <ProgressBar
                 progress={progressValue}
-                color="#4CAF50"
+                color={theme.colors.semantic.safe}
                 style={styles.progressBar}
               />
               <Text variant="bodySmall" style={styles.progressText}>
@@ -118,13 +120,14 @@ const ProcessingStep: React.FC<ProcessingStepProps> = ({
   completed,
   active,
 }) => {
+  const { theme } = useTheme();
   return (
     <View style={styles.step}>
       <View
         style={[
           styles.stepIndicator,
-          completed && styles.stepCompleted,
-          active && styles.stepActive,
+          completed && { backgroundColor: theme.colors.semantic.safe },
+          active && { backgroundColor: theme.colors.semantic.caution },
         ]}
       >
         {completed && (

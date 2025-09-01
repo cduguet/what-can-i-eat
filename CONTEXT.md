@@ -1666,6 +1666,12 @@ Changes
   - Files: `src/screens/onboarding/DietarySelectionScreen.tsx`, `src/screens/onboarding/CustomRestrictionsScreen.tsx`, `src/screens/onboarding/CompletionScreenWrapper.tsx`
 - Results containers: Themed category section surfaces and borders.
   - File: `src/components/results/CategorySection.tsx`
+- Camera: Theme-aligned capture controls and OCR indicator gradient with semantic colors.
+  - Files: `src/components/camera/CameraControls.tsx`, `src/components/camera/OCRProcessingIndicator.tsx`
+- Onboarding visuals: Gradient logo on welcome screen.
+  - File: `src/screens/onboarding/WelcomeScreen.tsx`
+- Primitive: Added `GlassCard` for reusable glass surfaces.
+  - File: `src/components/common/GlassCard.tsx`
 - Tests: Wrapped result-component tests with `ThemeProvider` for theme context.
   - Files: `src/components/results/__tests__/ResultCard.test.tsx`, `src/components/results/__tests__/ResultsSummary.test.tsx`
 - Documentation: Added `docs/design-system.md` outlining tokens, usage, and guidelines.

@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { ProgressIndicator } from '@/components/common';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -50,9 +51,12 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
 
         {/* App Logo/Icon Placeholder */}
         <View style={styles.logoContainer}>
-          <View style={styles.logoPlaceholder}>
+          <LinearGradient
+            colors={[theme.colors.primary, theme.colors.accent]}
+            style={styles.logoPlaceholder}
+          >
             <Text style={styles.logoText}>🍽️</Text>
-          </View>
+          </LinearGradient>
         </View>
 
         {/* Welcome Content */}

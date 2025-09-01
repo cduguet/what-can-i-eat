@@ -3,6 +3,7 @@ import { View, StyleSheet, ViewStyle, Dimensions } from 'react-native';
 import { IconButton, FAB, Text } from 'react-native-paper';
 import * as Haptics from 'expo-haptics';
 import { CameraType, FlashMode } from '@/services/camera/cameraService';
+import { useTheme } from '@/theme/ThemeProvider';
 
 const { width: screenWidth } = Dimensions.get('window');
 const isSmallDevice = screenWidth < 375;
@@ -44,6 +45,8 @@ export const CameraControls: React.FC<CameraControlsProps> = ({
   cameraType,
   style,
 }) => {
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
   /**
    * Handle take photo with haptic feedback
    */
@@ -194,11 +197,11 @@ export const CameraControls: React.FC<CameraControlsProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
-    paddingBottom: 20,
-    paddingTop: 20,
-    paddingHorizontal: 20,
+    paddingBottom: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
     position: 'relative',
   },
   overlay: {
@@ -241,25 +244,21 @@ const styles = StyleSheet.create({
     flex: 2,
   },
   captureButton: {
-    backgroundColor: '#006064',
+    backgroundColor: theme.colors.primary,
     width: isSmallDevice ? 70 : 80,
     height: isSmallDevice ? 70 : 80,
     borderRadius: isSmallDevice ? 35 : 40,
     marginBottom: 8,
     elevation: 8,
-    shadowColor: '#006064',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
+    shadowColor: theme.colors.primary,
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   capturingButton: {
-    backgroundColor: '#004D40',
-    opacity: 0.8,
+    opacity: 0.85,
   },
   captureLabel: {
     color: '#FFFFFF',
@@ -273,7 +272,7 @@ const styles = StyleSheet.create({
   instructionsText: {
     color: '#FFFFFF',
     textAlign: 'center',
-    opacity: 0.8,
+    opacity: 0.9,
     lineHeight: 18,
   },
 });

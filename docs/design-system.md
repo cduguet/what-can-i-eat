@@ -40,13 +40,20 @@ Recent Changes (Modernization Pass)
   - `src/components/common/InputCard.tsx`
   - `src/components/results/ResultsSummary.tsx`
   - Minor polish to `src/components/common/DietaryOptionCard.tsx` and `CameraButton.tsx`
-- Added ThemeProvider to test wrappers for components relying on theme.
+  - Added ThemeProvider to test wrappers for components relying on theme.
+- Camera UI modernization:
+  - `src/components/camera/CameraControls.tsx` uses theme tokens for capture button and spacing.
+  - `src/components/camera/OCRProcessingIndicator.tsx` uses theme gradient and semantic colors.
+- Onboarding visuals: gradient logo and themed cards in `WelcomeScreen.tsx`.
+- Primitive: `src/components/common/GlassCard.tsx` for optional glassy surfaces.
 
 Usage Examples
 - Colors: `style={{ backgroundColor: theme.colors.surface, borderColor: theme.colors.border }}`
 - Spacing: `padding: theme.spacing.md` or via utilities.
 - Radius: `borderRadius: theme.borderRadius.md`.
 - Semantic chips: safe/caution/avoid + their light variants for states.
+- Camera controls: use theme for primary capture button, keep overlay white labels for contrast.
+- Gradient surfaces: `expo-linear-gradient` with `theme.colors.primary` + `theme.colors.accent`.
 
 Next Steps (Optional)
 - Introduce shared primitives (e.g., Surface, GlassCard) to reduce style duplication.
