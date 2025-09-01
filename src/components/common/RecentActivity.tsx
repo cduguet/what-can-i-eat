@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import { useTheme } from '@/theme/ThemeProvider';
 
 import {
   RootStackParamList,
@@ -50,6 +51,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   showViewAll = true,
 }) => {
   const navigation = useNavigation<RecentActivityNavigationProp>();
+  const { theme } = useTheme();
   const [recentItems, setRecentItems] = useState<RecentActivityItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -216,6 +218,8 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
     }
   };
 
+  const styles = createStyles(theme);
+
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -292,7 +296,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
                     <Icon
                       source={getTypeIcon(item.type)}
                       size={20}
-                      color="#006064"
+                      color={theme.colors.primary}
                     />
                   </View>
                   <View style={styles.itemTextContainer}>
@@ -311,8 +315,8 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
                       {item.resultsSummary.good > 0 && (
                         <Chip
                           icon="check-circle"
-                          style={styles.goodChip}
-                          textStyle={styles.goodChipText}
+                          style={[styles.goodChip, { backgroundColor: theme.colors.semantic.safeLight }]}
+                          textStyle={[styles.goodChipText, { color: theme.colors.semantic.safe }]}
                           compact
                         >
                           {item.resultsSummary.good}
@@ -321,8 +325,8 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
                       {item.resultsSummary.careful > 0 && (
                         <Chip
                           icon="alert-circle"
-                          style={styles.carefulChip}
-                          textStyle={styles.carefulChipText}
+                          style={[styles.carefulChip, { backgroundColor: theme.colors.semantic.cautionLight }]}
+                          textStyle={[styles.carefulChipText, { color: theme.colors.semantic.caution }]}
                           compact
                         >
                           {item.resultsSummary.careful}
@@ -331,8 +335,8 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
                       {item.resultsSummary.avoid > 0 && (
                         <Chip
                           icon="close-circle"
-                          style={styles.avoidChip}
-                          textStyle={styles.avoidChipText}
+                          style={[styles.avoidChip, { backgroundColor: theme.colors.semantic.avoidLight }]}
+                          textStyle={[styles.avoidChipText, { color: theme.colors.semantic.avoid }]}
                           compact
                         >
                           {item.resultsSummary.avoid}
@@ -350,32 +354,32 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
-    marginTop: 8,
+    marginTop: theme.spacing.xs,
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: theme.spacing.md,
   },
   itemsContainer: {
     gap: 12,
   },
   sectionTitle: {
     fontWeight: '600',
-    color: '#212121',
+    color: theme.colors.text,
   },
   viewAllLabel: {
-    color: '#006064',
+    color: theme.colors.primary,
     fontSize: 14,
   },
   itemCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: theme.colors.border,
   },
   itemContent: {
     padding: 16,
@@ -389,7 +393,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: theme.colors.semantic.safeLight,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -399,11 +403,11 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontWeight: '600',
-    color: '#212121',
+    color: theme.colors.text,
     marginBottom: 2,
   },
   itemSubtitle: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
   },
   summaryContainer: {
     marginTop: 8,
@@ -413,57 +417,48 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 6,
   },
-  goodChip: {
-    backgroundColor: '#E8F5E8',
-  },
+  goodChip: {},
   goodChipText: {
-    color: '#2E7D32',
     fontSize: 12,
   },
-  carefulChip: {
-    backgroundColor: '#FFF3E0',
-  },
+  carefulChip: {},
   carefulChipText: {
-    color: '#F57C00',
     fontSize: 12,
   },
-  avoidChip: {
-    backgroundColor: '#FFEBEE',
-  },
+  avoidChip: {},
   avoidChipText: {
-    color: '#D32F2F',
     fontSize: 12,
   },
   loadingCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: theme.colors.border,
   },
   loadingContent: {
     padding: 20,
     alignItems: 'center',
   },
   loadingText: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
   },
   emptyCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: theme.colors.border,
   },
   emptyContent: {
     padding: 32,
     alignItems: 'center',
   },
   emptyTitle: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
     marginTop: 16,
     marginBottom: 8,
   },
   emptyDescription: {
-    color: '#999999',
+    color: theme.colors.placeholder,
     textAlign: 'center',
     lineHeight: 20,
   },

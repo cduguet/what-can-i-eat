@@ -9,6 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ProgressIndicator } from '@/components/common';
 import { DietaryType, UserPreferences, UserSettings } from '@/types';
 import { OnboardingStackParamList } from './OnboardingNavigator';
+import { useTheme } from '@/theme/ThemeProvider';
 
 type CustomRestrictionsNavigationProp = StackNavigationProp<OnboardingStackParamList, 'CustomRestrictions'>;
 type CustomRestrictionsRouteProp = RouteProp<OnboardingStackParamList, 'CustomRestrictions'>;
@@ -26,6 +27,7 @@ export const CustomRestrictionsScreen: React.FC<CustomRestrictionsScreenProps> =
   navigation,
   route
 }) => {
+  const { theme } = useTheme();
   const { dietaryType } = route.params;
   const [customRestrictions, setCustomRestrictions] = useState('');
   const [hasError, setHasError] = useState(false);
@@ -111,6 +113,8 @@ export const CustomRestrictionsScreen: React.FC<CustomRestrictionsScreenProps> =
   };
 
   const isValid = customRestrictions.trim().length >= 3 && !hasError;
+
+  const styles = createStyles(theme);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -214,76 +218,76 @@ export const CustomRestrictionsScreen: React.FC<CustomRestrictionsScreenProps> =
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.background,
   },
   keyboardContainer: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 20,
+    padding: theme.spacing.md,
   },
   headerContainer: {
-    marginVertical: 24,
+    marginVertical: theme.spacing.lg,
     alignItems: 'center',
   },
   title: {
     textAlign: 'center',
-    color: '#006064',
+    color: theme.colors.primary,
     fontWeight: 'bold',
-    marginBottom: 12,
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     textAlign: 'center',
-    color: '#666666',
+    color: theme.colors.textSecondary,
     lineHeight: 24,
   },
   inputContainer: {
     flex: 1,
-    marginVertical: 16,
+    marginVertical: theme.spacing.md,
   },
   textInput: {
-    backgroundColor: '#FFFFFF',
-    marginBottom: 8,
+    backgroundColor: theme.colors.surface,
+    marginBottom: theme.spacing.xs,
   },
   examplesContainer: {
-    marginTop: 16,
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    marginTop: theme.spacing.md,
+    padding: theme.spacing.md,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
     elevation: 1,
   },
   examplesTitle: {
-    color: '#006064',
+    color: theme.colors.primary,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: theme.spacing.xs,
   },
   exampleText: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
     marginBottom: 4,
     lineHeight: 18,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 20,
+    padding: theme.spacing.md,
     gap: 16,
   },
   backButton: {
     flex: 1,
-    borderColor: '#006064',
-    borderRadius: 8,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
   },
   continueButton: {
     flex: 1,
-    backgroundColor: '#006064',
-    borderRadius: 8,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
   },
   disabledButton: {
-    backgroundColor: '#CCCCCC',
+    backgroundColor: theme.colors.border,
   },
   buttonContent: {
     paddingVertical: 8,

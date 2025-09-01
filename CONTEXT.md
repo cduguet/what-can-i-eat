@@ -1662,6 +1662,10 @@ Changes
   - File: `src/components/common/DietaryOptionCard.tsx`
 - CameraButton: Softer, modern card styling using theme radius/border.
   - File: `src/components/common/CameraButton.tsx`
+- Onboarding screens: Migrated to theme tokens and refined layout/CTA styling.
+  - Files: `src/screens/onboarding/DietarySelectionScreen.tsx`, `src/screens/onboarding/CustomRestrictionsScreen.tsx`, `src/screens/onboarding/CompletionScreenWrapper.tsx`
+- Results containers: Themed category section surfaces and borders.
+  - File: `src/components/results/CategorySection.tsx`
 - Tests: Wrapped result-component tests with `ThemeProvider` for theme context.
   - Files: `src/components/results/__tests__/ResultCard.test.tsx`, `src/components/results/__tests__/ResultsSummary.test.tsx`
 - Documentation: Added `docs/design-system.md` outlining tokens, usage, and guidelines.

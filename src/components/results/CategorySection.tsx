@@ -253,7 +253,9 @@ const createStyles = (theme: any) => StyleSheet.create({
   categoryCard: {
     marginVertical: 8,
     marginHorizontal: 16,
-    borderRadius: 12,
+    borderRadius: theme.borderRadius.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   headerContent: {
     paddingVertical: 12,

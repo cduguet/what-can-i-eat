@@ -9,6 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ProgressIndicator } from '@/components/common';
 import { UserPreferences, UserSettings } from '@/types';
 import { OnboardingStackParamList } from './OnboardingNavigator';
+import { useTheme } from '@/theme/ThemeProvider';
 
 type CompletionNavigationProp = StackNavigationProp<OnboardingStackParamList, 'Completion'>;
 type CompletionRouteProp = RouteProp<OnboardingStackParamList, 'Completion'>;
@@ -28,6 +29,7 @@ export const CompletionScreenWrapper: React.FC<CompletionScreenWrapperProps> = (
   route,
   onComplete
 }) => {
+  const { theme } = useTheme();
   const { preferences, settings } = route.params;
 
   useEffect(() => {
@@ -54,6 +56,8 @@ export const CompletionScreenWrapper: React.FC<CompletionScreenWrapperProps> = (
     // Complete onboarding but indicate user wants to go to settings
     onComplete(preferences, { ...settings, _navigateToSettings: true } as any);
   };
+
+  const styles = createStyles(theme);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -165,33 +169,29 @@ export const CompletionScreenWrapper: React.FC<CompletionScreenWrapperProps> = (
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.background,
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 20,
+    padding: theme.spacing.md,
   },
   successContainer: {
     alignItems: 'center',
-    marginVertical: 24,
+    marginVertical: theme.spacing.lg,
   },
   successIcon: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#E8F5E8',
+    backgroundColor: theme.colors.semantic.safeLight,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
@@ -199,70 +199,70 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   headerContainer: {
-    marginVertical: 24,
+    marginVertical: theme.spacing.lg,
     alignItems: 'center',
   },
   title: {
     textAlign: 'center',
-    color: '#006064',
+    color: theme.colors.primary,
     fontWeight: 'bold',
-    marginBottom: 12,
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     textAlign: 'center',
-    color: '#666666',
+    color: theme.colors.textSecondary,
     lineHeight: 24,
   },
   summaryContainer: {
-    marginVertical: 16,
+    marginVertical: theme.spacing.md,
   },
   summaryCard: {
-    marginBottom: 12,
-    backgroundColor: '#FFFFFF',
+    marginBottom: theme.spacing.sm,
+    backgroundColor: theme.colors.surface,
     elevation: 2,
   },
   summaryTitle: {
-    color: '#006064',
+    color: theme.colors.primary,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: theme.spacing.xs,
   },
   summaryDescription: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
     lineHeight: 20,
   },
   tipsContainer: {
-    marginVertical: 16,
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    marginVertical: theme.spacing.md,
+    padding: theme.spacing.md,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
     elevation: 1,
   },
   tipsTitle: {
-    color: '#006064',
+    color: theme.colors.primary,
     fontWeight: 'bold',
-    marginBottom: 12,
+    marginBottom: theme.spacing.sm,
   },
   tipText: {
-    color: '#666666',
+    color: theme.colors.textSecondary,
     marginBottom: 6,
     lineHeight: 18,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 32,
-    paddingBottom: 20,
+    marginTop: theme.spacing.lg,
+    paddingBottom: theme.spacing.md,
     gap: 16,
   },
   settingsButton: {
     flex: 1,
-    borderColor: '#006064',
-    borderRadius: 8,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
   },
   startButton: {
     flex: 1,
-    backgroundColor: '#006064',
-    borderRadius: 8,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
   },
   buttonContent: {
     paddingVertical: 8,

@@ -9,6 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { ProgressIndicator, DietaryOptionCard } from '@/components/common';
 import { DietaryType, UserPreferences, UserSettings } from '@/types';
 import { OnboardingStackParamList } from './OnboardingNavigator';
+import { useTheme } from '@/theme/ThemeProvider';
 
 type DietarySelectionNavigationProp = StackNavigationProp<OnboardingStackParamList, 'DietarySelection'>;
 type DietarySelectionRouteProp = RouteProp<OnboardingStackParamList, 'DietarySelection'>;
@@ -25,6 +26,7 @@ interface DietarySelectionScreenProps {
 export const DietarySelectionScreen: React.FC<DietarySelectionScreenProps> = ({ 
   navigation 
 }) => {
+  const { theme } = useTheme();
   const [selectedDietaryType, setSelectedDietaryType] = useState<DietaryType | null>(null);
 
   const handleDietarySelection = async (type: DietaryType) => {
@@ -75,6 +77,8 @@ export const DietarySelectionScreen: React.FC<DietarySelectionScreenProps> = ({
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     navigation.goBack();
   };
+
+  const styles = createStyles(theme);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -156,53 +160,53 @@ export const DietarySelectionScreen: React.FC<DietarySelectionScreenProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.background,
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 20,
+    padding: theme.spacing.md,
   },
   headerContainer: {
-    marginVertical: 24,
+    marginVertical: theme.spacing.lg,
     alignItems: 'center',
   },
   title: {
     textAlign: 'center',
-    color: '#006064',
+    color: theme.colors.primary,
     fontWeight: 'bold',
-    marginBottom: 12,
+    marginBottom: theme.spacing.sm,
   },
   subtitle: {
     textAlign: 'center',
-    color: '#666666',
+    color: theme.colors.textSecondary,
     lineHeight: 24,
   },
   optionsContainer: {
     flex: 1,
-    marginVertical: 16,
+    marginVertical: theme.spacing.md,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 32,
-    paddingBottom: 20,
+    marginTop: theme.spacing.lg,
+    paddingBottom: theme.spacing.md,
     gap: 16,
   },
   backButton: {
     flex: 1,
-    borderColor: '#006064',
-    borderRadius: 8,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
   },
   continueButton: {
     flex: 1,
-    backgroundColor: '#006064',
-    borderRadius: 8,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
   },
   disabledButton: {
-    backgroundColor: '#CCCCCC',
+    backgroundColor: theme.colors.border,
   },
   buttonContent: {
     paddingVertical: 8,
