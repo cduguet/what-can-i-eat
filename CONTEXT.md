@@ -75,6 +75,7 @@ Coordination Log
 - 2025-09-05: Summarized and pruned CONTEXT.md (removed outdated details, resolved conflicts favoring latest code). Verified: onboarding is 4-step; theme palette matches `src/theme/index.ts`; Gemini service present; no global CLI install guidance.
 - 2025-09-05: Added maintenance rules, cross-links, and templates to AGENTS.md; added PR template enforcing CONTEXT updates. Files: `AGENTS.md`, `.github/pull_request_template.md`, `CONTEXT.md` (cross-link + template).
  - 2025-09-05: Added developer/user README with setup, scripts, env, structure, and links. Files: `README.md`.
+- 2025-09-05: Recents now use real cached analyses from AsyncStorage (keys `wcie_cache_*` via secureGeminiService); removed mock fallback and wired tap to open `Results` with cached analysis. Files: `src/components/common/RecentActivity.tsx`, `src/components/common/recentActivityUtils.ts`, `src/components/common/__tests__/recentActivityUtils.test.ts`. Notes: falls back to legacy `cached_analyses` array if present.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.

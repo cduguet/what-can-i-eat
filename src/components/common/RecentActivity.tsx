@@ -7,12 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useTheme } from '@/theme/ThemeProvider';
 
-import {
-  RootStackParamList,
-  CachedAnalysisResult,
-  MenuInputType,
-  FoodSuitability,
-} from '@/types';
+import { RootStackParamList, CachedAnalysisResult, MenuInputType, FoodSuitability, GeminiResponse } from '@/types';
+import { getTimeAgo, summarizeResults } from './recentActivityUtils';
 
 type RecentActivityNavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -65,20 +61,55 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   const loadRecentActivity = async () => {
     try {
       setIsLoading(true);
-      const cachedData = await AsyncStorage.getItem('cached_analyses');
-      
-      if (cachedData) {
-        const analyses: CachedAnalysisResult[] = JSON.parse(cachedData);
+      // Prefer secure service cache entries (prefix: wcie_cache_)
+      const keys = await AsyncStorage.getAllKeys();
+      const cacheKeys = keys.filter(k => k.startsWith('wcie_cache_'));
+
+      if (cacheKeys.length > 0) {
+        const entries = await AsyncStorage.multiGet(cacheKeys);
+        const parsed = entries
+          .map(([storageKey, value]) => {
+            if (!value) return null;
+            try {
+              const obj = JSON.parse(value) as { key: string; data: GeminiResponse; timestamp: number; expiresAt: number };
+              return { storageKey, ...obj };
+            } catch {
+              return null;
+            }
+          })
+          .filter(Boolean) as Array<{ storageKey: string; key: string; data: GeminiResponse; timestamp: number; expiresAt: number }>;
+
+        const items: RecentActivityItem[] = parsed
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .slice(0, maxItems)
+          .map(({ storageKey, data, timestamp }) => ({
+            id: storageKey,
+            // We don't have original input type in this cache; default to TEXT for icon or use generic
+            type: MenuInputType.TEXT,
+            title: 'Menu Analysis',
+            subtitle: `${data.results?.length ?? 0} items analyzed • ${getTimeAgo(new Date(timestamp).toISOString())}`,
+            timestamp: new Date(timestamp).toISOString(),
+            resultsSummary: summarizeResults(data.results || []),
+          }));
+
+        setRecentItems(items);
+        return;
+      }
+
+      // Legacy aggregated cache array (if present)
+      const legacy = await AsyncStorage.getItem('cached_analyses');
+      if (legacy) {
+        const analyses: CachedAnalysisResult[] = JSON.parse(legacy);
         const recentAnalyses = analyses
           .sort((a, b) => new Date(b.cachedAt).getTime() - new Date(a.cachedAt).getTime())
           .slice(0, maxItems)
-          .map(transformToRecentItem);
-        
+          .map(transformLegacyToRecentItem);
         setRecentItems(recentAnalyses);
-      } else {
-        // Show sample data if no cached analyses exist
-        setRecentItems(getSampleData());
+        return;
       }
+
+      // Nothing cached yet
+      setRecentItems([]);
     } catch (error) {
       console.error('Failed to load recent activity:', error);
       setRecentItems([]);
@@ -90,15 +121,8 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   /**
    * Transform cached analysis to recent activity item
    */
-  const transformToRecentItem = (analysis: CachedAnalysisResult): RecentActivityItem => {
-    const resultsSummary = analysis.results.reduce(
-      (acc, result) => {
-        acc[result.suitability]++;
-        return acc;
-      },
-      { good: 0, careful: 0, avoid: 0 } as { good: number; careful: number; avoid: number }
-    );
-
+  const transformLegacyToRecentItem = (analysis: CachedAnalysisResult): RecentActivityItem => {
+    const resultsSummary = summarizeResults(analysis.results);
     return {
       id: analysis.key,
       type: analysis.menuInput.type,
@@ -137,60 +161,54 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   /**
    * Get time ago string
    */
-  const getTimeAgo = (timestamp: string): string => {
-    const now = new Date();
-    const past = new Date(timestamp);
-    const diffMs = now.getTime() - past.getTime();
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffDays > 0) {
-      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-    } else if (diffHours > 0) {
-      return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-    } else {
-      return 'Just now';
-    }
-  };
+  // getTimeAgo imported from utils
 
   /**
    * Get sample data for demonstration
    */
-  const getSampleData = (): RecentActivityItem[] => [
-    {
-      id: 'sample-1',
-      type: MenuInputType.IMAGE,
-      title: 'Camera Scan',
-      subtitle: '8 items analyzed • 2 hours ago',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      resultsSummary: { good: 5, careful: 2, avoid: 1 },
-    },
-    {
-      id: 'sample-2',
-      type: MenuInputType.URL,
-      title: 'Website Menu',
-      subtitle: '12 items analyzed • 1 day ago',
-      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-      resultsSummary: { good: 8, careful: 3, avoid: 1 },
-    },
-    {
-      id: 'sample-3',
-      type: MenuInputType.TEXT,
-      title: 'Text Analysis',
-      subtitle: '5 items analyzed • 3 days ago',
-      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      resultsSummary: { good: 3, careful: 1, avoid: 1 },
-    },
-  ];
+  // Removed mock/sample data; show empty state when there are no cached entries
 
   /**
    * Handle item press
    */
   const handleItemPress = async (item: RecentActivityItem) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // Navigate to results screen with cached data
-    // This would need to be implemented with proper result loading
-    console.log('Navigate to results for item:', item.id);
+    try {
+      // Prefer secure service cache entries
+      if (item.id.startsWith('wcie_cache_')) {
+        const raw = await AsyncStorage.getItem(item.id);
+        if (raw) {
+          const parsed = JSON.parse(raw) as { data: GeminiResponse };
+          if (parsed.data) {
+            navigation.navigate('Results', { analysis: parsed.data });
+            return;
+          }
+        }
+      }
+
+      // Legacy cache array fallback: we don't have full metadata; reconstruct a minimal GeminiResponse
+      const legacy = await AsyncStorage.getItem('cached_analyses');
+      if (legacy) {
+        const analyses: CachedAnalysisResult[] = JSON.parse(legacy);
+        const match = analyses.find(a => a.key === item.id);
+        if (match) {
+          const response: GeminiResponse = {
+            success: true,
+            results: match.results,
+            confidence: 0.85,
+            message: 'Loaded from local cache',
+            requestId: match.key,
+            processingTime: 0,
+          };
+          navigation.navigate('Results', { analysis: response });
+          return;
+        }
+      }
+
+      console.warn('Cached analysis not found for item', item.id);
+    } catch (e) {
+      console.error('Failed to open cached analysis', e);
+    }
   };
 
   /**
