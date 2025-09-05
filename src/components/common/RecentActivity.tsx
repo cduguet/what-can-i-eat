@@ -8,6 +8,7 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import { useTheme } from '@/theme/ThemeProvider';
 
 import { RootStackParamList, CachedAnalysisResult, MenuInputType, FoodSuitability, GeminiResponse } from '@/types';
+import type { AnalysisCacheEntry } from '@/services/cache/recentCache';
 import { getTimeAgo, summarizeResults } from './recentActivityUtils';
 
 type RecentActivityNavigationProp = StackNavigationProp<RootStackParamList>;
@@ -61,9 +62,9 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   const loadRecentActivity = async () => {
     try {
       setIsLoading(true);
-      // Prefer secure service cache entries (prefix: wcie_cache_)
+      // Prefer secure service cache entries (prefixes)
       const keys = await AsyncStorage.getAllKeys();
-      const cacheKeys = keys.filter(k => k.startsWith('wcie_cache_'));
+      const cacheKeys = keys.filter(k => k.startsWith('wcie_cache_') || k.startsWith('menu_analysis_cache_'));
 
       if (cacheKeys.length > 0) {
         const entries = await AsyncStorage.multiGet(cacheKeys);
@@ -71,22 +72,27 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
           .map(([storageKey, value]) => {
             if (!value) return null;
             try {
-              const obj = JSON.parse(value) as { key: string; data: GeminiResponse; timestamp: number; expiresAt: number };
+              const obj = JSON.parse(value) as AnalysisCacheEntry;
               return { storageKey, ...obj };
             } catch {
               return null;
             }
           })
-          .filter(Boolean) as Array<{ storageKey: string; key: string; data: GeminiResponse; timestamp: number; expiresAt: number }>;
+          .filter(Boolean) as Array<AnalysisCacheEntry & { storageKey: string }>;
 
         const items: RecentActivityItem[] = parsed
           .sort((a, b) => b.timestamp - a.timestamp)
           .slice(0, maxItems)
-          .map(({ storageKey, data, timestamp }) => ({
+          .map(({ storageKey, data, timestamp, meta }) => ({
             id: storageKey,
-            // We don't have original input type in this cache; default to TEXT for icon or use generic
-            type: MenuInputType.TEXT,
-            title: 'Menu Analysis',
+            type: meta?.inputType ?? MenuInputType.TEXT,
+            title: meta?.inputType === MenuInputType.IMAGE
+              ? 'Camera Scan'
+              : meta?.inputType === MenuInputType.URL
+                ? 'Website Menu'
+                : meta?.inputType === MenuInputType.TEXT
+                  ? 'Text Analysis'
+                  : 'Menu Analysis',
             subtitle: `${data.results?.length ?? 0} items analyzed • ${getTimeAgo(new Date(timestamp).toISOString())}`,
             timestamp: new Date(timestamp).toISOString(),
             resultsSummary: summarizeResults(data.results || []),

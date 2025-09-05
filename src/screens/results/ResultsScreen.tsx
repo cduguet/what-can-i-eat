@@ -29,6 +29,8 @@ import { ResultsSummary } from '@/components/results/ResultsSummary';
 import { FilterBar } from '@/components/results/FilterBar';
 import { CategorySectionList } from '@/components/results/CategorySection';
 import { useTheme } from '@/theme/ThemeProvider';
+import { saveAnalysisToCache } from '@/services/cache/recentCache';
+import { MenuInputType } from '@/types';
 
 type ResultsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Results'>;
 type ResultsScreenRouteProp = RouteProp<RootStackParamList, 'Results'>;
@@ -208,6 +210,20 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
         if (analysisResult.success) {
           setResults(analysisResult.results);
           setSnackbarMessage(`Analysis complete! Found ${analysisResult.results.length} menu items.`);
+          // Persist to recent cache with input type metadata
+          try {
+            const inputType: MenuInputType = route.params.imageUri
+              ? MenuInputType.IMAGE
+              : route.params.menuUrl
+                ? MenuInputType.URL
+                : route.params.menuText
+                  ? MenuInputType.TEXT
+                  : MenuInputType.TEXT;
+            const source = route.params.imageUri || route.params.menuUrl || (route.params.menuText ? route.params.menuText.slice(0, 100) : undefined);
+            await saveAnalysisToCache(analysisResult, { inputType, source });
+          } catch (e) {
+            console.warn('Failed to save analysis to cache', e);
+          }
         } else {
           throw new Error(analysisResult.message || 'Analysis failed');
         }

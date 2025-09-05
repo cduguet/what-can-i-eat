@@ -76,6 +76,8 @@ Coordination Log
 - 2025-09-05: Added maintenance rules, cross-links, and templates to AGENTS.md; added PR template enforcing CONTEXT updates. Files: `AGENTS.md`, `.github/pull_request_template.md`, `CONTEXT.md` (cross-link + template).
  - 2025-09-05: Added developer/user README with setup, scripts, env, structure, and links. Files: `README.md`.
 - 2025-09-05: Recents now use real cached analyses from AsyncStorage (keys `wcie_cache_*` via secureGeminiService); removed mock fallback and wired tap to open `Results` with cached analysis. Files: `src/components/common/RecentActivity.tsx`, `src/components/common/recentActivityUtils.ts`, `src/components/common/__tests__/recentActivityUtils.test.ts`. Notes: falls back to legacy `cached_analyses` array if present.
+- 2025-09-05: Saving analyses to Recents. ResultsScreen persists successful analyses to AsyncStorage under `wcie_cache_*` with metadata `{ inputType, source }`; RecentActivity reads metadata to show correct icon/title and also reads legacy `menu_analysis_cache_*` keys from SecureGeminiService. Files: `src/services/cache/recentCache.ts`, `src/screens/results/ResultsScreen.tsx`, `src/components/common/RecentActivity.tsx`.
+- 2025-09-05: Added tests for RecentActivity rendering from AsyncStorage (new prefix, legacy prefix, and `cached_analyses` fallback) and utility tests. Files: `src/components/common/__tests__/RecentActivity.test.tsx`, `src/components/common/__tests__/recentActivityUtils.test.tsx`.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.
