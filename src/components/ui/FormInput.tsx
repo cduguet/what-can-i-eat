@@ -26,7 +26,8 @@ const FormInput: React.FC<FormInputProps> = ({ containerStyle, inputStyle, error
       // Visual style
       style={[
         styles.input,
-        { borderColor: error ? theme.colors.error : theme.colors.border },
+        // Use a border only to signal error; otherwise borderless like search bar
+        { borderColor: error ? theme.colors.error : 'transparent', borderWidth: error ? 1 : 0 },
         style,
         inputStyle,
       ]}
@@ -42,9 +43,8 @@ const FormInput: React.FC<FormInputProps> = ({ containerStyle, inputStyle, error
 const createStyles = (theme: any) =>
   StyleSheet.create({
     input: {
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.mode === 'light' ? '#F5F7F8' : theme.colors.surface,
       borderRadius: theme.borderRadius.md,
-      borderWidth: 1,
       paddingHorizontal: 12,
       paddingVertical: 10,
       // Ensure label (if provided) does not float awkwardly
@@ -53,4 +53,3 @@ const createStyles = (theme: any) =>
   });
 
 export default FormInput;
-

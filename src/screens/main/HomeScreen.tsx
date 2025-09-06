@@ -336,6 +336,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
                 keyboardType="url"
                 autoCapitalize="none"
                 autoCorrect={false}
+                multiline={false}
+                numberOfLines={1}
                 error={!!urlError}
                 style={styles.textInput}
               />
