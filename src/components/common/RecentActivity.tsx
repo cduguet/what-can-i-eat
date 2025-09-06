@@ -414,5 +414,10 @@ const createStyles = (theme: any) => StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
   },
-  pill: { height: 26 },
+  pill: {
+    height: undefined,
+    minHeight: 28,
+    paddingVertical: 2,
+    borderRadius: 16,
+  },
 });
