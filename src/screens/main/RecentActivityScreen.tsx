@@ -49,17 +49,27 @@ export const RecentActivityScreen: React.FC = () => {
               <Card.Title
                 title={titleForType(item.meta?.inputType)}
                 subtitle={`${item.data.results?.length ?? 0} items analyzed`}
-                left={(props) => <Icon {...props} source={iconForType(item.meta?.inputType)} color={theme.colors.primary} />}
-              />
-              {item.data.results && (
-                <Card.Content>
-                  <View style={styles.chips}>
-                    <Chip icon="check-circle" compact>{item.data.results.filter(r => r.suitability === 'good').length}</Chip>
-                    <Chip icon="alert-circle" compact>{item.data.results.filter(r => r.suitability === 'careful').length}</Chip>
-                    <Chip icon="close-circle" compact>{item.data.results.filter(r => r.suitability === 'avoid').length}</Chip>
+                left={(props) => (
+                  <Icon
+                    {...props}
+                    source={iconForType(item.meta?.inputType)}
+                    color={theme.colors.primary}
+                  />
+                )}
+                right={() => (
+                  <View style={styles.metricsRow}>
+                    <Chip icon="check-circle" compact>
+                      {item.data.results?.filter((r) => r.suitability === 'good').length ?? 0}
+                    </Chip>
+                    <Chip icon="alert-circle" compact>
+                      {item.data.results?.filter((r) => r.suitability === 'careful').length ?? 0}
+                    </Chip>
+                    <Chip icon="close-circle" compact>
+                      {item.data.results?.filter((r) => r.suitability === 'avoid').length ?? 0}
+                    </Chip>
                   </View>
-                </Card.Content>
-              )}
+                )}
+              />
             </Card>
           </TouchableOpacity>
         )}
@@ -80,5 +90,5 @@ const createStyles = (theme: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
   header: { backgroundColor: theme.colors.primary },
   card: { marginBottom: 12, backgroundColor: theme.colors.surface },
-  chips: { flexDirection: 'row', gap: 8 },
+  metricsRow: { flexDirection: 'row', gap: 6, alignItems: 'center' },
 });

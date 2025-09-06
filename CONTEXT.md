@@ -92,6 +92,7 @@ Coordination Log
 - 2025-09-06: Settings safe area + input UX. Files: `src/screens/settings/SettingsScreen.tsx`, `src/components/ui/Pill.tsx`. Notes: Fixed iOS notch overlap using SafeArea; made Pills pressable (onPress) to switch preferences; added keyboard dismissal and KeyboardAvoidingView so Save button is accessible when entering custom restrictions.
 - 2025-09-06: Settings now uses default navigation header. Files: `App.tsx`, `src/screens/settings/SettingsScreen.tsx`. Notes: Removed custom Appbar from SettingsScreen; enabled stack header for title/back and better safe‑area handling.
 - 2025-09-06: Settings header styling + back label. Files: `App.tsx`. Notes: Increased Settings header title size to match Results Appbar (~20px, bold), removed iOS back title text by setting `headerBackTitleVisible: false` and blank `headerBackTitle`/`headerTruncatedBackTitle`, and aligned header colors with theme.
+- 2025-09-06: Recent Activity UI tweak. Files: `src/screens/main/RecentActivityScreen.tsx`. Notes: Moved Good/Careful/Avoid chips to the right side within `Card.Title` instead of a separate row.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.
