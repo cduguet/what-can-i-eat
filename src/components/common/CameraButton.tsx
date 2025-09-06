@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Text, Icon, Card } from 'react-native-paper';
+import { Text, Icon } from 'react-native-paper';
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -52,14 +52,8 @@ export const CameraButton: React.FC<CameraButtonProps> = ({
       accessibilityState={{ disabled }}
       style={[styles.touchable, disabled && styles.disabledTouchable]}
     >
-      <Card
-        style={[
-          styles.card,
-          disabled && styles.disabledCard,
-        ]}
-        elevation={disabled ? 1 : 5}
-      >
-        <Card.Content style={styles.content}>
+      <View style={styles.contentSurface}>
+        <View style={styles.content}>
           <View style={styles.iconContainer}>
             <View style={[styles.iconBackground, disabled && styles.disabledIconBackground]}>
               <Icon
@@ -102,8 +96,8 @@ export const CameraButton: React.FC<CameraButtonProps> = ({
               Point your camera at a menu to get started
             </Text>
           </View>
-        </Card.Content>
-      </Card>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -115,15 +109,8 @@ const createStyles = (theme: any) => StyleSheet.create({
   disabledTouchable: {
     opacity: 0.6,
   },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  disabledCard: {
-    borderColor: theme.colors.border,
-    backgroundColor: theme.colors.background,
+  contentSurface: {
+    backgroundColor: 'transparent',
   },
   content: {
     padding: 24,
@@ -170,8 +157,6 @@ const createStyles = (theme: any) => StyleSheet.create({
   },
   hintContainer: {
     paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
     width: '100%',
   },
   hint: {

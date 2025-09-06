@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Card, Text, Icon, Chip, Button } from 'react-native-paper';
+import { Text, Icon, Chip, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { useNavigation } from '@react-navigation/native';
@@ -250,13 +250,11 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
         <Text variant="titleMedium" style={styles.sectionTitle}>
           Recent Activity
         </Text>
-        <Card style={styles.loadingCard} elevation={2}>
-          <Card.Content style={styles.loadingContent}>
-            <Text variant="bodyMedium" style={styles.loadingText}>
-              Loading recent activity...
-            </Text>
-          </Card.Content>
-        </Card>
+        <View style={styles.loadingBox}>
+          <Text variant="bodyMedium" style={styles.loadingText}>
+            Loading recent activity...
+          </Text>
+        </View>
       </View>
     );
   }
@@ -267,21 +265,15 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
         <Text variant="titleMedium" style={styles.sectionTitle}>
           Recent Activity
         </Text>
-        <Card style={styles.emptyCard} elevation={2}>
-          <Card.Content style={styles.emptyContent}>
-            <Icon
-              source="history"
-              size={48}
-              color="#CCCCCC"
-            />
-            <Text variant="titleMedium" style={styles.emptyTitle}>
-              No Recent Activity
-            </Text>
-            <Text variant="bodyMedium" style={styles.emptyDescription}>
-              Start analyzing menus to see your recent activity here
-            </Text>
-          </Card.Content>
-        </Card>
+        <View style={styles.emptyBox}>
+          <Icon source="history" size={28} color={theme.colors.textSecondary} />
+          <Text variant="titleSmall" style={styles.emptyTitle}>
+            No Recent Activity
+          </Text>
+          <Text variant="bodySmall" style={styles.emptyDescription}>
+            Start analyzing menus to see your recent activity here
+          </Text>
+        </View>
       </View>
     );
   }
@@ -313,64 +305,43 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
             accessibilityLabel={`${item.title} - ${item.subtitle}`}
             accessibilityHint="Tap to view analysis results"
           >
-            <Card style={styles.itemCard} elevation={3}>
-              <Card.Content style={styles.itemContent}>
-                <View style={styles.itemHeader}>
-                  <View style={styles.itemIconContainer}>
-                    <Icon
-                      source={getTypeIcon(item.type)}
-                      size={20}
-                      color={theme.colors.primary}
-                    />
-                  </View>
-                  <View style={styles.itemTextContainer}>
-                    <Text variant="titleSmall" style={styles.itemTitle}>
-                      {item.title}
-                    </Text>
-                    <Text variant="bodySmall" style={styles.itemSubtitle}>
-                      {item.subtitle}
-                    </Text>
+            <View style={styles.itemRow}>
+              <View style={styles.itemHeader}>
+                <View style={styles.itemIconContainer}>
+                  <Icon source={getTypeIcon(item.type)} size={18} color={theme.colors.primary} />
+                </View>
+                <View style={styles.itemTextContainer}>
+                  <Text variant="titleSmall" style={styles.itemTitle}>
+                    {item.title}
+                  </Text>
+                  <Text variant="bodySmall" style={styles.itemSubtitle}>
+                    {item.subtitle}
+                  </Text>
+                </View>
+              </View>
+
+              {item.resultsSummary && (
+                <View style={styles.summaryContainer}>
+                  <View style={styles.summaryChips}>
+                    {item.resultsSummary.good > 0 && (
+                      <Chip icon="check-circle" style={[styles.pill, { backgroundColor: theme.colors.semantic.safeLight }]} textStyle={{ color: theme.colors.semantic.safe }} compact>
+                        {item.resultsSummary.good}
+                      </Chip>
+                    )}
+                    {item.resultsSummary.careful > 0 && (
+                      <Chip icon="alert-circle" style={[styles.pill, { backgroundColor: theme.colors.semantic.cautionLight }]} textStyle={{ color: theme.colors.semantic.caution }} compact>
+                        {item.resultsSummary.careful}
+                      </Chip>
+                    )}
+                    {item.resultsSummary.avoid > 0 && (
+                      <Chip icon="close-circle" style={[styles.pill, { backgroundColor: theme.colors.semantic.avoidLight }]} textStyle={{ color: theme.colors.semantic.avoid }} compact>
+                        {item.resultsSummary.avoid}
+                      </Chip>
+                    )}
                   </View>
                 </View>
-                
-                {item.resultsSummary && (
-                  <View style={styles.summaryContainer}>
-                    <View style={styles.summaryChips}>
-                      {item.resultsSummary.good > 0 && (
-                        <Chip
-                          icon="check-circle"
-                          style={[styles.goodChip, { backgroundColor: theme.colors.semantic.safeLight }]}
-                          textStyle={[styles.goodChipText, { color: theme.colors.semantic.safe }]}
-                          compact
-                        >
-                          {item.resultsSummary.good}
-                        </Chip>
-                      )}
-                      {item.resultsSummary.careful > 0 && (
-                        <Chip
-                          icon="alert-circle"
-                          style={[styles.carefulChip, { backgroundColor: theme.colors.semantic.cautionLight }]}
-                          textStyle={[styles.carefulChipText, { color: theme.colors.semantic.caution }]}
-                          compact
-                        >
-                          {item.resultsSummary.careful}
-                        </Chip>
-                      )}
-                      {item.resultsSummary.avoid > 0 && (
-                        <Chip
-                          icon="close-circle"
-                          style={[styles.avoidChip, { backgroundColor: theme.colors.semantic.avoidLight }]}
-                          textStyle={[styles.avoidChipText, { color: theme.colors.semantic.avoid }]}
-                          compact
-                        >
-                          {item.resultsSummary.avoid}
-                        </Chip>
-                      )}
-                    </View>
-                  </View>
-                )}
-              </Card.Content>
-            </Card>
+              )}
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -388,9 +359,7 @@ const createStyles = (theme: any) => StyleSheet.create({
     alignItems: 'center',
     marginBottom: theme.spacing.md,
   },
-  itemsContainer: {
-    gap: 12,
-  },
+  itemsContainer: { gap: 0 },
   sectionTitle: {
     fontWeight: '600',
     color: theme.colors.text,
@@ -399,29 +368,19 @@ const createStyles = (theme: any) => StyleSheet.create({
     color: theme.colors.primary,
     fontSize: 14,
   },
-  itemCard: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  itemContent: {
-    padding: 16,
+  itemRow: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: theme.colors.border,
+    backgroundColor: 'transparent',
   },
   itemHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 12,
   },
-  itemIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: theme.colors.semantic.safeLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
+  itemIconContainer: { width: 28, height: 28, borderRadius: 14, backgroundColor: theme.colors.surface, justifyContent: 'center', alignItems: 'center', marginRight: 10, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.border },
   itemTextContainer: {
     flex: 1,
   },
@@ -453,37 +412,16 @@ const createStyles = (theme: any) => StyleSheet.create({
   avoidChipText: {
     fontSize: 12,
   },
-  loadingCard: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  loadingContent: {
-    padding: 20,
-    alignItems: 'center',
-  },
+  loadingBox: { padding: 16, borderRadius: theme.borderRadius.sm, backgroundColor: theme.colors.surface },
   loadingText: {
     color: theme.colors.textSecondary,
   },
-  emptyCard: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  emptyContent: {
-    padding: 32,
-    alignItems: 'center',
-  },
-  emptyTitle: {
-    color: theme.colors.textSecondary,
-    marginTop: 16,
-    marginBottom: 8,
-  },
+  emptyBox: { padding: 20, borderRadius: theme.borderRadius.sm, backgroundColor: theme.colors.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.border, alignItems: 'center' },
+  emptyTitle: { color: theme.colors.text, marginTop: 8, marginBottom: 4 },
   emptyDescription: {
     color: theme.colors.placeholder,
     textAlign: 'center',
     lineHeight: 20,
   },
+  pill: { height: 26 },
 });
