@@ -6,7 +6,7 @@ import {
   Alert,
   Linking,
 } from 'react-native';
-import { Text, Button, Card, Portal, Modal, IconButton } from 'react-native-paper';
+import { Text, Button, Card, Portal, Modal, IconButton, Icon } from 'react-native-paper';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
@@ -313,18 +313,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
           contentContainerStyle={styles.modalContainer}
         >
           <Card style={styles.modalCard}>
-            <Card.Title
-              title="Analyze Menu URL"
-              subtitle="Enter a restaurant website URL to analyze"
-              left={(props) => <IconButton {...props} icon="web" />}
-              right={(props) => (
-                <IconButton
-                  {...props}
-                  icon="close"
-                  onPress={() => setIsUrlModalVisible(false)}
-                />
-              )}
-            />
+            <View style={styles.modalHeaderRow}>
+              <View style={styles.modalHeaderLeft}>
+                <View style={styles.modalHeaderIconCircle}>
+                  <Icon source="web" size={20} color={theme.colors.textSecondary} />
+                </View>
+                <View style={styles.modalHeaderTextWrap}>
+                  <Text style={styles.modalHeaderTitle}>Analyze Menu URL</Text>
+                  <Text style={styles.modalHeaderSubtitle}>Enter a restaurant website URL to analyze</Text>
+                </View>
+              </View>
+              <IconButton
+                icon="close"
+                size={20}
+                iconColor={theme.colors.textSecondary}
+                onPress={() => setIsUrlModalVisible(false)}
+                accessibilityLabel="Close"
+              />
+            </View>
             <Card.Content>
               <FormInput
                 value={urlInput}
@@ -379,18 +385,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
           contentContainerStyle={styles.modalContainer}
         >
           <Card style={styles.modalCard}>
-            <Card.Title
-              title="Enter Menu Text"
-              subtitle="Type or paste menu items to analyze"
-              left={(props) => <IconButton {...props} icon="text" />}
-              right={(props) => (
-                <IconButton
-                  {...props}
-                  icon="close"
-                  onPress={() => setIsTextModalVisible(false)}
-                />
-              )}
-            />
+            <View style={styles.modalHeaderRow}>
+              <View style={styles.modalHeaderLeft}>
+                <View style={styles.modalHeaderIconCircle}>
+                  <Icon source="note-text-outline" size={20} color={theme.colors.textSecondary} />
+                </View>
+                <View style={styles.modalHeaderTextWrap}>
+                  <Text style={styles.modalHeaderTitle}>Enter Menu Text</Text>
+                  <Text style={styles.modalHeaderSubtitle}>Type or paste menu items to analyze</Text>
+                </View>
+              </View>
+              <IconButton
+                icon="close"
+                size={20}
+                iconColor={theme.colors.textSecondary}
+                onPress={() => setIsTextModalVisible(false)}
+                accessibilityLabel="Close"
+              />
+            </View>
             <Card.Content>
               <FormInput
                 value={textInput}
@@ -501,10 +513,47 @@ const createStyles = (theme: any) => StyleSheet.create({
   },
   modalCard: {
     backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+  },
+  modalHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 4,
+  },
+  modalHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  modalHeaderIconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: theme.mode === 'light' ? '#F5F7F8' : theme.colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  modalHeaderTextWrap: {
+    flex: 1,
+  },
+  modalHeaderTitle: {
+    color: theme.colors.text,
+    fontFamily: theme.typography.fontFamily.bold,
+    fontSize: 18,
+    marginBottom: 2,
+  },
+  modalHeaderSubtitle: {
+    color: theme.colors.textSecondary,
   },
   modalActions: {
     justifyContent: 'flex-end',
     paddingTop: 8,
+    paddingHorizontal: 12,
+    paddingBottom: 10,
   },
   textInput: {
     marginBottom: 8,

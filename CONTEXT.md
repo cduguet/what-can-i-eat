@@ -98,6 +98,7 @@ Coordination Log
 - 2025-09-06: Fix clipped chip numbers. Files: `src/components/common/RecentActivity.tsx`, `src/screens/main/RecentActivityScreen.tsx`. Notes: Use `minHeight: 28` with small vertical padding to avoid descender clipping while letting content size naturally; applied consistently to Home section and screen.
 - 2025-09-06: Unified input styling to faint, rounded fields (replaced Material underline/outlined inputs). Files: `src/components/ui/FormInput.tsx`, `src/components/ui/index.ts`, `src/screens/main/HomeScreen.tsx`, `src/screens/settings/SettingsScreen.tsx`. Notes: Home modals (Analyze URL, Enter Text) and Settings custom restrictions now use `FormInput`.
 - 2025-09-06: Matched input background to Results search bar grey and forced URL field to single-line. Files: `src/components/ui/FormInput.tsx`, `src/screens/main/HomeScreen.tsx`. Notes: Light mode uses `#F5F7F8`, dark keeps `theme.colors.surface`.
+- 2025-09-06: Modal headers polished (icons + padding). Files: `src/screens/main/HomeScreen.tsx`. Notes: Replaced `Card.Title` with custom header row for tighter layout; smaller left icon in faint circle, smaller close icon, adjusted paddings.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.
