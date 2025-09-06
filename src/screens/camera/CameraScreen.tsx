@@ -15,7 +15,7 @@ import {
   Button,
   ActivityIndicator,
 } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CameraView } from 'expo-camera';
 import * as Haptics from 'expo-haptics';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -64,6 +64,7 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 export const CameraScreen: React.FC = () => {
   const navigation = useNavigation<CameraScreenNavigationProp>();
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const cameraRef = useRef<any>(null);
 
   // Camera state
@@ -123,6 +124,8 @@ export const CameraScreen: React.FC = () => {
    */
   const initializeCamera = async () => {
     try {
+      // Always default to back camera
+      cameraService.setCameraType(CameraType.back);
       const permissionStatus = await cameraService.getCameraPermissionStatus();
       
       if (permissionStatus === CameraPermissionStatus.GRANTED) {
@@ -466,6 +469,8 @@ export const CameraScreen: React.FC = () => {
 
       {/* Header Controls */}
       <View style={styles.headerControls}>
+        {/* Safe area top padding applied inline to avoid notch overlap */}
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top }} />
         <IconButton
           icon="arrow-left"
           iconColor={theme.colors.surface}
@@ -489,11 +494,7 @@ export const CameraScreen: React.FC = () => {
       {/* Camera Controls */}
       <CameraControls
         onTakePhoto={handleTakePhoto}
-        onToggleCameraType={handleToggleCameraType}
-        onToggleFlash={handleToggleFlash}
         takingPhoto={cameraState.takingPhoto}
-        flashMode={cameraService.getFlashMode()}
-        cameraType={cameraService.getCameraType()}
         style={styles.cameraControls}
       />
 
@@ -560,8 +561,9 @@ const createStyles = (theme: any) => StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: theme.spacing.md,
-    paddingTop: (StatusBar.currentHeight || 0) + theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+    paddingBottom: theme.spacing.sm,
     zIndex: 20,
     backgroundColor: 'transparent',
   },
