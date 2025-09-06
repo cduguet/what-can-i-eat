@@ -210,6 +210,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
+        contentInsetAdjustmentBehavior="always"
         showsVerticalScrollIndicator={false}
       >
         {/* Header Section */}

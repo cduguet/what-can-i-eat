@@ -348,7 +348,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
 
 const createStyles = (theme: any) => StyleSheet.create({
   container: {
-    marginTop: theme.spacing.xs,
+    marginTop: theme.spacing.md,
   },
   headerContainer: {
     flexDirection: 'row',
