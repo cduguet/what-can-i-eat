@@ -35,7 +35,7 @@ export const RecentActivityScreen: React.FC = () => {
   const styles = createStyles(theme);
   return (
     <View style={styles.container}>
-      <Appbar.Header style={styles.header}>
+      <Appbar.Header style={styles.header} statusBarHeight={0}>
         <Appbar.BackAction onPress={() => nav.goBack()} />
         <Appbar.Content title="Recent Activity" />
       </Appbar.Header>
@@ -82,4 +82,3 @@ const createStyles = (theme: any) => StyleSheet.create({
   card: { marginBottom: 12, backgroundColor: theme.colors.surface },
   chips: { flexDirection: 'row', gap: 8 },
 });
-

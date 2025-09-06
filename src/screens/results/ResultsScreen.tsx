@@ -403,7 +403,7 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
 
   return (
     <SafeAreaView style={styles.container}>
-      <Appbar.Header style={styles.header}>
+      <Appbar.Header style={styles.header} statusBarHeight={0}>
         <Appbar.BackAction onPress={handleGoBack} />
         <Appbar.Content title="Analysis Results" />
         <Appbar.Action icon="share" onPress={handleShareResults} />

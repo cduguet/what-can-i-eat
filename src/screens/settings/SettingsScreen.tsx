@@ -37,7 +37,7 @@ export const SettingsScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Appbar.Header style={styles.header}>
+      <Appbar.Header style={styles.header} statusBarHeight={0}>
         <Appbar.Content title="Settings" />
       </Appbar.Header>
 

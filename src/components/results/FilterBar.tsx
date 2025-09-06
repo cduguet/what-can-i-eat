@@ -91,7 +91,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   totalResults = 0,
   filteredResults = 0,
   showSearch = true,
-  showCategoryFilters = true,
+  showCategoryFilters = false,
   showSortOptions = false,
   style,
 }) => {
