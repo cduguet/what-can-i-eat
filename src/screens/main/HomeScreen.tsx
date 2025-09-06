@@ -23,13 +23,7 @@ import * as Haptics from 'expo-haptics';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 
-import {
-  RootStackParamList,
-  UserPreferences,
-  UserSettings,
-  MenuInputType,
-  CameraPermissionStatus,
-} from '@/types';
+import { RootStackParamList, UserPreferences, MenuInputType, CameraPermissionStatus } from '@/types';
 import { CameraButton } from '@/components/common/CameraButton';
 import { InputCard } from '@/components/common/InputCard';
 import { RecentActivity } from '@/components/common/RecentActivity';
@@ -56,7 +50,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
   
   // State management
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
-  const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   const [urlInput, setUrlInput] = useState('');
   const [textInput, setTextInput] = useState('');
   const [isUrlModalVisible, setIsUrlModalVisible] = useState(false);
@@ -75,17 +68,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
    */
   const loadUserData = async () => {
     try {
-      const [preferencesData, settingsData] = await Promise.all([
+      const [preferencesData] = await Promise.all([
         AsyncStorage.getItem('user_preferences'),
-        AsyncStorage.getItem('user_settings'),
       ]);
 
       if (preferencesData) {
         setUserPreferences(JSON.parse(preferencesData));
       }
-      if (settingsData) {
-        setUserSettings(JSON.parse(settingsData));
-      }
+      // No extra app settings required
     } catch (error) {
       console.error('Failed to load user data:', error);
     }
@@ -95,9 +85,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
    * Provide haptic feedback if enabled
    */
   const triggerHapticFeedback = async () => {
-    if (userSettings?.hapticFeedback) {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
   /**
