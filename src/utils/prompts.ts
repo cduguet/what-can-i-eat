@@ -13,7 +13,7 @@ import { UserPreferences, MenuItem, DietaryType } from '../types';
 const SYSTEM_PROMPT = `You are a dietary analysis expert helping users with food restrictions identify safe menu items.
 
 CRITICAL: Respond with valid JSON only. Keep explanations concise (max 50 words each).
-If analyzing >20 items, prioritize the most important ones.
+Analyze ALL menu items thoroughly - do not limit or prioritize items.
 
 Required JSON structure:
 {
@@ -276,13 +276,21 @@ export const buildMultimodalPrompt = (
 ): Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> => {
   const parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> = [];
 
+  // DEBUG: Log multimodal prompt construction
+  console.log(`🔍 [DEBUG] Building multimodal prompt for request ${requestId}`);
+  console.log(`🔍 [DEBUG] Content parts: ${contentParts.length} (${contentParts.map(p => p.type).join(', ')})`);
+  console.log(`🔍 [DEBUG] Context: ${context || 'none'}`);
+
   // Add system prompt as text
-  parts.push({
-    text: `${SYSTEM_PROMPT}
+  const systemPromptText = `${SYSTEM_PROMPT}
 
 ${buildDietaryContext(preferences)}
 
-${buildAnalysisInstructions(requestId)}`
+${buildAnalysisInstructions(requestId)}`;
+  
+  console.log(`🔍 [DEBUG] System prompt length: ${systemPromptText.length} characters`);
+  parts.push({
+    text: systemPromptText
   });
 
   // Add all content parts (text and images)

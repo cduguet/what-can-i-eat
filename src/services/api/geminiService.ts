@@ -245,6 +245,18 @@ export class GeminiService {
       // Parse and validate response
       const parsedResponse = parseAPIResponse(response);
 
+      // DEBUG: Log detailed response analysis
+      console.log(`🔍 [DEBUG] Raw AI response length: ${response.length} characters`);
+      console.log(`🔍 [DEBUG] Parsed results count: ${parsedResponse.results?.length || 0}`);
+      console.log(`🔍 [DEBUG] First 500 chars of raw response:`, response.substring(0, 500));
+      
+      if (parsedResponse.results && parsedResponse.results.length > 0) {
+        console.log(`🔍 [DEBUG] Sample result items:`, parsedResponse.results.slice(0, 3).map((r: any) => ({
+          itemName: r.itemName,
+          suitability: r.suitability
+        })));
+      }
+
       // Build final response
       const result: GeminiResponse = {
         success: true,
@@ -255,6 +267,7 @@ export class GeminiService {
         processingTime: Date.now() - startTime,
       };
 
+      console.log(`🔍 [DEBUG] Final result: ${result.results.length} items found`);
       console.log(`Multimodal menu analysis completed for request ${request.requestId} in ${result.processingTime}ms`);
       return result;
 
