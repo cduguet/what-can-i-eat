@@ -87,7 +87,7 @@ Set these in your `.env` file:
 
 ```bash
 # Supabase Configuration
-EXPO_PUBLIC_SUPABASE_URL=https://nbworpqbjrkkfitmoggk.supabase.co
+EXPO_PUBLIC_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 
 # Backend Mode Selection
@@ -115,7 +115,7 @@ The application automatically detects the backend mode from `EXPO_PUBLIC_BACKEND
 import { SupabaseAIService } from './services/api/supabaseAIService';
 
 const service = new SupabaseAIService({
-  url: 'https://nbworpqbjrkkfitmoggk.supabase.co',
+  url: 'https://YOUR-PROJECT.supabase.co',
   anonKey: 'your_anon_key',
   provider: AIProvider.GEMINI
 });

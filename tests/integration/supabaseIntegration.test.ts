@@ -9,13 +9,16 @@ import { AIProvider, DietaryType, ContentType } from '../../src/types';
 
 // Test configuration
 const SUPABASE_CONFIG = {
-  url: process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://nbworpqbjrkkfitmoggk.supabase.co',
-  anonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5id29ycHFianJra2ZpdG1vZ2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4ODA4ODQsImV4cCI6MjA3MTQ1Njg4NH0.nmQ5_GB_-xu-r2ar5WcQUt96RB00-KdhCtl_oF-D22E',
+  url: process.env.EXPO_PUBLIC_SUPABASE_URL || '',
+  anonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '',
   provider: AIProvider.GEMINI,
   timeout: 30000
 };
 
-describe('Supabase Integration Tests', () => {
+const hasSupabase = !!(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey);
+const describeIfSupabase = hasSupabase ? describe : describe.skip;
+
+describeIfSupabase('Supabase Integration Tests', () => {
   let service: SupabaseAIService;
 
   beforeAll(() => {

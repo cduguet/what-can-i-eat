@@ -16,7 +16,7 @@
 ## Test Configuration
 
 ### Environment Variables Set
-- `EXPO_PUBLIC_SUPABASE_URL`: https://nbworpqbjrkkfitmoggk.supabase.co
+- `EXPO_PUBLIC_SUPABASE_URL`: https://YOUR-PROJECT.supabase.co
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`: [Configured]
 - `EXPO_PUBLIC_BACKEND_MODE`: supabase
 - `EXPO_PUBLIC_AI_PROVIDER`: gemini

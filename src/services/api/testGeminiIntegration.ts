@@ -7,8 +7,11 @@
 import { DietaryType, MenuInputType } from '../../types';
 import { menuAnalysisService } from './menuAnalysisService';
 
-// Set the API key for testing
-process.env.EXPO_PUBLIC_GEMINI_API_KEY = 'AIzaSyDnGdFeppcakzERBPcGBC-VUGfqe4gNAxc';
+// For local testing only: set EXPO_PUBLIC_GEMINI_API_KEY in your environment.
+// Do NOT hardcode API keys in source.
+if (!process.env.EXPO_PUBLIC_GEMINI_API_KEY) {
+  console.warn('[testGeminiIntegration] EXPO_PUBLIC_GEMINI_API_KEY not set. Set it in a local .env file for manual tests.');
+}
 
 /**
  * Test menu data for analysis

@@ -13,7 +13,7 @@ This document contains the results of comprehensive testing of the Supabase Edge
 
 ### Environment Variables
 - `EXPO_PUBLIC_GEMINI_API_KEY`: Configured
-- `EXPO_PUBLIC_SUPABASE_URL`: https://nbworpqbjrkkfitmoggk.supabase.co
+- `EXPO_PUBLIC_SUPABASE_URL`: https://YOUR-PROJECT.supabase.co
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`: Configured
 - `EXPO_PUBLIC_BACKEND_MODE`: Dynamically switched during tests
 - `EXPO_PUBLIC_AI_PROVIDER`: Dynamically switched during tests

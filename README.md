@@ -28,17 +28,27 @@ What Can I Eat?
 **Quick Start**
 - Clone repo, then:
   - `npm install`
-  - Copy `.env.example` → `.env` and set `EXPO_PUBLIC_GEMINI_API_KEY`
+  - Copy `.env.example` → `.env`
+  - In `.env`, set your `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+  - Ensure `EXPO_PUBLIC_BACKEND_MODE=supabase`
   - `npm start` (or `npm run ios` / `npm run android` / `npm run web`)
 
 **Environment Variables**
-- Required:
-  - `EXPO_PUBLIC_GEMINI_API_KEY`: Your Gemini API key.
+- Required (Supabase backend mode):
+  - `EXPO_PUBLIC_SUPABASE_URL`: Your Supabase project URL.
+  - `EXPO_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anon key.
+- Mode selection:
+  - `EXPO_PUBLIC_BACKEND_MODE`: `supabase` (recommended) or `local`.
+- Provider selection:
+  - `EXPO_PUBLIC_AI_PROVIDER`: `gemini` or `vertex` (used by Supabase function).
 - Optional:
-  - `EXPO_PUBLIC_GEMINI_ENDPOINT`: Override Gemini endpoint.
   - `EXPO_PUBLIC_API_TIMEOUT`: Request timeout in ms (default 30000).
   - `EXPO_PUBLIC_MAX_RETRIES`: Retry count (default 3).
-- Example file: `.env.example`
+- Local-only (NOT for production; only when BACKEND_MODE=local):
+  - `EXPO_PUBLIC_GEMINI_API_KEY`, `EXPO_PUBLIC_GEMINI_ENDPOINT`
+  - `EXPO_PUBLIC_VERTEX_PROJECT_ID`, `EXPO_PUBLIC_VERTEX_LOCATION`, `EXPO_PUBLIC_VERTEX_CREDENTIALS`
+  
+See `.env.example` for a template.
 
 **Scripts**
 - **Start dev server:** `npm start`
@@ -84,7 +94,8 @@ What Can I Eat?
 - Use the PR template checklist (`.github/pull_request_template.md`).
 
 **Security**
-- Do not commit secrets. Only use Expo public env vars for client-side configuration. For production, consider migrating to Vertex AI with proper backend mediation.
+- Do not commit secrets. Client-side must NOT include AI API keys.
+- Production: Set `EXPO_PUBLIC_BACKEND_MODE=supabase` and call AI providers via a Supabase Edge Function (see `docs/api-security-architecture.md`).
 
 **Roadmap (High Level)**
 - Optional: Vertex AI migration for production security/SLA.

@@ -8,8 +8,10 @@
 const fs = require('fs');
 const path = require('path');
 
-// Set environment variable
-process.env.EXPO_PUBLIC_GEMINI_API_KEY = 'AIzaSyDnGdFeppcakzERBPcGBC-VUGfqe4gNAxc';
+// Require environment variable for local testing only (do not hardcode keys)
+if (!process.env.EXPO_PUBLIC_GEMINI_API_KEY) {
+  console.warn('[testGeminiMultimodal] EXPO_PUBLIC_GEMINI_API_KEY is not set. Set it locally to run this test.');
+}
 
 const { GoogleGenAI } = require('@google/genai');
 

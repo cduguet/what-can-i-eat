@@ -27,14 +27,14 @@ describe('Backend Mode Switching Tests', () => {
     requestId: `switching-test-${Date.now()}`
   };
 
-  describe('Supabase Mode', () => {
+  const hasSupabaseEnv = !!(process.env.EXPO_PUBLIC_SUPABASE_URL && process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY);
+  const describeSupabase = hasSupabaseEnv ? describe : describe.skip;
+
+  describeSupabase('Supabase Mode', () => {
     beforeAll(() => {
       // Set environment to use Supabase backend
       process.env.EXPO_PUBLIC_BACKEND_MODE = 'supabase';
-      process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://nbworpqbjrkkfitmoggk.supabase.co';
-      process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5id29ycHFianJra2ZpdG1vZ2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4ODA4ODQsImV4cCI6MjA3MTQ1Njg4NH0.nmQ5_GB_-xu-r2ar5WcQUt96RB00-KdhCtl_oF-D22E';
-      process.env.EXPO_PUBLIC_AI_PROVIDER = 'gemini';
-      process.env.EXPO_PUBLIC_GEMINI_API_KEY = 'AIzaSyDnGdFeppcakzERBPcGBC-VUGfqe4gNAxc';
+      process.env.EXPO_PUBLIC_AI_PROVIDER = process.env.EXPO_PUBLIC_AI_PROVIDER || 'gemini';
     });
 
     it('should use Supabase backend when configured', async () => {
@@ -78,12 +78,14 @@ describe('Backend Mode Switching Tests', () => {
     }, 15000);
   });
 
-  describe('Local Mode', () => {
+  const hasLocalGemini = !!process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+  const describeLocal = hasLocalGemini ? describe : describe.skip;
+
+  describeLocal('Local Mode', () => {
     beforeAll(() => {
       // Set environment to use local backend
       process.env.EXPO_PUBLIC_BACKEND_MODE = 'local';
-      process.env.EXPO_PUBLIC_AI_PROVIDER = 'gemini';
-      process.env.EXPO_PUBLIC_GEMINI_API_KEY = 'AIzaSyDnGdFeppcakzERBPcGBC-VUGfqe4gNAxc';
+      process.env.EXPO_PUBLIC_AI_PROVIDER = process.env.EXPO_PUBLIC_AI_PROVIDER || 'gemini';
     });
 
     it('should use local backend when configured', async () => {
