@@ -15,7 +15,7 @@ Tech Stack
 - UI: React Native + React Native Paper.
 - Navigation: React Navigation 7.
 - State: React hooks; AsyncStorage for persistence.
-- AI: Google Gemini via `@google/genai`; Vertex AI via `@google-cloud/vertexai` with provider toggle.
+- AI: Google Gemini via `@google/genai`; Vertex AI via `@google-cloud/vertexai` with provider toggle; Supabase backend mode via Edge Functions.
 
 Architecture (Current)
 - Entry: `App.tsx` wires ThemeProvider, NavigationContainer, onboarding routing, and main stack.
@@ -29,7 +29,7 @@ Architecture (Current)
   - `ResultsScreen`: categorized results UI (Good / Careful / Avoid) with filters and summary.
 
 Services
-- AI Services: `src/services/api/aiService.ts` abstraction layer with provider switching; `src/services/api/geminiService.ts` and `src/services/api/vertexService.ts` implementations; config in `src/services/api/config.ts`.
+- AI Services: `src/services/api/aiService.ts` abstraction layer with provider switching and backend mode selection; `src/services/api/geminiService.ts`, `src/services/api/vertexService.ts`, and `src/services/api/supabaseAIService.ts` implementations; config in `src/services/api/config.ts`.
 - OCR: `src/services/ocr/ocrService.ts` (legacy note in `DEPRECATED.md` present).
 - Caching: `src/services/cache/offlineCache.ts` for storing results.
 - Auth (stubbed): `src/services/auth/authService.ts` sets up basic auth state tracking used by `App.tsx`.
@@ -54,9 +54,11 @@ Environment & Scripts
 - Vertex API Testing: `node test-vertex-credentials.js` (requires `.env.local` with Vertex credentials).
 
 Environment Variables (Expo public)
+- Backend Mode: `EXPO_PUBLIC_BACKEND_MODE` ('local' or 'supabase', defaults to 'local').
+- Supabase: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (required when backend_mode=supabase).
 - AI Provider: `EXPO_PUBLIC_AI_PROVIDER` ('gemini' or 'vertex', defaults to 'gemini').
-- Gemini: `EXPO_PUBLIC_GEMINI_API_KEY` (required when provider=gemini), `EXPO_PUBLIC_GEMINI_ENDPOINT` (optional).
-- Vertex AI: `EXPO_PUBLIC_VERTEX_PROJECT_ID`, `EXPO_PUBLIC_VERTEX_LOCATION`, `EXPO_PUBLIC_VERTEX_CREDENTIALS` (required when provider=vertex).
+- Gemini: `EXPO_PUBLIC_GEMINI_API_KEY` (required when provider=gemini and backend_mode=local), `EXPO_PUBLIC_GEMINI_ENDPOINT` (optional).
+- Vertex AI: `EXPO_PUBLIC_VERTEX_PROJECT_ID`, `EXPO_PUBLIC_VERTEX_LOCATION`, `EXPO_PUBLIC_VERTEX_CREDENTIALS` (required when provider=vertex and backend_mode=local).
 - Common: `EXPO_PUBLIC_API_TIMEOUT` (ms), `EXPO_PUBLIC_MAX_RETRIES`.
 - Example: see `.env.example`.
 
@@ -117,3 +119,5 @@ Coordination Entry Template
 - 2025-09-06: Home safe-area padding for notch; Files: `src/screens/main/HomeScreen.tsx`. Notes: Added SafeAreaView edges=['top'] and dynamic top padding via useSafeAreaInsets to keep header/sections below the notch.
 - 2025-09-06: Recent Activity top spacing + ScrollView inset; Files: `src/screens/main/HomeScreen.tsx`, `src/components/common/RecentActivity.tsx`. Notes: Set contentInsetAdjustmentBehavior="always" on Home ScrollView and increased Recent Activity section top margin.
 - 2025-09-06: Vertex AI support with provider toggle; Files: `src/services/api/vertexService.ts`, `src/services/api/aiService.ts`, `src/services/api/config.ts`, `src/types/index.ts`, `.env.example`, `src/services/api/__tests__/aiService.test.ts`, `package.json`. Notes: Added Vertex AI as alternative to Gemini with EXPO_PUBLIC_AI_PROVIDER toggle; maintains backward compatibility defaulting to Gemini; abstraction layer enables runtime switching.
+- 2025-09-06: Supabase backend mode for AI processing; Files: `src/services/api/supabaseAIService.ts`, `src/services/api/aiService.ts`, `src/services/api/config.ts`, `.env.example`, `src/services/api/__tests__/supabaseAIService.test.ts`, `docs/supabase-setup.md`. Notes: Added Supabase Edge Function `ai-menu-analysis` for server-side AI processing; supports both Gemini and Vertex AI providers; includes rate limiting and CORS; client switches between local and Supabase backends via EXPO_PUBLIC_BACKEND_MODE; maintains same interface as local services.
+- 2025-09-06: Comprehensive Supabase integration testing; Files: `tests/integration/comprehensiveComparison.test.ts`, `docs/comprehensive-test-results.md`. Notes: Created comprehensive test suite validating all 4 provider/backend combinations (Gemini/Vertex × Local/Supabase) for both text and image analysis; 100% success rate with 8/8 tests passing; average response time 3.5s; perfect consistency between backends; includes performance metrics and multilingual dietary restriction testing.
