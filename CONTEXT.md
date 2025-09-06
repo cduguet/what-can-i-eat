@@ -94,7 +94,7 @@ Coordination Log
 - 2025-09-06: Settings header styling + back label. Files: `App.tsx`. Notes: Increased Settings header title size to match Results Appbar (~20px, bold), removed iOS back title text by setting `headerBackTitleVisible: false` and blank `headerBackTitle`/`headerTruncatedBackTitle`, and aligned header colors with theme.
 - 2025-09-06: Recent Activity UI tweak. Files: `src/screens/main/RecentActivityScreen.tsx`. Notes: Moved Good/Careful/Avoid chips to the right side within `Card.Title` instead of a separate row.
 - 2025-09-06: Recent Activity design unification. Files: `src/components/common/RecentActivity.tsx`, `src/screens/main/RecentActivityScreen.tsx`. Notes: Section items now place counters on the right inline with title; screen list updated to match the same row design (icon + title/subtitle + right-aligned tinted chips).
-- 2025-09-06: Fix clipped chip numbers. Files: `src/components/common/RecentActivity.tsx`, `src/screens/main/RecentActivityScreen.tsx`. Notes: Explicit `height: 28` + small vertical padding to override Paper compact height and avoid descender clipping on iOS.
+- 2025-09-06: Fix clipped chip numbers. Files: `src/components/common/RecentActivity.tsx`, `src/screens/main/RecentActivityScreen.tsx`. Notes: Use `minHeight: 28` with small vertical padding to avoid descender clipping while letting content size naturally; applied consistently to Home section and screen.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.

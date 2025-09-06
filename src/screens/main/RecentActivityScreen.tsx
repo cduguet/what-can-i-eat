@@ -125,5 +125,5 @@ const createStyles = (theme: any) => StyleSheet.create({
   itemTitle: { fontWeight: '600', color: theme.colors.text, marginBottom: 2 },
   itemSubtitle: { color: theme.colors.textSecondary },
   metricsRow: { flexDirection: 'row', gap: 6, alignItems: 'center', marginLeft: 8 },
-  pill: { height: 28, paddingVertical: 2, borderRadius: 16 },
+  pill: { height: undefined, minHeight: 28, paddingVertical: 2, borderRadius: 16 },
 });
