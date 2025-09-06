@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Icon } from 'react-native-paper';
 import { useTheme } from '@/theme/ThemeProvider';
 import { FoodAnalysisResult, FoodSuitability } from '@/types';
 
@@ -41,6 +42,14 @@ export const ResultRow: React.FC<ResultRowProps> = ({ result, onPress }) => {
             {Math.round(result.confidence * 100)}% confident
           </Text>
         </View>
+        <View style={styles.chevron}>
+          <Icon
+            source={expanded ? 'chevron-up' : 'chevron-down'}
+            size={18}
+            color={theme.colors.textSecondary}
+            style={{ opacity: 0.5 }}
+          />
+        </View>
       </TouchableOpacity>
 
       {expanded && (
@@ -78,6 +87,7 @@ const createStyles = (theme: any) => StyleSheet.create({
     paddingVertical: 14,
   },
   rowText: { flex: 1 },
+  chevron: { marginLeft: 8, alignItems: 'center', justifyContent: 'center' },
   title: {
     fontFamily: theme.typography.fontFamily.semibold,
     color: theme.colors.text,

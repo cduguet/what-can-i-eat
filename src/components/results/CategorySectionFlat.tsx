@@ -45,7 +45,7 @@ export const CategorySectionFlat: React.FC<CategorySectionFlatProps> = ({ catego
   const [open, setOpen] = useState(true);
   const cfg = configFor(theme, category);
 
-  const faintBg = toFaint(cfg.color, theme.mode === 'light' ? 0.06 : 0.14);
+  const faintBg = toFaint(cfg.color, theme.mode === 'light' ? 0.08 : 0.14);
 
   return (
     <View style={styles.section}>
