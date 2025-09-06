@@ -67,14 +67,13 @@ export enum BackendMode {
  */
 export const getBackendMode = (): BackendMode => {
   const mode = process.env[ENV_KEYS.BACKEND_MODE]?.toLowerCase();
-  
-  switch (mode) {
-    case 'supabase':
-      return BackendMode.SUPABASE;
-    case 'local':
-    default:
-      return BackendMode.LOCAL;
-  }
+
+  if (mode === 'supabase') return BackendMode.SUPABASE;
+  if (mode === 'local') return BackendMode.LOCAL;
+
+  // Sensible fallback: if Supabase env is present, prefer Supabase backend
+  const hasSupabase = !!(process.env[ENV_KEYS.SUPABASE_URL] && process.env[ENV_KEYS.SUPABASE_ANON_KEY]);
+  return hasSupabase ? BackendMode.SUPABASE : BackendMode.LOCAL;
 };
 
 /**

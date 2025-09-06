@@ -33,7 +33,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { saveAnalysisToCache } from '@/services/cache/recentCache';
 import { MenuInputType, DietaryType, UserPreferences, GeminiRequest } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { geminiService } from '@/services/api/geminiService';
+import { aiService } from '@/services/api/aiService';
 import { parseMenuText, fetchAndExtractMenuFromUrl } from '@/services/menu/menuInputService';
 
 type ResultsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Results'>;
@@ -243,7 +243,7 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
           menuItems,
           requestId: `text-${Date.now()}`,
         };
-        const analysisResult = await geminiService.analyzeMenu(request);
+        const analysisResult = await aiService.analyzeMenu(request);
         if (analysisResult.success) {
           setResults(analysisResult.results);
           setSnackbarMessage(`Analyzed ${analysisResult.results.length} items from text.`);
@@ -265,7 +265,7 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
           requestId: `url-${Date.now()}`,
         };
         setLoading({ isLoading: true, message: 'Analyzing menu items...' });
-        const analysisResult = await geminiService.analyzeMenu(request);
+        const analysisResult = await aiService.analyzeMenu(request);
         if (analysisResult.success) {
           setResults(analysisResult.results);
           setSnackbarMessage(`Analyzed ${analysisResult.results.length} items from URL.`);

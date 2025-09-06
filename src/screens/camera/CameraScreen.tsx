@@ -38,7 +38,7 @@ import {
   GeminiResponse,
 } from '@/types';
 import { cameraService, CameraType, FlashMode } from '@/services/camera/cameraService';
-import { geminiService } from '@/services/api/geminiService';
+import { aiService } from '@/services/api/aiService';
 import { CameraPreview } from '@/components/camera/CameraPreview';
 import { CameraControls } from '@/components/camera/CameraControls';
 import { OCRProcessingIndicator } from '@/components/camera/OCRProcessingIndicator';
@@ -282,7 +282,7 @@ export const CameraScreen: React.FC = () => {
         requestId: `multimodal-${Date.now()}`,
       };
 
-      const analysisResult = await geminiService.analyzeMenuMultimodal(request);
+      const analysisResult = await aiService.analyzeMenuMultimodal(request);
 
       // Update progress
       setCameraState(prev => ({
