@@ -7,7 +7,7 @@ import {
   Linking,
 } from 'react-native';
 import { Text, Button, Card, TextInput, Portal, Modal, IconButton } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { useNavigation } from '@react-navigation/native';
@@ -38,6 +38,7 @@ interface HomeScreenProps {}
 export const HomeScreen: React.FC<HomeScreenProps> = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   
   // State management
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
@@ -205,14 +206,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
   const styles = createStyles(theme);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {/* Header Section */}
-        <View style={styles.header}>
+        <View style={[styles.header, { paddingTop: Math.max(16, insets.top + 8) }]}>
           <View style={styles.headerContent}>
             <Text variant="headlineMedium" style={styles.title}>
               What Can I Eat?

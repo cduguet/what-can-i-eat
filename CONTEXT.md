@@ -104,3 +104,4 @@ How To Update This Document
 
 Coordination Entry Template
 - YYYY-MM-DD: Short description of change; Files: `path/one`, `path/two`. Notes: one line if needed.
+ - 2025-09-06: Home safe-area padding for notch; Files: `src/screens/main/HomeScreen.tsx`. Notes: Added SafeAreaView edges=['top'] and dynamic top padding via useSafeAreaInsets to keep header/sections below the notch.
