@@ -101,6 +101,7 @@ Coordination Log
 - 2025-09-06: Modal headers polished (icons + padding). Files: `src/screens/main/HomeScreen.tsx`. Notes: Replaced `Card.Title` with custom header row for tighter layout; smaller left icon in faint circle, smaller close icon, adjusted paddings.
 - 2025-09-06: Home pill opens dietary settings; home refreshes on return. Files: `src/screens/main/HomeScreen.tsx`, `src/types/index.ts`. Notes: Pill in Home now navigates to Settings dietary section; added `useFocusEffect` to reload `user_preferences` when Home regains focus; `Settings` route accepts optional `{ section: 'dietary' }`.
 - 2025-09-06: Save confirmation in Settings. Files: `src/screens/settings/SettingsScreen.tsx`. Notes: Added success haptic and Snackbar (“Preferences saved”) after saving; shows for ~1.5s and announces politely for accessibility.
+- 2025-09-06: Camera UI modernization. Files: `src/screens/camera/CameraScreen.tsx`, `src/components/camera/CameraControls.tsx`, `src/components/camera/CameraPreview.tsx`. Notes: Added top/bottom gradients and glassy header/instruction pill; removed fixed 16:9 ratio for full‑bleed preview; uses theme tokens per design system.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.

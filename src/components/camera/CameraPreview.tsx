@@ -33,7 +33,6 @@ export const CameraPreview = forwardRef<any, CameraPreviewProps>(
         facing={cameraType}
         flash={flashMode}
         onCameraReady={onCameraReady}
-        ratio="16:9"
         autofocus="on"
       />
     );

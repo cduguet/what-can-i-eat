@@ -20,6 +20,8 @@ import { CameraView } from 'expo-camera';
 import * as Haptics from 'expo-haptics';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   RootStackParamList,
@@ -41,6 +43,7 @@ import { CameraPreview } from '@/components/camera/CameraPreview';
 import { CameraControls } from '@/components/camera/CameraControls';
 import { OCRProcessingIndicator } from '@/components/camera/OCRProcessingIndicator';
 import { useTheme } from '@/theme/ThemeProvider';
+import { colors as colorUtils } from '@/theme/utils';
 
 type CameraScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Camera'>;
 
@@ -443,6 +446,24 @@ export const CameraScreen: React.FC = () => {
         style={styles.cameraPreview}
       />
 
+      {/* Top gradient for readability */}
+      <LinearGradient
+        colors={[colorUtils.hexToRgba('#000000', 0.6), 'transparent']}
+        style={styles.topGradient}
+        pointerEvents="none"
+      />
+
+      {/* Bottom gradient for controls/instructions */}
+      <LinearGradient
+        colors={[
+          'transparent',
+          colorUtils.hexToRgba('#000000', 0.5),
+          colorUtils.hexToRgba('#000000', 0.8),
+        ]}
+        style={styles.bottomGradient}
+        pointerEvents="none"
+      />
+
       {/* Header Controls */}
       <View style={styles.headerControls}>
         <IconButton
@@ -505,6 +526,22 @@ const createStyles = (theme: any) => StyleSheet.create({
   cameraPreview: {
     flex: 1,
   },
+  topGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 140,
+    zIndex: 9,
+  },
+  bottomGradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 260,
+    zIndex: 9,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -523,13 +560,14 @@ const createStyles = (theme: any) => StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    paddingTop: (StatusBar.currentHeight || 0) + 16,
+    padding: theme.spacing.md,
+    paddingTop: (StatusBar.currentHeight || 0) + theme.spacing.md,
     zIndex: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'transparent',
   },
   headerButton: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: colorUtils.hexToRgba(theme.colors.background, 0.25),
+    borderRadius: 24,
   },
   headerTitle: {
     color: theme.colors.surface,
@@ -555,13 +593,16 @@ const createStyles = (theme: any) => StyleSheet.create({
   },
   instructionsOverlay: {
     position: 'absolute',
-    bottom: 200,
-    left: 20,
-    right: 20,
+    bottom: 180,
+    left: theme.spacing.lg,
+    right: theme.spacing.lg,
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    borderRadius: 8,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    backgroundColor: colorUtils.hexToRgba(theme.colors.background, 0.25),
+    borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: theme.colors.border,
     zIndex: 10,
   },
   instructionsText: {
