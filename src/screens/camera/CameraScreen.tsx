@@ -468,9 +468,7 @@ export const CameraScreen: React.FC = () => {
       />
 
       {/* Header Controls */}
-      <View style={styles.headerControls}>
-        {/* Safe area top padding applied inline to avoid notch overlap */}
-        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top }} />
+      <View style={[styles.headerControls, { top: insets.top }]}>
         <IconButton
           icon="arrow-left"
           iconColor={theme.colors.surface}
