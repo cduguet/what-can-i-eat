@@ -124,18 +124,7 @@ function AppContent() {
       {!isOnboardingComplete ? (
         <OnboardingNavigator onComplete={handleOnboardingComplete} />
       ) : (
-        <Stack.Navigator
-          initialRouteName="Home"
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: theme.colors.primary,
-            },
-            headerTintColor: theme.mode === 'light' ? '#ffffff' : theme.colors.background,
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-          }}
-        >
+        <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
             name="Home"
             component={HomeScreen}
@@ -155,10 +144,10 @@ function AppContent() {
           <Stack.Screen
             name="Results"
             component={ResultsScreen}
-            options={{ title: 'Analysis Results' }}
+            options={{ title: 'Analysis Results', headerShown: false }}
           />
-          <Stack.Screen name="RecentActivity" component={RecentActivityScreen} options={{ title: 'Recent Activity' }} />
-          <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
+          <Stack.Screen name="RecentActivity" component={RecentActivityScreen} options={{ title: 'Recent Activity', headerShown: false }} />
+          <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings', headerShown: false }} />
         </Stack.Navigator>
       )}
     </NavigationContainer>
