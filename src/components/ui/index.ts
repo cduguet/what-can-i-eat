@@ -1,2 +1,3 @@
-// Export UI components
-// This will be populated as components are created
+export { AccentButton } from './AccentButton';
+export { Pill } from './Pill';
+export { FAB } from './FAB';

@@ -392,9 +392,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
                 label="Menu Text"
                 value={textInput}
                 onChangeText={(text) => {
-                  setTextInput(text);
-                  setTextError('');
+                  // Enforce character limit
+                  if (text.length <= 5000) {
+                    setTextInput(text);
+                    setTextError('');
+                  }
                 }}
+                maxLength={5000}
                 placeholder="Enter menu items, ingredients, or descriptions..."
                 multiline
                 numberOfLines={6}
@@ -407,7 +411,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
                 </Text>
               ) : null}
               <Text variant="bodySmall" style={styles.helperText}>
-                {textInput.length}/500 characters • Minimum 10 characters
+                {textInput.length}/5000 characters • Minimum 10 characters
+                {textInput.length > 4500 && (
+                  <Text style={{ color: '#ff4444' }}> • Approaching limit</Text>
+                )}
               </Text>
             </Card.Content>
             <Card.Actions style={styles.modalActions}>

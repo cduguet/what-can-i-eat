@@ -62,6 +62,7 @@ Key Decisions & Status
 - Theme modernized (Sept 2025) to teal/amber/cyan with semantic tokens; this supersedes older color specs previously documented.
 - Gemini via `@google/genai` in dev; consider Vertex AI for production (security/SLA) later.
 - Home screen includes developer helpers: demo results button and long-press settings icon to reset onboarding.
+- 2025-01-06: Fixed large menu processing crashes and URL analysis limits; Files: `src/services/api/geminiService.ts`, `src/screens/main/HomeScreen.tsx`, `src/services/menu/menuInputService.ts`, `src/components/ui/FAB.tsx`. Notes: Increased API tokens to 4096, text input to 5000 chars, URL analysis matching text limits.
 
 File Pointers
 - Onboarding: `src/screens/onboarding/*` (unused legacy file: `PreferencesScreen.tsx`).

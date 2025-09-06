@@ -28,6 +28,7 @@ import {
 import { FilterBar } from '@/components/results/FilterBar';
 import { ResultsSummaryFlat } from '@/components/results/ResultsSummaryFlat';
 import { CategorySectionFlat } from '@/components/results/CategorySectionFlat';
+import { FAB } from '@/components/ui';
 import { useTheme } from '@/theme/ThemeProvider';
 import { saveAnalysisToCache } from '@/services/cache/recentCache';
 import { MenuInputType, DietaryType, UserPreferences, GeminiRequest } from '@/types';

@@ -1,4 +1,5 @@
 import { MenuItem } from '@/types';
+import { Platform } from 'react-native';
 
 // Basic heuristics to extract items from text blocks
 export function parseMenuText(raw: string): MenuItem[] {
