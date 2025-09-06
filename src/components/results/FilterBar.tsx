@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Searchbar, Chip, Menu, Button, Divider, Text } from 'react-native-paper';
+import { Searchbar, Chip, Divider, Text } from 'react-native-paper';
 import { useTheme } from '@/theme/ThemeProvider';
 import * as Haptics from 'expo-haptics';
 
@@ -92,7 +92,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   filteredResults = 0,
   showSearch = true,
   showCategoryFilters = true,
-  showSortOptions = true,
+  showSortOptions = false,
   style,
 }) => {
   const { theme } = useTheme();
@@ -214,60 +214,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </View>
         )}
 
-        {/* Sort and Reset Controls */}
-        <View style={styles.actionControls}>
-          {/* Sort Menu */}
-          {showSortOptions && (
-            <Menu
-              visible={sortMenuVisible}
-              onDismiss={() => setSortMenuVisible(false)}
-              anchor={
-                <Button
-                  mode="outlined"
-                  onPress={() => setSortMenuVisible(true)}
-                  icon="sort"
-                  style={styles.sortButton}
-                  contentStyle={styles.sortButtonContent}
-                  labelStyle={styles.sortButtonText}
-                  compact={false}
-                >
-                  {getSortOptionText(filter.sortBy, filter.sortDirection)}
-                </Button>
-              }
-              contentStyle={styles.menuContent}
-            >
-              <Menu.Item
-                onPress={() => handleSortChange('name')}
-                title="Name"
-                leadingIcon="sort-alphabetical-ascending"
-              />
-              <Menu.Item
-                onPress={() => handleSortChange('suitability')}
-                title="Category"
-                leadingIcon="sort-variant"
-              />
-              <Menu.Item
-                onPress={() => handleSortChange('confidence')}
-                title="Confidence"
-                leadingIcon="sort-numeric-ascending"
-              />
-            </Menu>
-          )}
-
-          {/* Reset Filters */}
-          {hasActiveFilters && (
-            <Button
-              mode="text"
-              onPress={handleResetFilters}
-              icon="filter-off"
-              style={styles.resetButton}
-              labelStyle={styles.resetButtonText}
-              compact
-            >
-              Reset
-            </Button>
-          )}
-        </View>
+        {/* Action controls (sort/reset) removed per design request */}
       </View>
 
       {/* Results Count */}
@@ -323,35 +270,7 @@ const createStyles = (theme: any) => StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
   },
-  actionControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  sortButton: {
-    borderColor: theme.colors.primary,
-    borderWidth: 1,
-    height: 36,
-    borderRadius: 999,
-  },
-  sortButtonContent: { height: 36, paddingHorizontal: 12 },
-  sortButtonText: {
-    fontSize: 12,
-    color: theme.colors.primary,
-    fontWeight: '500',
-  },
-  resetButton: {
-    height: 32,
-  },
-  resetButtonText: {
-    fontSize: 12,
-    color: theme.colors.semantic.avoid,
-    fontWeight: '500',
-  },
-  menuContent: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.md,
-  },
+  // sort/reset styles removed
   divider: {
     marginTop: theme.spacing.sm,
     backgroundColor: theme.colors.border,
