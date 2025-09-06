@@ -15,6 +15,7 @@ import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 
 // Temporary placeholder screen for Settings
 import { StyleSheet, Text, View } from 'react-native';
+import { SettingsScreen } from '@/screens/settings/SettingsScreen';
 
 const PlaceholderScreen = ({ route }: { route: { name: string } }) => (
   <View style={styles.container}>
@@ -155,11 +156,7 @@ function AppContent() {
             component={ResultsScreen}
             options={{ title: 'Analysis Results' }}
           />
-          <Stack.Screen
-            name="Settings"
-            component={PlaceholderScreen}
-            options={{ title: 'Settings' }}
-          />
+          <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
         </Stack.Navigator>
       )}
     </NavigationContainer>

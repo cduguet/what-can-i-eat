@@ -30,7 +30,10 @@ import { FilterBar } from '@/components/results/FilterBar';
 import { CategorySectionList } from '@/components/results/CategorySection';
 import { useTheme } from '@/theme/ThemeProvider';
 import { saveAnalysisToCache } from '@/services/cache/recentCache';
-import { MenuInputType } from '@/types';
+import { MenuInputType, DietaryType, UserPreferences, GeminiRequest } from '@/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { geminiService } from '@/services/api/geminiService';
+import { parseMenuText, fetchAndExtractMenuFromUrl } from '@/services/menu/menuInputService';
 
 type ResultsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Results'>;
 type ResultsScreenRouteProp = RouteProp<RootStackParamList, 'Results'>;
@@ -227,8 +230,50 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
         } else {
           throw new Error(analysisResult.message || 'Analysis failed');
         }
+      } else if (route.params?.menuText) {
+        // Analyze provided text input
+        const prefs = await getUserPreferences();
+        const menuItems = parseMenuText(route.params.menuText);
+        if (menuItems.length === 0) {
+          throw new Error('No menu items found in text');
+        }
+        const request: GeminiRequest = {
+          dietaryPreferences: prefs,
+          menuItems,
+          requestId: `text-${Date.now()}`,
+        };
+        const analysisResult = await geminiService.analyzeMenu(request);
+        if (analysisResult.success) {
+          setResults(analysisResult.results);
+          setSnackbarMessage(`Analyzed ${analysisResult.results.length} items from text.`);
+          await saveAnalysisToCache(analysisResult, { inputType: MenuInputType.TEXT, source: route.params.menuText.slice(0, 120) });
+        } else {
+          throw new Error(analysisResult.message || 'Analysis failed');
+        }
+      } else if (route.params?.menuUrl) {
+        // Fetch URL and analyze extracted items
+        const prefs = await getUserPreferences();
+        setLoading({ isLoading: true, message: 'Fetching menu from URL...' });
+        const menuItems = await fetchAndExtractMenuFromUrl(route.params.menuUrl);
+        if (menuItems.length === 0) {
+          throw new Error('No menu items found at URL');
+        }
+        const request: GeminiRequest = {
+          dietaryPreferences: prefs,
+          menuItems,
+          requestId: `url-${Date.now()}`,
+        };
+        setLoading({ isLoading: true, message: 'Analyzing menu items...' });
+        const analysisResult = await geminiService.analyzeMenu(request);
+        if (analysisResult.success) {
+          setResults(analysisResult.results);
+          setSnackbarMessage(`Analyzed ${analysisResult.results.length} items from URL.`);
+          await saveAnalysisToCache(analysisResult, { inputType: MenuInputType.URL, source: route.params.menuUrl });
+        } else {
+          throw new Error(analysisResult.message || 'Analysis failed');
+        }
       } else {
-        // Fallback to mock results if no analysis is passed
+        // Fallback to mock results only when invoked as demo
         const mockResults = getMockResults();
         setResults(mockResults);
         setSnackbarMessage(`Displaying mock results. Found ${mockResults.length} menu items.`);
@@ -253,6 +298,19 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
       setError(appError);
       setLoading({ isLoading: false });
     }
+  };
+
+  const getUserPreferences = async (): Promise<UserPreferences> => {
+    try {
+      const stored = await AsyncStorage.getItem('user_preferences');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    // Default to vegan if not set
+    return {
+      dietaryType: DietaryType.VEGAN,
+      onboardingCompleted: true,
+      lastUpdated: new Date().toISOString(),
+    } as UserPreferences;
   };
 
   const handleRetry = () => {
