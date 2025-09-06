@@ -290,6 +290,42 @@ export interface GeminiAPIConfig {
 }
 
 /**
+ * Vertex AI configuration
+ */
+export interface VertexAPIConfig {
+  /** Google Cloud project ID */
+  projectId: string;
+  /** Google Cloud location/region */
+  location: string;
+  /** Service account credentials (JSON string or file path) */
+  credentials?: string;
+  /** Request timeout in milliseconds */
+  timeout: number;
+  /** Maximum retry attempts */
+  maxRetries: number;
+}
+
+/**
+ * AI Provider types
+ */
+export enum AIProvider {
+  GEMINI = 'gemini',
+  VERTEX = 'vertex'
+}
+
+/**
+ * Combined AI configuration
+ */
+export interface AIConfig {
+  /** AI provider to use */
+  provider: AIProvider;
+  /** Gemini configuration (when provider is GEMINI) */
+  gemini?: GeminiAPIConfig;
+  /** Vertex configuration (when provider is VERTEX) */
+  vertex?: VertexAPIConfig;
+}
+
+/**
  * Gemini API request structure
  */
 export interface GeminiRequest {
