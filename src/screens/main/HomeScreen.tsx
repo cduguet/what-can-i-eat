@@ -6,17 +6,7 @@ import {
   Alert,
   Linking,
 } from 'react-native';
-import {
-  Text,
-  Button,
-  Card,
-  TextInput,
-  Chip,
-  FAB,
-  Portal,
-  Modal,
-  IconButton,
-} from 'react-native-paper';
+import { Text, Button, Card, TextInput, Portal, Modal, IconButton } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
@@ -25,7 +15,8 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 
 import { RootStackParamList, UserPreferences, MenuInputType, CameraPermissionStatus } from '@/types';
 import { CameraButton } from '@/components/common/CameraButton';
-import { InputCard } from '@/components/common/InputCard';
+import AccentButton from '@/components/ui/AccentButton';
+import Pill from '@/components/ui/Pill';
 import { RecentActivity } from '@/components/common/RecentActivity';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -264,20 +255,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
 
         {/* User Preferences Display */}
         {userPreferences && (
-          <Card style={styles.preferencesCard}>
-            <Card.Content style={styles.preferencesContent}>
-              <Text variant="titleSmall" style={styles.preferencesTitle}>
-                Your Dietary Preferences
-              </Text>
-              <Chip
-                icon="account-check"
-                style={styles.preferencesChip}
-                textStyle={styles.preferencesChipText}
-              >
-                {getDietaryDisplayText()}
-              </Chip>
-            </Card.Content>
-          </Card>
+          <View style={styles.prefsRow}>
+            <Pill
+              label={getDietaryDisplayText()}
+              color={theme.colors.semantic.safeLight}
+              textColor={theme.colors.semantic.safe}
+            />
+          </View>
         )}
 
         {/* Primary Camera Action */}
@@ -290,28 +274,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
 
         {/* Secondary Input Options */}
         <View style={styles.secondarySection}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            Other Options
-          </Text>
-          
-          <View style={styles.inputCardsContainer}>
-            <InputCard
-              type={MenuInputType.URL}
-              title="Analyze Menu URL"
-              description="Enter a restaurant website URL"
-              icon="web"
-              onPress={handleUrlModalOpen}
-              disabled={isLoading}
-            />
-            
-            <InputCard
-              type={MenuInputType.TEXT}
-              title="Enter Menu Text"
-              description="Type or paste menu items manually"
-              icon="text"
-              onPress={handleTextModalOpen}
-              disabled={isLoading}
-            />
+          <View style={styles.inlineButtons}>
+            <View style={{ flex: 1, marginRight: 8 }}>
+              <AccentButton title="Analyze URL" onPress={handleUrlModalOpen} />
+            </View>
+            <View style={{ flex: 1, marginLeft: 8 }}>
+              <AccentButton title="Enter Text" onPress={handleTextModalOpen} color={theme.colors.border} textColor={theme.colors.text} />
+            </View>
           </View>
 
           {/* Developer helper to preview results UI */}
@@ -489,31 +458,16 @@ const createStyles = (theme: any) => StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    color: theme.colors.primary,
+    color: theme.colors.text,
     marginBottom: 4,
   },
   subtitle: {
     color: theme.colors.textSecondary,
     lineHeight: 22,
   },
-  preferencesCard: {
-    marginHorizontal: 20,
+  prefsRow: {
+    paddingHorizontal: 20,
     marginBottom: 20,
-    backgroundColor: theme.colors.surface,
-  },
-  preferencesContent: {
-    paddingVertical: 12,
-  },
-  preferencesTitle: {
-    color: theme.colors.textSecondary,
-    marginBottom: 8,
-  },
-  preferencesChip: {
-    alignSelf: 'flex-start',
-    backgroundColor: theme.colors.semantic.safeLight,
-  },
-  preferencesChipText: {
-    color: theme.colors.primary,
   },
   primarySection: {
     paddingHorizontal: 20,
@@ -528,9 +482,7 @@ const createStyles = (theme: any) => StyleSheet.create({
     color: theme.colors.text,
     marginBottom: 16,
   },
-  inputCardsContainer: {
-    gap: 12,
-  },
+  inlineButtons: { flexDirection: 'row' },
   recentSection: {
     paddingHorizontal: 20,
   },

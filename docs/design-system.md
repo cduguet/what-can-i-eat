@@ -2,6 +2,13 @@ Design System Overview
 
 This app uses a modern, theme-driven design system built on top of React Native Paper (Material 3) and a custom Liquid Glass aesthetic. The design emphasizes clarity, accessibility, and visual warmth using teal as the primary brand color with cream and brown neutrals.
 
+Flat iOS‑leaning Refresh (September 2025)
+- Cards → Sections: we removed most heavy cards in primary flows. Use flat sections with generous spacing and light dividers. Rounded corners reserved for images, pills, and buttons.
+- Large visuals: introduce a circular progress ring for results and big iconography where helpful.
+- Pills everywhere: category counts, preferences, and quick filters use pill chips with semantic colors.
+- Buttons: full‑width, pill‑shaped primary actions. Subtle secondary actions use neutral surfaces.
+- Header bars: light, border‑bottom only; no solid brand color bars.
+
 Key Goals
 - Cohesive theming: consistent colors, spacing, and typography across all modules.
 - Modern surfaces: soft elevation, rounded corners, and optional glass effects.
@@ -37,7 +44,7 @@ Implementation Highlights
 Component Guidelines
 - Use `useTheme()` for colors, spacing, radius, and shadows.
 - Prefer theme tokens over hex values. Avoid hardcoded colors.
-- Cards and surfaces: use `theme.colors.surface` + `theme.colors.border`, rounded corners from `theme.borderRadius`, and appropriate `elevation`.
+- Cards and surfaces: prefer flat sections. When a surface is needed, use `theme.colors.surface` with minimal or no elevation and a hairline divider.
 - Chips: semantic colors for category states; white text on strong chips, dark text on light chips.
 - Buttons: reserved for primary actions; avoid heavy borders; rely on color and elevation.
 - Text: headings use `title*`/`headline*` variants; body copy uses `body*`; de-emphasize with `textSecondary`.
@@ -50,7 +57,12 @@ Recent Changes (Modernization Pass)
 - Refactored to theme-driven styling:
   - `src/components/results/FilterBar.tsx`
   - `src/components/common/InputCard.tsx`
-  - `src/components/results/ResultsSummary.tsx`
+- `src/components/results/ResultsSummaryFlat.tsx` (new) replaces the old summary card with a large progress ring and pills.
+- `src/components/results/CategorySectionFlat.tsx` and `ResultRow.tsx` (new) replace card‑based lists with clean rows.
+- UI primitives: `src/components/ui/Pill.tsx`, `src/components/ui/AccentButton.tsx`, `src/components/results/ProgressRing.tsx`.
+- Results screen refactor to flat layout: `src/screens/results/ResultsScreen.tsx`.
+- Home tweaks: preferences shown as pill, inline secondary actions via pill buttons.
+- Settings refresh: pill toggles for Vegan/Vegetarian/Custom and outlined text area for custom restrictions.
   - Minor polish to `src/components/common/DietaryOptionCard.tsx` and `CameraButton.tsx`
   - Added ThemeProvider to test wrappers for components relying on theme.
 - Camera UI modernization:

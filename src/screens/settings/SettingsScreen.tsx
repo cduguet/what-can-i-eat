@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Appbar, Card, Text, RadioButton, Button, TextInput } from 'react-native-paper';
+import { Appbar, Text, TextInput } from 'react-native-paper';
+import AccentButton from '@/components/ui/AccentButton';
+import Pill from '@/components/ui/Pill';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@/theme/ThemeProvider';
 import { DietaryType, UserPreferences } from '@/types';
@@ -40,43 +42,52 @@ export const SettingsScreen: React.FC = () => {
       </Appbar.Header>
 
       <View style={styles.content}>
-        <Card style={styles.card}>
-          <Card.Title title="Dietary Preferences" subtitle="Used for all analyses" />
-          <Card.Content>
-            <RadioButton.Group
-              onValueChange={(v) => setPrefs(p => ({ ...p, dietaryType: v as DietaryType }))}
-              value={prefs.dietaryType}
-            >
-              <View style={styles.radioRow}>
-                <RadioButton value={DietaryType.VEGAN} />
-                <Text>Vegan</Text>
-              </View>
-              <View style={styles.radioRow}>
-                <RadioButton value={DietaryType.VEGETARIAN} />
-                <Text>Vegetarian</Text>
-              </View>
-              <View style={styles.radioRow}>
-                <RadioButton value={DietaryType.CUSTOM} />
-                <Text>Custom</Text>
-              </View>
-            </RadioButton.Group>
+        <Text style={styles.sectionTitle}>Dietary Preferences</Text>
+        <View style={styles.pillsRow}>
+          <Pill
+            label="Vegan"
+            color={prefs.dietaryType === DietaryType.VEGAN ? theme.colors.semantic.safeLight : theme.colors.border}
+            textColor={prefs.dietaryType === DietaryType.VEGAN ? theme.colors.semantic.safe : theme.colors.text}
+            style={styles.pill}
+            leading={<Text>🌿</Text>}
+            onTouchEnd={() => setPrefs(p => ({ ...p, dietaryType: DietaryType.VEGAN }))}
+          />
+          <Pill
+            label="Vegetarian"
+            color={prefs.dietaryType === DietaryType.VEGETARIAN ? theme.colors.semantic.safeLight : theme.colors.border}
+            textColor={prefs.dietaryType === DietaryType.VEGETARIAN ? theme.colors.semantic.safe : theme.colors.text}
+            style={styles.pill}
+            leading={<Text>🥗</Text>}
+            onTouchEnd={() => setPrefs(p => ({ ...p, dietaryType: DietaryType.VEGETARIAN }))}
+          />
+          <Pill
+            label="Custom"
+            color={prefs.dietaryType === DietaryType.CUSTOM ? theme.colors.semantic.cautionLight : theme.colors.border}
+            textColor={prefs.dietaryType === DietaryType.CUSTOM ? theme.colors.semantic.caution : theme.colors.text}
+            style={styles.pill}
+            leading={<Text>✏️</Text>}
+            onTouchEnd={() => setPrefs(p => ({ ...p, dietaryType: DietaryType.CUSTOM }))}
+          />
+        </View>
 
-            {prefs.dietaryType === DietaryType.CUSTOM && (
-              <TextInput
-                label="Custom restrictions"
-                value={prefs.customRestrictions || ''}
-                onChangeText={(t) => setPrefs(p => ({ ...p, customRestrictions: t }))}
-                placeholder="e.g., no gluten, no peanuts, no dairy"
-                multiline
-                style={{ marginTop: 12 }}
-              />
-            )}
-          </Card.Content>
-        </Card>
+        {prefs.dietaryType === DietaryType.CUSTOM && (
+          <View style={{ marginTop: 12 }}>
+            <Text style={styles.label}>Custom restrictions</Text>
+            <TextInput
+              mode="outlined"
+              value={prefs.customRestrictions || ''}
+              onChangeText={(t) => setPrefs(p => ({ ...p, customRestrictions: t }))}
+              placeholder="e.g., no gluten, no peanuts, no dairy"
+              multiline
+              style={styles.textArea}
+              outlineColor={theme.colors.primary}
+            />
+          </View>
+        )}
 
-        <Button mode="contained" onPress={save} disabled={loading}>
-          Save Preferences
-        </Button>
+        <View style={{ marginTop: 16 }}>
+          <AccentButton title="Save Preferences" onPress={save} disabled={loading} />
+        </View>
       </View>
     </View>
   );
@@ -84,8 +95,17 @@ export const SettingsScreen: React.FC = () => {
 
 const createStyles = (theme: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
-  header: { backgroundColor: theme.colors.primary },
-  content: { padding: 16, gap: 16 },
-  card: { backgroundColor: theme.colors.surface },
-  radioRow: { flexDirection: 'row', alignItems: 'center' },
+  header: { 
+    backgroundColor: theme.colors.background,
+    elevation: 0,
+    shadowOpacity: 0,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: theme.colors.border,
+  },
+  content: { padding: 16 },
+  sectionTitle: { fontFamily: theme.typography.fontFamily.bold, fontSize: 18, color: theme.colors.text },
+  pillsRow: { flexDirection: 'row', gap: 8, marginTop: 12, flexWrap: 'wrap' },
+  pill: {},
+  label: { color: theme.colors.textSecondary, marginBottom: 6 },
+  textArea: { backgroundColor: theme.colors.surface },
 });

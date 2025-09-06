@@ -8,7 +8,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
-import { Appbar, FAB, Portal, Snackbar, ActivityIndicator, Text } from 'react-native-paper';
+import { Appbar, Snackbar, ActivityIndicator, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
@@ -25,9 +25,9 @@ import {
   AppError,
   ErrorSeverity
 } from '@/types';
-import { ResultsSummary } from '@/components/results/ResultsSummary';
 import { FilterBar } from '@/components/results/FilterBar';
-import { CategorySectionList } from '@/components/results/CategorySection';
+import { ResultsSummaryFlat } from '@/components/results/ResultsSummaryFlat';
+import { CategorySectionFlat } from '@/components/results/CategorySectionFlat';
 import { useTheme } from '@/theme/ThemeProvider';
 import { saveAnalysisToCache } from '@/services/cache/recentCache';
 import { MenuInputType, DietaryType, UserPreferences, GeminiRequest } from '@/types';
@@ -411,11 +411,8 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
       </Appbar.Header>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Results Summary */}
-        <ResultsSummary
-          results={filteredResults}
-          style={styles.summary}
-        />
+        {/* Results Summary (flat) */}
+        <ResultsSummaryFlat results={filteredResults} style={styles.summary} />
 
         {/* Filter Bar */}
         <FilterBar
@@ -426,23 +423,25 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({ navigation, route 
           style={styles.filterBar}
         />
 
-        {/* Category Sections */}
-        <CategorySectionList
-          categorizedResults={categorizedResults}
-          onResultPress={handleResultPress}
-          style={styles.categoryList}
-        />
+        {/* Category Sections (flat) */}
+        <View style={styles.categoryList}>
+          <CategorySectionFlat
+            category={FoodSuitability.GOOD}
+            results={categorizedResults.good}
+            onResultPress={handleResultPress}
+          />
+          <CategorySectionFlat
+            category={FoodSuitability.CAREFUL}
+            results={categorizedResults.careful}
+            onResultPress={handleResultPress}
+          />
+          <CategorySectionFlat
+            category={FoodSuitability.AVOID}
+            results={categorizedResults.avoid}
+            onResultPress={handleResultPress}
+          />
+        </View>
       </ScrollView>
-
-      {/* Floating Action Button */}
-      <Portal>
-        <FAB
-          icon="camera"
-          label="Scan Another"
-          onPress={() => navigation.navigate('Camera')}
-          style={styles.fab}
-        />
-      </Portal>
 
       {/* Snackbar for notifications */}
       <Snackbar
@@ -463,7 +462,11 @@ const createStyles = (theme: any) => StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   header: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: theme.colors.background,
+    elevation: 0,
+    shadowOpacity: 0,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: theme.colors.border,
   },
   content: {
     flex: 1,
@@ -475,7 +478,7 @@ const createStyles = (theme: any) => StyleSheet.create({
     marginTop: 8,
   },
   categoryList: {
-    paddingBottom: 80, // Space for FAB
+    paddingBottom: 24,
   },
   loadingContainer: {
     flex: 1,
@@ -511,13 +514,6 @@ const createStyles = (theme: any) => StyleSheet.create({
     gap: 16,
   },
   errorButton: {
-    backgroundColor: theme.colors.primary,
-  },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
     backgroundColor: theme.colors.primary,
   },
   snackbar: {

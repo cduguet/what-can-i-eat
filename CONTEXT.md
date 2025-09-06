@@ -82,6 +82,7 @@ Coordination Log
 - 2025-09-06: Settings redesigned to manage only Dietary Preferences (Vegan/Vegetarian/Custom + custom restrictions). Removed haptics/high-contrast/text-size from UI. Files: `src/screens/settings/SettingsScreen.tsx`. Notes: onboarding still seeds `user_settings` minimally; app no longer reads them on Home.
 - 2025-09-06: Recent Activity full screen added and wired from Home widget “View All”. Reads both `wcie_cache_*` and `menu_analysis_cache_*`. Files: `src/screens/main/RecentActivityScreen.tsx`, `App.tsx`, `src/components/common/RecentActivity.tsx`, `src/types/index.ts`.
 - 2025-09-06: Camera now loads `user_preferences` from AsyncStorage (removed TODO fallback). Files: `src/screens/camera/CameraScreen.tsx`.
+- 2025-09-06: Flat UI refresh (phase 1). Results screen redesigned to iOS‑leaning flat layout: large progress ring, semantic pills, and row list (no cards). New primitives `Pill`, `AccentButton`, `ProgressRing`. Home tweaks: preferences pill + inline URL/Text buttons. Settings screen now uses pill toggles and outlined custom text box. Files: `src/screens/results/ResultsScreen.tsx`, `src/components/results/ResultsSummaryFlat.tsx`, `src/components/results/CategorySectionFlat.tsx`, `src/components/results/ResultRow.tsx`, `src/components/results/ProgressRing.tsx`, `src/components/ui/Pill.tsx`, `src/components/ui/AccentButton.tsx`, `src/screens/main/HomeScreen.tsx`, `src/screens/settings/SettingsScreen.tsx`, `docs/design-system.md`.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.
