@@ -87,6 +87,7 @@ Coordination Log
 - 2025-09-06: Results UI polish 2. Category sections now have faint tinted backgrounds (even lighter for better contrast with count pill); larger category titles; removed per‑row emojis. Also fixed sort button clipping on iOS. Files: `src/components/results/CategorySectionFlat.tsx`, `src/components/results/ResultRow.tsx`, `src/components/results/FilterBar.tsx`.
 - 2025-09-06: URL analysis input length aligned with manual text. Files: `src/services/menu/menuInputService.ts`. Notes: Cap extracted page text to 5000 chars before parsing; Gemini `maxOutputTokens` already at 4096.
 - 2025-09-06: Fixed URL parsing collapsing lines causing few items. Files: `src/services/menu/menuInputService.ts`. Notes: Preserve line breaks for block elements and avoid collapsing newlines; improves extraction (e.g., Seven North Vienna menu).
+- 2025-09-06: Web CORS fallback for Analyze URL. Files: `src/services/menu/menuInputService.ts`. Notes: On web, fetch falls back to `https://r.jina.ai/<url>` to bypass CORS and returns markdown cleaned to text; native keeps direct fetch. Input still capped at 5000 chars.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.
