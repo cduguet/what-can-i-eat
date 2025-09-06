@@ -63,7 +63,7 @@ export enum BackendMode {
 /**
  * Get backend mode from environment variables
  *
- * @returns Backend mode (defaults to LOCAL for backward compatibility)
+ * @returns Backend mode (defaults to SUPABASE for security and scalability)
  */
 export const getBackendMode = (): BackendMode => {
   const mode = process.env[ENV_KEYS.BACKEND_MODE]?.toLowerCase();
@@ -71,7 +71,8 @@ export const getBackendMode = (): BackendMode => {
   if (mode === 'supabase') return BackendMode.SUPABASE;
   if (mode === 'local') return BackendMode.LOCAL;
 
-  // Sensible fallback: if Supabase env is present, prefer Supabase backend
+  // Default to Supabase backend for security and scalability
+  // Fallback to local only if Supabase env vars are missing
   const hasSupabase = !!(process.env[ENV_KEYS.SUPABASE_URL] && process.env[ENV_KEYS.SUPABASE_ANON_KEY]);
   return hasSupabase ? BackendMode.SUPABASE : BackendMode.LOCAL;
 };
@@ -79,7 +80,7 @@ export const getBackendMode = (): BackendMode => {
 /**
  * Get AI provider from environment variables
  *
- * @returns AI provider (defaults to GEMINI for backward compatibility)
+ * @returns AI provider (defaults to GEMINI for Supabase backend, VERTEX for local)
  */
 export const getAIProvider = (): AIProvider => {
   const provider = process.env[ENV_KEYS.AI_PROVIDER]?.toLowerCase();
@@ -90,8 +91,10 @@ export const getAIProvider = (): AIProvider => {
     case 'gemini':
       return AIProvider.GEMINI;
     default:
-      // Default to Vertex; server-side keys via Supabase are recommended
-      return AIProvider.VERTEX;
+      // Default to Gemini for Supabase backend (server-side keys are secure)
+      // Default to Vertex for local development (if configured)
+      const backendMode = getBackendMode();
+      return backendMode === BackendMode.SUPABASE ? AIProvider.GEMINI : AIProvider.VERTEX;
   }
 };
 

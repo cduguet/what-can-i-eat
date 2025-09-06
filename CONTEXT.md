@@ -54,9 +54,9 @@ Environment & Scripts
 - Vertex API Testing: `node test-vertex-credentials.js` (requires `.env.local` with Vertex credentials).
 
 Environment Variables (Expo public)
-- Backend Mode: `EXPO_PUBLIC_BACKEND_MODE` ('local' or 'supabase', defaults to 'local').
+- Backend Mode: `EXPO_PUBLIC_BACKEND_MODE` ('local' or 'supabase', defaults to 'supabase').
 - Supabase: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (required when backend_mode=supabase).
-- AI Provider: `EXPO_PUBLIC_AI_PROVIDER` ('gemini' or 'vertex', defaults to 'gemini').
+- AI Provider: `EXPO_PUBLIC_AI_PROVIDER` ('gemini' or 'vertex', defaults to 'gemini' for Supabase, 'vertex' for local).
 - Gemini: `EXPO_PUBLIC_GEMINI_API_KEY` (required when provider=gemini and backend_mode=local), `EXPO_PUBLIC_GEMINI_ENDPOINT` (optional).
 - Vertex AI: `EXPO_PUBLIC_VERTEX_PROJECT_ID`, `EXPO_PUBLIC_VERTEX_LOCATION`, `EXPO_PUBLIC_VERTEX_CREDENTIALS` (required when provider=vertex and backend_mode=local).
 - Common: `EXPO_PUBLIC_API_TIMEOUT` (ms), `EXPO_PUBLIC_MAX_RETRIES`.
@@ -124,3 +124,4 @@ Coordination Entry Template
 - 2025-09-06: Fixed menu item detection limit in AI prompts; Files: `src/utils/prompts.ts`, `src/services/api/geminiService.ts`. Notes: Removed "If analyzing >20 items, prioritize the most important ones" constraint from SYSTEM_PROMPT that was limiting image analysis to ~5 items instead of detecting all menu items; added debug logging to validate AI responses; multimodal tests confirm 24+ items now detected from real menu images.
 - 2025-09-06: Added integration tests and documentation for multi-provider setup; Files: `tests/integration/backendSwitching.test.ts`, `tests/integration/supabaseIntegration.test.ts`, `docs/supabase-integration-test-results.md`, `docs/supabase-setup.md`. Notes: Comprehensive test suite for provider fallback mechanisms and Supabase integration; includes setup documentation and test results with performance metrics.
 - 2025-09-06: Prepared mobile launch; sanitized AI keys; added EAS config, launch checklist, and asset generator. Files: `app.json`, `.env`, `.env.example`, `.env.supabase-test`, `src/services/api/testGeminiIntegration.ts`, `package.json`, `eas.json`, `docs/launch-checklist.md`, `README.md`, `scripts/generate-assets.js`, `assets/*`. Notes: Enforce Supabase backend mode and remove client AI keys; added EAS build/update scripts; run `npm run assets:generate` to (re)create icons and splash.
+- 2025-09-06: Updated configuration defaults to prioritize Supabase backend for security; Files: `src/services/api/config.ts`, `docs/supabase-setup.md`. Notes: Changed default backend mode from 'local' to 'supabase' and AI provider defaults to 'gemini' for Supabase backend, 'vertex' for local backend; updated documentation to emphasize Supabase as recommended approach for production deployments.

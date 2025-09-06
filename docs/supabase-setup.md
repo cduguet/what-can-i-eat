@@ -5,8 +5,14 @@ This guide explains how to set up and configure the Supabase backend for the "Wh
 ## Overview
 
 The application supports two backend modes:
-- **Local Mode**: Direct API calls to AI providers (Gemini/Vertex AI)
-- **Supabase Mode**: AI processing through Supabase Edge Functions
+- **Supabase Mode** (Default & Recommended): AI processing through Supabase Edge Functions
+- **Local Mode**: Direct API calls to AI providers (Gemini/Vertex AI) - for development only
+
+**Supabase Mode is the default and recommended approach** for production deployments as it:
+- Keeps API keys secure on the server-side
+- Provides better scalability and rate limiting
+- Enables centralized monitoring and logging
+- Reduces client-side bundle size
 
 ## Supabase Edge Function
 
@@ -60,7 +66,7 @@ The Edge Function requires these environment variables to be set in Supabase:
 
 5. **AI_PROVIDER** (optional)
    - Default AI provider: `gemini` or `vertex`
-   - Defaults to `gemini` if not set
+   - Defaults to `gemini` for Supabase backend, `vertex` for local backend
 
 ### Setting Environment Variables in Supabase
 
@@ -90,8 +96,8 @@ Set these in your `.env` file:
 EXPO_PUBLIC_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 
-# Backend Mode Selection
-EXPO_PUBLIC_BACKEND_MODE=supabase  # or 'local'
+# Backend Mode Selection (defaults to 'supabase' if not set)
+EXPO_PUBLIC_BACKEND_MODE=supabase  # or 'local' for development
 
 # AI Provider Selection (used by Supabase function)
 EXPO_PUBLIC_AI_PROVIDER=gemini  # or 'vertex'
