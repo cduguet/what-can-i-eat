@@ -83,12 +83,26 @@ export const CameraScreen: React.FC = () => {
   // Initialize camera on mount
   useEffect(() => {
     initializeCamera();
-    // TODO: Fetch user preferences from storage
-    setUserPreferences({
-      dietaryType: DietaryType.VEGAN,
-      lastUpdated: new Date().toISOString(),
-      onboardingCompleted: true,
-    });
+    (async () => {
+      try {
+        const prefs = await AsyncStorage.getItem('user_preferences');
+        if (prefs) {
+          setUserPreferences(JSON.parse(prefs));
+        } else {
+          setUserPreferences({
+            dietaryType: DietaryType.VEGAN,
+            lastUpdated: new Date().toISOString(),
+            onboardingCompleted: true,
+          });
+        }
+      } catch {
+        setUserPreferences({
+          dietaryType: DietaryType.VEGAN,
+          lastUpdated: new Date().toISOString(),
+          onboardingCompleted: true,
+        });
+      }
+    })();
     return () => {
       cameraService.cleanup();
     };
