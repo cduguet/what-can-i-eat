@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, Snackbar } from 'react-native-paper';
 import AccentButton from '@/components/ui/AccentButton';
 import { FormInput } from '@/components/ui';
 import Pill from '@/components/ui/Pill';
@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@/theme/ThemeProvider';
 import { DietaryType, UserPreferences } from '@/types';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 
 export const SettingsScreen: React.FC = () => {
   const { theme } = useTheme();
@@ -18,6 +19,7 @@ export const SettingsScreen: React.FC = () => {
     customRestrictions: '',
   });
   const [loading, setLoading] = useState(true);
+  const [savedVisible, setSavedVisible] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -32,7 +34,14 @@ export const SettingsScreen: React.FC = () => {
   const save = async () => {
     const next = { ...prefs, lastUpdated: new Date().toISOString() };
     setPrefs(next);
-    await AsyncStorage.setItem('user_preferences', JSON.stringify(next));
+    try {
+      await AsyncStorage.setItem('user_preferences', JSON.stringify(next));
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setSavedVisible(true);
+    } catch (e) {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      setSavedVisible(true);
+    }
   };
 
   const styles = createStyles(theme);
@@ -120,6 +129,14 @@ export const SettingsScreen: React.FC = () => {
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+      <Snackbar
+        visible={savedVisible}
+        onDismiss={() => setSavedVisible(false)}
+        duration={1500}
+        accessibilityLiveRegion="polite"
+      >
+        Preferences saved
+      </Snackbar>
     </View>
   );
 };

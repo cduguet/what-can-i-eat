@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,7 +10,7 @@ import { Text, Button, Card, Portal, Modal, IconButton, Icon } from 'react-nativ
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 
 import { RootStackParamList, UserPreferences, MenuInputType, CameraPermissionStatus } from '@/types';
@@ -55,6 +55,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
   useEffect(() => {
     loadUserData();
   }, []);
+
+  // Reload preferences when returning to this screen
+  useFocusEffect(
+    useCallback(() => {
+      loadUserData();
+    }, [])
+  );
 
   /**
    * Load user preferences and settings from AsyncStorage
@@ -263,6 +270,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
               label={getDietaryDisplayText()}
               color={theme.colors.semantic.safeLight}
               textColor={theme.colors.semantic.safe}
+              onPress={() => navigation.navigate('Settings', { section: 'dietary' })}
             />
           </View>
         )}

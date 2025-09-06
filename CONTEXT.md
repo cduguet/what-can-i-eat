@@ -99,6 +99,8 @@ Coordination Log
 - 2025-09-06: Unified input styling to faint, rounded fields (replaced Material underline/outlined inputs). Files: `src/components/ui/FormInput.tsx`, `src/components/ui/index.ts`, `src/screens/main/HomeScreen.tsx`, `src/screens/settings/SettingsScreen.tsx`. Notes: Home modals (Analyze URL, Enter Text) and Settings custom restrictions now use `FormInput`.
 - 2025-09-06: Matched input background to Results search bar grey and forced URL field to single-line. Files: `src/components/ui/FormInput.tsx`, `src/screens/main/HomeScreen.tsx`. Notes: Light mode uses `#F5F7F8`, dark keeps `theme.colors.surface`.
 - 2025-09-06: Modal headers polished (icons + padding). Files: `src/screens/main/HomeScreen.tsx`. Notes: Replaced `Card.Title` with custom header row for tighter layout; smaller left icon in faint circle, smaller close icon, adjusted paddings.
+- 2025-09-06: Home pill opens dietary settings; home refreshes on return. Files: `src/screens/main/HomeScreen.tsx`, `src/types/index.ts`. Notes: Pill in Home now navigates to Settings dietary section; added `useFocusEffect` to reload `user_preferences` when Home regains focus; `Settings` route accepts optional `{ section: 'dietary' }`.
+- 2025-09-06: Save confirmation in Settings. Files: `src/screens/settings/SettingsScreen.tsx`. Notes: Added success haptic and Snackbar (“Preferences saved”) after saving; shows for ~1.5s and announces politely for accessibility.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.

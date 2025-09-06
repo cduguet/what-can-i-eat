@@ -92,7 +92,7 @@ export type RootStackParamList = {
     menuUrl?: string;
     analysis?: GeminiResponse;
   };
-  Settings: undefined;
+  Settings: { section?: 'dietary' } | undefined;
   RecentActivity: undefined;
 };
 
