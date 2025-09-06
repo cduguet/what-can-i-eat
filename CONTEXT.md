@@ -48,6 +48,11 @@ Data & Storage
 Environment & Scripts
 - Install: `npm install`
 - Run: `npm start` (or `npm run ios` / `android` / `web`).
+- Test: `npm test` (Jest), `node run-comprehensive-test.js` (comprehensive AI provider/backend testing).
+
+## Recent Changes
+
+- 2025-01-06: Environment variable refactoring and comprehensive test analysis; Files: `.env`, `src/services/api/config.ts`, `run-comprehensive-test.js`. Notes: Removed EXPO_PUBLIC_ prefixes for consistency with Edge Functions, fixed corrupted JWT token, added missing GEMINI_API_KEY, installed @google/generative-ai dependency. Comprehensive test results: 1/4 combinations working (Vertex+Local), 3/4 failing due to missing API keys and Supabase Edge Function HTTP 500 errors.
 - Lint/Format/Typecheck: `npx eslint . --ext .ts,.tsx`, `npx prettier --check .`, `npx tsc --noEmit`.
 - Tests: `npm test` (Jest). Note: current Jest config fails on RN polyfills in this environment; not addressed here.
 - No global installs: use `npx expo ...` rather than installing Expo CLI globally.

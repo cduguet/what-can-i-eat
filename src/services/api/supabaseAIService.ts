@@ -290,12 +290,12 @@ export class SupabaseAIService implements IAIService {
  * @returns Configured Supabase AI service
  */
 export function createSupabaseAIService(): SupabaseAIService {
-  const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
-  const provider = process.env.EXPO_PUBLIC_AI_PROVIDER as AIProvider;
+  const url = process.env.SUPABASE_URL;
+  const anonKey = process.env.SUPABASE_ANON_KEY;
+  const provider = process.env.AI_PROVIDER as AIProvider;
 
   if (!url || !anonKey) {
-    throw new Error('Supabase configuration missing. Please set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY');
+    throw new Error('Supabase configuration missing. Please set SUPABASE_URL and SUPABASE_ANON_KEY');
   }
 
   return new SupabaseAIService({

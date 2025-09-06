@@ -7,7 +7,6 @@
  */
 
 import { GeminiService } from './geminiService';
-import { VertexService } from './vertexService';
 import { SupabaseAIService } from './supabaseAIService';
 import {
   AIProvider,
@@ -120,10 +119,9 @@ export class AIService implements IAIService {
 
     switch (this.provider) {
       case AIProvider.VERTEX:
-        if (!this.config.vertex) {
-          throw new Error('Vertex AI configuration is missing');
-        }
-        return new VertexService(this.config.vertex);
+        // Avoid bundling Node-only Vertex SDK in React Native client.
+        // Local Vertex mode should run on the server or via Supabase backend.
+        throw new Error('Vertex local mode is not supported in the Expo client. Use Supabase backend mode or run Vertex on the server.');
       
       case AIProvider.GEMINI:
       default:

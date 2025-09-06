@@ -21,8 +21,8 @@ import { authService } from '../auth/authService';
 import { trialService } from '../trial/trialService';
 
 // Environment variables for Supabase configuration
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
 // Development fallback configuration
 const isDevelopment = process.env.NODE_ENV === 'development';

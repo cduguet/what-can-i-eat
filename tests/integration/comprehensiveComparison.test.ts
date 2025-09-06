@@ -92,8 +92,8 @@ describe('Comprehensive AI Provider and Backend Comparison', () => {
 
   beforeAll(() => {
     // Ensure we have the test environment variables
-    if (!process.env.EXPO_PUBLIC_GEMINI_API_KEY && !process.env.GEMINI_API_KEY) {
-      throw new Error('EXPO_PUBLIC_GEMINI_API_KEY or GEMINI_API_KEY is required for testing');
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error('GEMINI_API_KEY is required for testing');
     }
     if (!process.env.GOOGLE_APPLICATION_CREDENTIALS && !process.env.VERTEX_PROJECT_ID) {
       console.warn('Vertex AI credentials not found, Vertex tests may fail');
@@ -116,11 +116,11 @@ describe('Comprehensive AI Provider and Backend Comparison', () => {
 
         try {
           // Set environment variables for this test
-          const originalBackendMode = process.env.EXPO_PUBLIC_BACKEND_MODE;
-          const originalProvider = process.env.EXPO_PUBLIC_AI_PROVIDER;
+          const originalBackendMode = process.env.BACKEND_MODE;
+          const originalProvider = process.env.AI_PROVIDER;
           
-          process.env.EXPO_PUBLIC_BACKEND_MODE = backend;
-          process.env.EXPO_PUBLIC_AI_PROVIDER = provider;
+          process.env.BACKEND_MODE = backend;
+          process.env.AI_PROVIDER = provider;
 
           // Create request using the proper structure
           const request: GeminiRequest = {
@@ -134,10 +134,10 @@ describe('Comprehensive AI Provider and Backend Comparison', () => {
           
           // Restore original environment
           if (originalBackendMode) {
-            process.env.EXPO_PUBLIC_BACKEND_MODE = originalBackendMode;
+            process.env.BACKEND_MODE = originalBackendMode;
           }
           if (originalProvider) {
-            process.env.EXPO_PUBLIC_AI_PROVIDER = originalProvider;
+            process.env.AI_PROVIDER = originalProvider;
           }
 
           result.responseTime = Date.now() - startTime;

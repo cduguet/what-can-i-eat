@@ -9,8 +9,8 @@ import { AIProvider, DietaryType, ContentType } from '../../src/types';
 
 // Test configuration
 const SUPABASE_CONFIG = {
-  url: process.env.EXPO_PUBLIC_SUPABASE_URL || '',
-  anonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '',
+  url: process.env.SUPABASE_URL || '',
+  anonKey: process.env.SUPABASE_ANON_KEY || '',
   provider: AIProvider.GEMINI,
   timeout: 30000
 };

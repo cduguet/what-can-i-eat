@@ -27,14 +27,14 @@ describe('Backend Mode Switching Tests', () => {
     requestId: `switching-test-${Date.now()}`
   };
 
-  const hasSupabaseEnv = !!(process.env.EXPO_PUBLIC_SUPABASE_URL && process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY);
+  const hasSupabaseEnv = !!(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY);
   const describeSupabase = hasSupabaseEnv ? describe : describe.skip;
 
   describeSupabase('Supabase Mode', () => {
     beforeAll(() => {
       // Set environment to use Supabase backend
-      process.env.EXPO_PUBLIC_BACKEND_MODE = 'supabase';
-      process.env.EXPO_PUBLIC_AI_PROVIDER = process.env.EXPO_PUBLIC_AI_PROVIDER || 'gemini';
+      process.env.BACKEND_MODE = 'supabase';
+      process.env.AI_PROVIDER = process.env.AI_PROVIDER || 'gemini';
     });
 
     it('should use Supabase backend when configured', async () => {
@@ -84,8 +84,8 @@ describe('Backend Mode Switching Tests', () => {
   describeLocal('Local Mode', () => {
     beforeAll(() => {
       // Set environment to use local backend
-      process.env.EXPO_PUBLIC_BACKEND_MODE = 'local';
-      process.env.EXPO_PUBLIC_AI_PROVIDER = process.env.EXPO_PUBLIC_AI_PROVIDER || 'gemini';
+      process.env.BACKEND_MODE = 'local';
+      process.env.AI_PROVIDER = process.env.AI_PROVIDER || 'gemini';
     });
 
     it('should use local backend when configured', async () => {

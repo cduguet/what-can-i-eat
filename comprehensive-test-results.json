@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-09-06T21:56:01.790Z",
+  "summary": {
+    "totalTests": 4,
+    "successful": 1,
+    "failed": 3,
+    "successRate": "25.0%",
+    "totalDuration": 634,
+    "averageDuration": 159
+  },
+  "results": [
+    {
+      "combination": "Gemini + Local Backend",
+      "success": false,
+      "duration": 3,
+      "provider": "gemini",
+      "backend": "local",
+      "error": "GEMINI_API_KEY not configured"
+    },
+    {
+      "combination": "Gemini + Supabase Backend",
+      "success": false,
+      "duration": 481,
+      "provider": "gemini",
+      "backend": "supabase",
+      "error": "Supabase Edge Function test failed: HTTP 500: Internal Server Error"
+    },
+    {
+      "combination": "Vertex + Local Backend",
+      "success": true,
+      "duration": 0,
+      "provider": "vertex",
+      "backend": "local",
+      "result": {
+        "success": true,
+        "provider": "vertex",
+        "backend": "local",
+        "response": "Vertex AI local test simulated (requires proper SDK setup)"
+      }
+    },
+    {
+      "combination": "Vertex + Supabase Backend",
+      "success": false,
+      "duration": 150,
+      "provider": "vertex",
+      "backend": "supabase",
+      "error": "Supabase Edge Function test failed: HTTP 500: Internal Server Error"
+    }
+  ]
+}
