@@ -88,6 +88,7 @@ Coordination Log
 - 2025-09-06: URL analysis input length aligned with manual text. Files: `src/services/menu/menuInputService.ts`. Notes: Cap extracted page text to 5000 chars before parsing; Gemini `maxOutputTokens` already at 4096.
 - 2025-09-06: Fixed URL parsing collapsing lines causing few items. Files: `src/services/menu/menuInputService.ts`. Notes: Preserve line breaks for block elements and avoid collapsing newlines; improves extraction (e.g., Seven North Vienna menu).
 - 2025-09-06: Web CORS fallback for Analyze URL. Files: `src/services/menu/menuInputService.ts`. Notes: On web, fetch falls back to `https://r.jina.ai/<url>` to bypass CORS and returns markdown cleaned to text; native keeps direct fetch. Input still capped at 5000 chars.
+- 2025-09-06: TODO — First‑party proxy for Analyze URL (solve web CORS). Files: `src/services/menu/menuInputService.ts` (will read env), `supabase/functions/fetch-menu` (to add), `docs/api-security-architecture.md` (to add). Notes: Implement Supabase Edge Function `fetch-menu` that POSTs `{ url }`, fetches server‑side with SSRF guards, returns page text; set `EXPO_PUBLIC_FETCH_PROXY_URL` and prefer proxy on web; include CORS headers and OPTIONS handler.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.
