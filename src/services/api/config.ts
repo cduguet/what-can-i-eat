@@ -88,8 +88,10 @@ export const getAIProvider = (): AIProvider => {
     case 'vertex':
       return AIProvider.VERTEX;
     case 'gemini':
-    default:
       return AIProvider.GEMINI;
+    default:
+      // Default to Vertex; server-side keys via Supabase are recommended
+      return AIProvider.VERTEX;
   }
 };
 
