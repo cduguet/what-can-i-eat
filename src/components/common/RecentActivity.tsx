@@ -223,7 +223,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   const handleViewAllPress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     // Navigate to full recent activity screen
-    console.log('Navigate to full recent activity');
+    navigation.navigate('RecentActivity');
   };
 
   /**

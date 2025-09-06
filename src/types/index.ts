@@ -93,6 +93,7 @@ export type RootStackParamList = {
     analysis?: GeminiResponse;
   };
   Settings: undefined;
+  RecentActivity: undefined;
 };
 
 // =============================================================================

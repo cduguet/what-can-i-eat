@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList, UserPreferences, UserSettings } from '@/types';
 import { OnboardingNavigator } from '@/screens/onboarding/OnboardingNavigator';
 import { HomeScreen } from '@/screens/main/HomeScreen';
+import { RecentActivityScreen } from '@/screens/main/RecentActivityScreen';
 import { CameraScreen } from '@/screens/camera/CameraScreen';
 import { ResultsScreen } from '@/screens/results/ResultsScreen';
 import { authService, AuthState } from '@/services/auth/authService';
@@ -156,6 +157,7 @@ function AppContent() {
             component={ResultsScreen}
             options={{ title: 'Analysis Results' }}
           />
+          <Stack.Screen name="RecentActivity" component={RecentActivityScreen} options={{ title: 'Recent Activity' }} />
           <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
         </Stack.Navigator>
       )}
