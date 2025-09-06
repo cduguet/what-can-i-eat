@@ -1,6 +1,9 @@
 import { MenuItem } from '@/types';
 import { Platform } from 'react-native';
 
+// Match manual text entry limits to ensure parity with URL analysis
+const MAX_MENU_TEXT_CHARS = 5000;
+
 // Basic heuristics to extract items from text blocks
 export function parseMenuText(raw: string): MenuItem[] {
   const lines = raw
@@ -27,21 +30,28 @@ export function parseMenuText(raw: string): MenuItem[] {
 export async function fetchAndExtractMenuFromUrl(url: string): Promise<MenuItem[]> {
   const res = await fetch(url);
   const html = await res.text();
-  const text = stripHtml(html);
+  // Normalize and cap extracted text to match manual entry limit (5000 chars)
+  const text = stripHtml(html).slice(0, MAX_MENU_TEXT_CHARS);
   return parseMenuText(text);
 }
 
 function stripHtml(html: string): string {
-  // Remove scripts/styles and tags
+  // Remove scripts/styles, preserve logical line breaks from common block elements
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    // Insert line breaks for common block-level separators
     .replace(/<br\s*\/?>(?=\s*<)/gi, '\n')
-    .replace(/<\/(p|li|h\d)>/gi, '\n')
+    .replace(/<\/(p|li|h\d|div|section|article)>/gi, '\n')
+    // Strip remaining tags
     .replace(/<[^>]+>/g, ' ')
+    // Normalize slashed spacing (e.g., "A / B")
     .replace(/\s+\/\s+/g, ' / ')
-    .replace(/\s{2,}/g, ' ') // collapse spaces
+    // Collapse only spaces/tabs, not newlines (preserve line boundaries)
+    .replace(/[ \t]{2,}/g, ' ')
+    // Trim whitespace around line breaks
+    .replace(/[ \t]*\n[ \t]*/g, '\n')
+    // Collapse excessive blank lines
     .replace(/\n{2,}/g, '\n')
     .trim();
 }
-
