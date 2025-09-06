@@ -32,6 +32,7 @@ export const CategorySectionFlat: React.FC<CategorySectionFlatProps> = ({ catego
 
   return (
     <View style={styles.section}>
+      <Text style={styles.headerCaption}>Category</Text>
       <TouchableOpacity style={styles.header} onPress={() => setOpen(!open)} accessibilityRole="button">
         <Text style={styles.headerEmoji}>{cfg.emoji}</Text>
         <Text style={[styles.headerTitle, { color: cfg.color }]}>{cfg.title}</Text>
@@ -58,11 +59,21 @@ const createStyles = (theme: any) => StyleSheet.create({
   section: {
     marginTop: 16,
   },
+  headerCaption: {
+    paddingHorizontal: 16,
+    color: theme.colors.textSecondary,
+    fontSize: 11,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
   header: {
     paddingHorizontal: 16,
     paddingVertical: 6,
     flexDirection: 'row',
     alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: theme.colors.border,
   },
   headerEmoji: {
     fontSize: 16,
@@ -85,4 +96,3 @@ const createStyles = (theme: any) => StyleSheet.create({
 });
 
 export default CategorySectionFlat;
-

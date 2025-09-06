@@ -227,8 +227,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   onPress={() => setSortMenuVisible(true)}
                   icon="sort"
                   style={styles.sortButton}
+                  contentStyle={styles.sortButtonContent}
                   labelStyle={styles.sortButtonText}
-                  compact
+                  compact={false}
                 >
                   {getSortOptionText(filter.sortBy, filter.sortDirection)}
                 </Button>
@@ -330,8 +331,10 @@ const createStyles = (theme: any) => StyleSheet.create({
   sortButton: {
     borderColor: theme.colors.primary,
     borderWidth: 1,
-    height: 32,
+    height: 36,
+    borderRadius: 999,
   },
+  sortButtonContent: { height: 36, paddingHorizontal: 12 },
   sortButtonText: {
     fontSize: 12,
     color: theme.colors.primary,
