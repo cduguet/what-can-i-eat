@@ -10,7 +10,7 @@ export { authService, AuthService } from './auth/authService';
 export type { AuthResult, AuthState, AccountUpgradeData, SocialProvider } from './auth/authService';
 
 // API services
-export { geminiService, GeminiService } from './api/geminiService';
+export { aiService, AIService } from './api/aiService';
 export { secureGeminiService, SecureGeminiService } from './api/supabaseService';
 
 // Cache services

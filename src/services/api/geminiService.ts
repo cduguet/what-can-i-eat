@@ -354,7 +354,6 @@ export class GeminiService {
   }
 }
 
-/**
- * Default Gemini service instance
- */
-export const geminiService = new GeminiService();
+// Note: No default instance export. Create on-demand where needed
+// to avoid requiring a client API key during import time, especially
+// when the app is using the Supabase backend.
