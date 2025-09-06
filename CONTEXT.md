@@ -15,7 +15,7 @@ Tech Stack
 - UI: React Native + React Native Paper.
 - Navigation: React Navigation 7.
 - State: React hooks; AsyncStorage for persistence.
-- AI: Google Gemini via `@google/genai`.
+- AI: Google Gemini via `@google/genai`; Vertex AI via `@google-cloud/vertexai` with provider toggle.
 
 Architecture (Current)
 - Entry: `App.tsx` wires ThemeProvider, NavigationContainer, onboarding routing, and main stack.
@@ -29,7 +29,7 @@ Architecture (Current)
   - `ResultsScreen`: categorized results UI (Good / Careful / Avoid) with filters and summary.
 
 Services
-- Gemini API: `src/services/api/geminiService.ts` with retry, timeout, parsing, and tests; config in `src/services/api/config.ts`.
+- AI Services: `src/services/api/aiService.ts` abstraction layer with provider switching; `src/services/api/geminiService.ts` and `src/services/api/vertexService.ts` implementations; config in `src/services/api/config.ts`.
 - OCR: `src/services/ocr/ocrService.ts` (legacy note in `DEPRECATED.md` present).
 - Caching: `src/services/cache/offlineCache.ts` for storing results.
 - Auth (stubbed): `src/services/auth/authService.ts` sets up basic auth state tracking used by `App.tsx`.
@@ -51,16 +51,19 @@ Environment & Scripts
 - Lint/Format/Typecheck: `npx eslint . --ext .ts,.tsx`, `npx prettier --check .`, `npx tsc --noEmit`.
 - Tests: `npm test` (Jest). Note: current Jest config fails on RN polyfills in this environment; not addressed here.
 - No global installs: use `npx expo ...` rather than installing Expo CLI globally.
+- Vertex API Testing: `node test-vertex-credentials.js` (requires `.env.local` with Vertex credentials).
 
 Environment Variables (Expo public)
-- Required: `EXPO_PUBLIC_GEMINI_API_KEY`.
-- Optional: `EXPO_PUBLIC_GEMINI_ENDPOINT`, `EXPO_PUBLIC_API_TIMEOUT` (ms), `EXPO_PUBLIC_MAX_RETRIES`.
+- AI Provider: `EXPO_PUBLIC_AI_PROVIDER` ('gemini' or 'vertex', defaults to 'gemini').
+- Gemini: `EXPO_PUBLIC_GEMINI_API_KEY` (required when provider=gemini), `EXPO_PUBLIC_GEMINI_ENDPOINT` (optional).
+- Vertex AI: `EXPO_PUBLIC_VERTEX_PROJECT_ID`, `EXPO_PUBLIC_VERTEX_LOCATION`, `EXPO_PUBLIC_VERTEX_CREDENTIALS` (required when provider=vertex).
+- Common: `EXPO_PUBLIC_API_TIMEOUT` (ms), `EXPO_PUBLIC_MAX_RETRIES`.
 - Example: see `.env.example`.
 
 Key Decisions & Status
 - Onboarding simplified to 4 steps; default settings applied on completion (haptics/notifications enabled; high contrast off; textSize medium; language en).
 - Theme modernized (Sept 2025) to teal/amber/cyan with semantic tokens; this supersedes older color specs previously documented.
-- Gemini via `@google/genai` in dev; consider Vertex AI for production (security/SLA) later.
+- AI Provider Toggle: Supports both Gemini API and Vertex AI with environment-based switching; defaults to Gemini for backward compatibility.
 - Home screen includes developer helpers: demo results button and long-press settings icon to reset onboarding.
 - 2025-01-06: Fixed large menu processing crashes and URL analysis limits; Files: `src/services/api/geminiService.ts`, `src/screens/main/HomeScreen.tsx`, `src/services/menu/menuInputService.ts`, `src/components/ui/FAB.tsx`. Notes: Increased API tokens to 4096, text input to 5000 chars, URL analysis matching text limits.
 
@@ -113,3 +116,4 @@ Coordination Entry Template
 - YYYY-MM-DD: Short description of change; Files: `path/one`, `path/two`. Notes: one line if needed.
 - 2025-09-06: Home safe-area padding for notch; Files: `src/screens/main/HomeScreen.tsx`. Notes: Added SafeAreaView edges=['top'] and dynamic top padding via useSafeAreaInsets to keep header/sections below the notch.
 - 2025-09-06: Recent Activity top spacing + ScrollView inset; Files: `src/screens/main/HomeScreen.tsx`, `src/components/common/RecentActivity.tsx`. Notes: Set contentInsetAdjustmentBehavior="always" on Home ScrollView and increased Recent Activity section top margin.
+- 2025-09-06: Vertex AI support with provider toggle; Files: `src/services/api/vertexService.ts`, `src/services/api/aiService.ts`, `src/services/api/config.ts`, `src/types/index.ts`, `.env.example`, `src/services/api/__tests__/aiService.test.ts`, `package.json`. Notes: Added Vertex AI as alternative to Gemini with EXPO_PUBLIC_AI_PROVIDER toggle; maintains backward compatibility defaulting to Gemini; abstraction layer enables runtime switching.
