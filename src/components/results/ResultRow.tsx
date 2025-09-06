@@ -11,13 +11,13 @@ interface ResultRowProps {
 const suitabilityMeta = (theme: any, s: FoodSuitability) => {
   switch (s) {
     case FoodSuitability.GOOD:
-      return { color: theme.colors.semantic.safe, icon: '✅' };
+      return { color: theme.colors.semantic.safe };
     case FoodSuitability.CAREFUL:
-      return { color: theme.colors.semantic.caution, icon: '⚠️' };
+      return { color: theme.colors.semantic.caution };
     case FoodSuitability.AVOID:
-      return { color: theme.colors.semantic.avoid, icon: '❌' };
+      return { color: theme.colors.semantic.avoid };
     default:
-      return { color: theme.colors.textSecondary, icon: '•' };
+      return { color: theme.colors.textSecondary };
   }
 };
 
@@ -35,7 +35,6 @@ export const ResultRow: React.FC<ResultRowProps> = ({ result, onPress }) => {
   return (
     <View style={styles.rowContainer}>
       <TouchableOpacity style={styles.row} onPress={toggle} accessibilityRole="button">
-        <Text style={[styles.icon]}>{meta.icon}</Text>
         <View style={styles.rowText}>
           <Text style={styles.title}>{result.itemName}</Text>
           <Text style={[styles.metaText, { color: meta.color }]}>
@@ -78,10 +77,6 @@ const createStyles = (theme: any) => StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
   },
-  icon: {
-    fontSize: 18,
-    marginRight: 10,
-  },
   rowText: { flex: 1 },
   title: {
     fontFamily: theme.typography.fontFamily.semibold,
@@ -119,4 +114,3 @@ const createStyles = (theme: any) => StyleSheet.create({
 });
 
 export default ResultRow;
-

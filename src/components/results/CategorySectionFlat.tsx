@@ -32,25 +32,26 @@ export const CategorySectionFlat: React.FC<CategorySectionFlatProps> = ({ catego
 
   return (
     <View style={styles.section}>
-      <Text style={styles.headerCaption}>Category</Text>
-      <TouchableOpacity style={styles.header} onPress={() => setOpen(!open)} accessibilityRole="button">
-        <Text style={styles.headerEmoji}>{cfg.emoji}</Text>
-        <Text style={[styles.headerTitle, { color: cfg.color }]}>{cfg.title}</Text>
-        <View style={{ flex: 1 }} />
-        <Pill label={String(results.length)} color={cfg.light} textColor={cfg.color} />
-      </TouchableOpacity>
+      <View style={[styles.sectionBox, { backgroundColor: cfg.light }]}>        
+        <TouchableOpacity style={styles.header} onPress={() => setOpen(!open)} accessibilityRole="button">
+          <Text style={styles.headerEmoji}>{cfg.emoji}</Text>
+          <Text style={[styles.headerTitle, { color: cfg.color }]}>{cfg.title}</Text>
+          <View style={{ flex: 1 }} />
+          <Pill label={String(results.length)} color={cfg.light} textColor={cfg.color} />
+        </TouchableOpacity>
 
-      {open && (
-        <View style={styles.list}>
-          {results.length === 0 ? (
-            <Text style={styles.empty}>No items</Text>
-          ) : (
-            results.map((r) => (
-              <ResultRow key={r.itemId || r.itemName} result={r} onPress={onResultPress} />
-            ))
-          )}
-        </View>
-      )}
+        {open && (
+          <View style={styles.list}>
+            {results.length === 0 ? (
+              <Text style={styles.empty}>No items</Text>
+            ) : (
+              results.map((r) => (
+                <ResultRow key={r.itemId || r.itemName} result={r} onPress={onResultPress} />
+              ))
+            )}
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -59,21 +60,17 @@ const createStyles = (theme: any) => StyleSheet.create({
   section: {
     marginTop: 16,
   },
-  headerCaption: {
-    paddingHorizontal: 16,
-    color: theme.colors.textSecondary,
-    fontSize: 11,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: 4,
+  sectionBox: {
+    marginHorizontal: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   header: {
     paddingHorizontal: 16,
     paddingVertical: 6,
     flexDirection: 'row',
     alignItems: 'center',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: theme.colors.border,
+    backgroundColor: 'transparent',
   },
   headerEmoji: {
     fontSize: 16,
@@ -81,11 +78,11 @@ const createStyles = (theme: any) => StyleSheet.create({
   },
   headerTitle: {
     fontFamily: theme.typography.fontFamily.bold,
-    fontSize: 16,
+    fontSize: 18,
   },
   list: {
-    marginTop: 8,
-    backgroundColor: theme.colors.surface,
+    marginTop: 4,
+    backgroundColor: 'transparent',
   },
   empty: {
     paddingHorizontal: 16,
