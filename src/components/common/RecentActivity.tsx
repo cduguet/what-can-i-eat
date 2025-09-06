@@ -306,7 +306,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
             accessibilityHint="Tap to view analysis results"
           >
             <View style={styles.itemRow}>
-              <View style={styles.itemHeader}>
+              <View style={styles.rowContent}>
                 <View style={styles.itemIconContainer}>
                   <Icon source={getTypeIcon(item.type)} size={18} color={theme.colors.primary} />
                 </View>
@@ -318,11 +318,8 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
                     {item.subtitle}
                   </Text>
                 </View>
-              </View>
-
-              {item.resultsSummary && (
-                <View style={styles.summaryContainer}>
-                  <View style={styles.summaryChips}>
+                {item.resultsSummary && (
+                  <View style={styles.metricsRow}>
                     {item.resultsSummary.good > 0 && (
                       <Chip icon="check-circle" style={[styles.pill, { backgroundColor: theme.colors.semantic.safeLight }]} textStyle={{ color: theme.colors.semantic.safe }} compact>
                         {item.resultsSummary.good}
@@ -339,8 +336,8 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
                       </Chip>
                     )}
                   </View>
-                </View>
-              )}
+                )}
+              </View>
             </View>
           </TouchableOpacity>
         ))}
@@ -377,9 +374,10 @@ const createStyles = (theme: any) => StyleSheet.create({
   },
   itemHeader: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 12,
+    alignItems: 'center',
+    marginBottom: 0,
   },
+  rowContent: { flexDirection: 'row', alignItems: 'center' },
   itemIconContainer: { width: 28, height: 28, borderRadius: 14, backgroundColor: theme.colors.surface, justifyContent: 'center', alignItems: 'center', marginRight: 10, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.border },
   itemTextContainer: {
     flex: 1,
@@ -392,14 +390,7 @@ const createStyles = (theme: any) => StyleSheet.create({
   itemSubtitle: {
     color: theme.colors.textSecondary,
   },
-  summaryContainer: {
-    marginTop: 8,
-  },
-  summaryChips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
+  metricsRow: { flexDirection: 'row', gap: 6, alignItems: 'center', marginLeft: 8 },
   goodChip: {},
   goodChipText: {
     fontSize: 12,

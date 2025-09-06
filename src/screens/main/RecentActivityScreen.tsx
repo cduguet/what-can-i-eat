@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Appbar, Card, Text, Chip, Icon } from 'react-native-paper';
+import { Appbar, Text, Chip, Icon } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@/theme/ThemeProvider';
 import { GeminiResponse, MenuInputType } from '@/types';
 import type { AnalysisCacheEntry } from '@/services/cache/recentCache';
 import * as Haptics from 'expo-haptics';
+import { summarizeResults, getTimeAgo } from '@/components/common/recentActivityUtils';
 import { useNavigation } from '@react-navigation/native';
 
 export const RecentActivityScreen: React.FC = () => {
@@ -42,37 +43,43 @@ export const RecentActivityScreen: React.FC = () => {
       <FlatList
         data={items}
         keyExtractor={(it) => it.storageKey}
-        contentContainerStyle={{ padding: 12 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => openItem(item)}>
-            <Card style={styles.card}>
-              <Card.Title
-                title={titleForType(item.meta?.inputType)}
-                subtitle={`${item.data.results?.length ?? 0} items analyzed`}
-                left={(props) => (
-                  <Icon
-                    {...props}
-                    source={iconForType(item.meta?.inputType)}
-                    color={theme.colors.primary}
-                  />
-                )}
-                right={() => (
-                  <View style={styles.metricsRow}>
-                    <Chip icon="check-circle" compact>
-                      {item.data.results?.filter((r) => r.suitability === 'good').length ?? 0}
-                    </Chip>
-                    <Chip icon="alert-circle" compact>
-                      {item.data.results?.filter((r) => r.suitability === 'careful').length ?? 0}
-                    </Chip>
-                    <Chip icon="close-circle" compact>
-                      {item.data.results?.filter((r) => r.suitability === 'avoid').length ?? 0}
-                    </Chip>
+        contentContainerStyle={{ paddingBottom: 8 }}
+        renderItem={({ item }) => {
+          const summary = summarizeResults(item.data.results || []);
+          const subtitle = `${item.data.results?.length ?? 0} items analyzed • ${getTimeAgo(new Date(item.timestamp).toISOString())}`;
+          return (
+            <TouchableOpacity onPress={() => openItem(item)}>
+              <View style={styles.itemRow}>
+                <View style={styles.rowContent}>
+                  <View style={styles.itemIconContainer}>
+                    <Icon source={iconForType(item.meta?.inputType)} size={18} color={theme.colors.primary} />
                   </View>
-                )}
-              />
-            </Card>
-          </TouchableOpacity>
-        )}
+                  <View style={styles.itemTextContainer}>
+                    <Text variant="titleSmall" style={styles.itemTitle}>{titleForType(item.meta?.inputType)}</Text>
+                    <Text variant="bodySmall" style={styles.itemSubtitle}>{subtitle}</Text>
+                  </View>
+                  <View style={styles.metricsRow}>
+                    {summary.good > 0 && (
+                      <Chip icon="check-circle" style={[styles.pill, { backgroundColor: theme.colors.semantic.safeLight }]} textStyle={{ color: theme.colors.semantic.safe }} compact>
+                        {summary.good}
+                      </Chip>
+                    )}
+                    {summary.careful > 0 && (
+                      <Chip icon="alert-circle" style={[styles.pill, { backgroundColor: theme.colors.semantic.cautionLight }]} textStyle={{ color: theme.colors.semantic.caution }} compact>
+                        {summary.careful}
+                      </Chip>
+                    )}
+                    {summary.avoid > 0 && (
+                      <Chip icon="close-circle" style={[styles.pill, { backgroundColor: theme.colors.semantic.avoidLight }]} textStyle={{ color: theme.colors.semantic.avoid }} compact>
+                        {summary.avoid}
+                      </Chip>
+                    )}
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
         ListEmptyComponent={() => (
           <View style={{ padding: 24, alignItems: 'center' }}>
             <Text style={{ color: theme.colors.textSecondary }}>No recent activity yet</Text>
@@ -88,7 +95,35 @@ const iconForType = (t?: MenuInputType) => t === MenuInputType.IMAGE ? 'camera' 
 
 const createStyles = (theme: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
-  header: { backgroundColor: theme.colors.primary },
-  card: { marginBottom: 12, backgroundColor: theme.colors.surface },
-  metricsRow: { flexDirection: 'row', gap: 6, alignItems: 'center' },
+  header: {
+    backgroundColor: theme.colors.background,
+    elevation: 0,
+    shadowOpacity: 0,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: theme.colors.border,
+  },
+  itemRow: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: theme.colors.border,
+    backgroundColor: 'transparent',
+  },
+  rowContent: { flexDirection: 'row', alignItems: 'center' },
+  itemIconContainer: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: theme.colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: theme.colors.border,
+  },
+  itemTextContainer: { flex: 1 },
+  itemTitle: { fontWeight: '600', color: theme.colors.text, marginBottom: 2 },
+  itemSubtitle: { color: theme.colors.textSecondary },
+  metricsRow: { flexDirection: 'row', gap: 6, alignItems: 'center', marginLeft: 8 },
+  pill: { height: 26 },
 });
