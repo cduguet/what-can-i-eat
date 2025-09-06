@@ -6,7 +6,7 @@ import {
   Alert,
   Linking,
 } from 'react-native';
-import { Text, Button, Card, TextInput, Portal, Modal, IconButton } from 'react-native-paper';
+import { Text, Button, Card, Portal, Modal, IconButton } from 'react-native-paper';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
@@ -17,6 +17,7 @@ import { RootStackParamList, UserPreferences, MenuInputType, CameraPermissionSta
 import { CameraButton } from '@/components/common/CameraButton';
 import AccentButton from '@/components/ui/AccentButton';
 import Pill from '@/components/ui/Pill';
+import { FormInput } from '@/components/ui';
 import { RecentActivity } from '@/components/common/RecentActivity';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -325,8 +326,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
               )}
             />
             <Card.Content>
-              <TextInput
-                label="Restaurant URL"
+              <FormInput
                 value={urlInput}
                 onChangeText={(text) => {
                   setUrlInput(text);
@@ -390,8 +390,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
               )}
             />
             <Card.Content>
-              <TextInput
-                label="Menu Text"
+              <FormInput
                 value={textInput}
                 onChangeText={(text) => {
                   // Enforce character limit

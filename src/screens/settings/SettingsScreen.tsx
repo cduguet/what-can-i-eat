@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
-import { Text, TextInput } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import AccentButton from '@/components/ui/AccentButton';
+import { FormInput } from '@/components/ui';
 import Pill from '@/components/ui/Pill';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -103,14 +104,12 @@ export const SettingsScreen: React.FC = () => {
             {prefs.dietaryType === DietaryType.CUSTOM && (
               <View style={{ marginTop: 12 }}>
                 <Text style={styles.label}>Custom restrictions</Text>
-                <TextInput
-                  mode="outlined"
+                <FormInput
                   value={prefs.customRestrictions || ''}
                   onChangeText={(t) => setPrefs((p) => ({ ...p, customRestrictions: t }))}
                   placeholder="e.g., no gluten, no peanuts, no dairy"
                   multiline
                   style={styles.textArea}
-                  outlineColor={theme.colors.primary}
                 />
               </View>
             )}

@@ -96,6 +96,7 @@ Coordination Log
 - 2025-09-06: Recent Activity design unification. Files: `src/components/common/RecentActivity.tsx`, `src/screens/main/RecentActivityScreen.tsx`. Notes: Section items now place counters on the right inline with title; screen list updated to match the same row design (icon + title/subtitle + right-aligned tinted chips).
 - 2025-09-06: Recent Activity uses default stack header. Files: `App.tsx`, `src/screens/main/RecentActivityScreen.tsx`. Notes: Removed custom Appbar; enabled themed navigator header (larger title, no back-label) to avoid notch overlap and match Settings.
 - 2025-09-06: Fix clipped chip numbers. Files: `src/components/common/RecentActivity.tsx`, `src/screens/main/RecentActivityScreen.tsx`. Notes: Use `minHeight: 28` with small vertical padding to avoid descender clipping while letting content size naturally; applied consistently to Home section and screen.
+- 2025-09-06: Unified input styling to faint, rounded fields (replaced Material underline/outlined inputs). Files: `src/components/ui/FormInput.tsx`, `src/components/ui/index.ts`, `src/screens/main/HomeScreen.tsx`, `src/screens/settings/SettingsScreen.tsx`. Notes: Home modals (Analyze URL, Enter Text) and Settings custom restrictions now use `FormInput`.
 
 How To Update This Document
 - Keep this summary tight; link to code/docs for detail.
