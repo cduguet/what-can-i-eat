@@ -24,15 +24,32 @@ const configFor = (theme: any, c: FoodSuitability) => {
   }
 };
 
+// Very lightweight hex to rgba converter (supports #RRGGBB and rgba pass-through)
+const toFaint = (color: string, alpha: number) => {
+  if (color.startsWith('rgba')) {
+    return color.replace(/rgba\(([^,]+),([^,]+),([^,]+),[^)]+\)/, `rgba($1,$2,$3,${alpha})`);
+  }
+  const hex = color.replace('#','');
+  if (hex.length === 6) {
+    const r = parseInt(hex.slice(0,2), 16);
+    const g = parseInt(hex.slice(2,4), 16);
+    const b = parseInt(hex.slice(4,6), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+  return color; // fallback
+};
+
 export const CategorySectionFlat: React.FC<CategorySectionFlatProps> = ({ category, results, onResultPress }) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
   const [open, setOpen] = useState(true);
   const cfg = configFor(theme, category);
 
+  const faintBg = toFaint(cfg.color, theme.mode === 'light' ? 0.06 : 0.14);
+
   return (
     <View style={styles.section}>
-      <View style={[styles.sectionBox, { backgroundColor: cfg.light }]}>        
+      <View style={[styles.sectionBox, { backgroundColor: faintBg }]}>        
         <TouchableOpacity style={styles.header} onPress={() => setOpen(!open)} accessibilityRole="button">
           <Text style={styles.headerEmoji}>{cfg.emoji}</Text>
           <Text style={[styles.headerTitle, { color: cfg.color }]}>{cfg.title}</Text>
