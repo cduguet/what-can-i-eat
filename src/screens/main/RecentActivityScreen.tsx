@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Appbar, Text, Chip, Icon } from 'react-native-paper';
+import { Text, Chip, Icon } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@/theme/ThemeProvider';
 import { GeminiResponse, MenuInputType } from '@/types';
@@ -36,10 +36,6 @@ export const RecentActivityScreen: React.FC = () => {
   const styles = createStyles(theme);
   return (
     <View style={styles.container}>
-      <Appbar.Header style={styles.header} statusBarHeight={0}>
-        <Appbar.BackAction onPress={() => nav.goBack()} />
-        <Appbar.Content title="Recent Activity" />
-      </Appbar.Header>
       <FlatList
         data={items}
         keyExtractor={(it) => it.storageKey}
@@ -95,13 +91,7 @@ const iconForType = (t?: MenuInputType) => t === MenuInputType.IMAGE ? 'camera' 
 
 const createStyles = (theme: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
-  header: {
-    backgroundColor: theme.colors.background,
-    elevation: 0,
-    shadowOpacity: 0,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: theme.colors.border,
-  },
+  header: {},
   itemRow: {
     paddingHorizontal: 16,
     paddingVertical: 14,

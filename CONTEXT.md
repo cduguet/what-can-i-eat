@@ -94,6 +94,7 @@ Coordination Log
 - 2025-09-06: Settings header styling + back label. Files: `App.tsx`. Notes: Increased Settings header title size to match Results Appbar (~20px, bold), removed iOS back title text by setting `headerBackTitleVisible: false` and blank `headerBackTitle`/`headerTruncatedBackTitle`, and aligned header colors with theme.
 - 2025-09-06: Recent Activity UI tweak. Files: `src/screens/main/RecentActivityScreen.tsx`. Notes: Moved Good/Careful/Avoid chips to the right side within `Card.Title` instead of a separate row.
 - 2025-09-06: Recent Activity design unification. Files: `src/components/common/RecentActivity.tsx`, `src/screens/main/RecentActivityScreen.tsx`. Notes: Section items now place counters on the right inline with title; screen list updated to match the same row design (icon + title/subtitle + right-aligned tinted chips).
+- 2025-09-06: Recent Activity uses default stack header. Files: `App.tsx`, `src/screens/main/RecentActivityScreen.tsx`. Notes: Removed custom Appbar; enabled themed navigator header (larger title, no back-label) to avoid notch overlap and match Settings.
 - 2025-09-06: Fix clipped chip numbers. Files: `src/components/common/RecentActivity.tsx`, `src/screens/main/RecentActivityScreen.tsx`. Notes: Use `minHeight: 28` with small vertical padding to avoid descender clipping while letting content size naturally; applied consistently to Home section and screen.
 
 How To Update This Document
@@ -104,4 +105,5 @@ How To Update This Document
 
 Coordination Entry Template
 - YYYY-MM-DD: Short description of change; Files: `path/one`, `path/two`. Notes: one line if needed.
- - 2025-09-06: Home safe-area padding for notch; Files: `src/screens/main/HomeScreen.tsx`. Notes: Added SafeAreaView edges=['top'] and dynamic top padding via useSafeAreaInsets to keep header/sections below the notch.
+- 2025-09-06: Home safe-area padding for notch; Files: `src/screens/main/HomeScreen.tsx`. Notes: Added SafeAreaView edges=['top'] and dynamic top padding via useSafeAreaInsets to keep header/sections below the notch.
+- 2025-09-06: Recent Activity top spacing + ScrollView inset; Files: `src/screens/main/HomeScreen.tsx`, `src/components/common/RecentActivity.tsx`. Notes: Set contentInsetAdjustmentBehavior="always" on Home ScrollView and increased Recent Activity section top margin.

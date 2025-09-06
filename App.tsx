@@ -146,7 +146,29 @@ function AppContent() {
             component={ResultsScreen}
             options={{ title: 'Analysis Results', headerShown: false }}
           />
-          <Stack.Screen name="RecentActivity" component={RecentActivityScreen} options={{ title: 'Recent Activity', headerShown: false }} />
+          <Stack.Screen
+            name="RecentActivity"
+            component={RecentActivityScreen}
+            options={() => ({
+              title: 'Recent Activity',
+              headerBackTitleVisible: false,
+              headerBackTitle: ' ',
+              headerTruncatedBackTitle: ' ',
+              headerTintColor: theme.colors.text,
+              headerStyle: {
+                backgroundColor: theme.colors.background,
+                elevation: 0,
+                shadowOpacity: 0,
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                borderBottomColor: theme.colors.border,
+              },
+              headerTitleStyle: {
+                fontFamily: theme.typography.fontFamily.bold,
+                fontSize: 20,
+                color: theme.colors.text,
+              },
+            })}
+          />
           <Stack.Screen
             name="Settings"
             component={SettingsScreen}
