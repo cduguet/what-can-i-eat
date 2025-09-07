@@ -214,7 +214,8 @@ async function runImageAnalysisTests() {
       const imageMimeType = 'image/jpeg';
       const imageDataUrl = `data:${imageMimeType};base64,${base64Image}`;
       
-      const strict = !!argv['strict-system-prompt'];
+      // Always use comprehensive system prompt (matches production app behavior)
+      const useSimplePrompt = !!argv['simple-prompt']; // Optional flag to use simple prompt for testing
       const requestId = `image-comparison-${provider}-${backend}-${Date.now()}`;
       const SYSTEM_PROMPT = `You are a dietary analysis expert helping users with food restrictions identify safe menu items.
 
@@ -248,7 +249,7 @@ CATEGORIZATION:
 
 For "careful" items, provide specific questions to ask restaurant staff.
 Always include confidence scores and detailed explanations.`;
-      const buildDietaryContext = (prefs) => `DIETARY RESTRICTIONS: ${prefs.dietaryType === 'vegan' ? 'Strict vegan diet\n- NO animal products: meat, poultry, fish, dairy, eggs, honey\n- NO animal-derived ingredients: gelatin, casein, whey, etc.\n- NO cross-contamination with animal products\n- Check cooking methods (shared grills, animal fats)' : prefs.dietaryType}`;
+      const buildDietaryContext = (prefs) => `DIETARY RESTRICTIONS: ${prefs.dietaryType === 'vegan' ? 'Strict vegan diet\n- NO animal products: meat, poultry, fish, dairy, eggs, honey\n- NO animal-derived ingredients: gelatin, casein, whey, etc.\n- NO cross-contamination with animal products\n- Check cooking methods (shared grills, animal fats)' : prefs.customRestrictions || prefs.dietaryType}`;
       const analysisInstructions = `ANALYSIS INSTRUCTIONS:
 1. Analyze each menu item against the dietary restrictions
 2. Categorize as "good", "careful", or "avoid"
@@ -259,15 +260,15 @@ Always include confidence scores and detailed explanations.`;
 
 Be thorough but concise. Focus on food safety and dietary compliance.`;
 
-      const contentParts = strict
+      const contentParts = useSimplePrompt
         ? [
+            { type: 'text', data: 'Please analyze this menu image and identify items suitable for my dietary restrictions.' },
+            { type: 'image', data: imageDataUrl },
+          ]
+        : [
             { type: 'text', data: [SYSTEM_PROMPT, buildDietaryContext(CUSTOM_DIETARY_PREFERENCES), analysisInstructions].join('\n\n') },
             { type: 'image', data: imageDataUrl },
             { type: 'text', data: 'Analyze the attached menu image for dietary suitability.' },
-          ]
-        : [
-            { type: 'text', data: 'Please analyze this menu image and identify items suitable for my dietary restrictions.' },
-            { type: 'image', data: imageDataUrl },
           ];
 
       const requestPayload = {
