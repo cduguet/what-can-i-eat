@@ -1,7 +1,9 @@
-import '@testing-library/react-native/extend-expect';
+import '@testing-library/jest-native/extend-expect';
 
-// Mock React Native modules
-jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
+// Mock React Native modules safely
+jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper', () => ({}), {
+  virtual: true,
+});
 
 // Mock Expo modules
 jest.mock('expo-haptics', () => ({
@@ -57,8 +59,10 @@ jest.mock('react-native-paper', () => {
   return MockedModule;
 });
 
-// Silence the warning: Animated: `useNativeDriver` is not supported
-jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
+// Additional React Native mocks for newer versions
+jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper', () => ({}), {
+  virtual: true,
+});
 
 // Mock console methods to reduce noise in tests
 global.console = {

@@ -28,6 +28,6 @@ module.exports = {
   coverageReporters: ['text', 'lcov', 'html'],
   testEnvironment: 'jsdom',
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|expo|@expo|react-native-paper|react-native-vector-icons)/)',
+    'node_modules/(?!(react-native|@react-native|@react-native-community|expo|@expo|react-native-paper|react-native-vector-icons)/)',
   ],
 };
