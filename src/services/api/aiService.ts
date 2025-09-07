@@ -11,9 +11,9 @@ import { SupabaseAIService } from './supabaseAIService';
 import {
   AIProvider,
   AIConfig,
-  GeminiRequest,
+  AIAnalysisRequest,
   GeminiResponse,
-  MultimodalGeminiRequest,
+  MultimodalAIRequest,
   AppError,
   ErrorSeverity
 } from '../../types';
@@ -37,15 +37,15 @@ export interface IAIService {
    * @param request - Structured request with menu items and preferences
    * @returns Promise resolving to analysis results
    */
-  analyzeMenu(request: GeminiRequest): Promise<GeminiResponse>;
+  analyzeMenu(request: AIAnalysisRequest): Promise<GeminiResponse>;
 
-  /**
-   * Analyze menu items using AI with multimodal input (text + images)
-   *
-   * @param request - Multimodal request with content parts (text and images)
-   * @returns Promise resolving to analysis results
-   */
-  analyzeMenuMultimodal(request: MultimodalGeminiRequest): Promise<GeminiResponse>;
+ /**
+  * Analyze menu items using AI with multimodal input (text + images)
+  *
+  * @param request - Multimodal request with content parts (text and images)
+  * @returns Promise resolving to analysis results
+  */
+ analyzeMenuMultimodal(request: MultimodalAIRequest): Promise<GeminiResponse>;
 
   /**
    * Test API connectivity with a simple request
@@ -175,7 +175,7 @@ export class AIService implements IAIService {
    * @param request - Structured request with menu items and preferences
    * @returns Promise resolving to analysis results
    */
-  async analyzeMenu(request: GeminiRequest): Promise<GeminiResponse> {
+  async analyzeMenu(request: AIAnalysisRequest): Promise<GeminiResponse> {
     try {
       console.log(`Analyzing menu using ${this.provider} provider for request ${request.requestId}`);
       return await this.service.analyzeMenu(request);
@@ -191,7 +191,7 @@ export class AIService implements IAIService {
    * @param request - Multimodal request with content parts (text and images)
    * @returns Promise resolving to analysis results
    */
-  async analyzeMenuMultimodal(request: MultimodalGeminiRequest): Promise<GeminiResponse> {
+  async analyzeMenuMultimodal(request: MultimodalAIRequest): Promise<GeminiResponse> {
     try {
       console.log(`Analyzing multimodal menu using ${this.provider} provider for request ${request.requestId}`);
       return await this.service.analyzeMenuMultimodal(request);

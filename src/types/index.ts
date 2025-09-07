@@ -326,9 +326,9 @@ export interface AIConfig {
 }
 
 /**
- * Gemini API request structure
+ * AI API request structure
  */
-export interface GeminiRequest {
+export interface AIAnalysisRequest {
   /** User's dietary preferences */
   dietaryPreferences: UserPreferences;
   /** Menu items to analyze */
@@ -1055,9 +1055,9 @@ export interface MultimodalContentPart {
 }
 
 /**
- * Multimodal Gemini request structure
+ * Multimodal AI request structure
  */
-export interface MultimodalGeminiRequest {
+export interface MultimodalAIRequest {
   /** User's dietary preferences */
   dietaryPreferences: UserPreferences;
   /** Multimodal content parts (text + images) */

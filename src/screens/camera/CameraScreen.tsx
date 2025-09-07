@@ -32,7 +32,7 @@ import {
   AppError,
   ContentType,
   UserPreferences,
-  MultimodalGeminiRequest,
+  MultimodalAIRequest,
   MultimodalContentPart,
   DietaryType,
   GeminiResponse,
@@ -272,7 +272,7 @@ export const CameraScreen: React.FC = () => {
         },
       ];
 
-      const request: MultimodalGeminiRequest = {
+      const request: MultimodalAIRequest = {
         dietaryPreferences: userPreferences || {
           dietaryType: DietaryType.VEGAN,
           lastUpdated: new Date().toISOString(),

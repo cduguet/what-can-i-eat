@@ -6,7 +6,7 @@
  */
 
 import { GoogleGenAI } from '@google/genai';
-import { GeminiAPIConfig, GeminiRequest, GeminiResponse, MultimodalGeminiRequest, MultimodalContentPart, ContentType, ImageData, AppError, ErrorSeverity } from '../../types';
+import { GeminiAPIConfig, AIAnalysisRequest, GeminiResponse, MultimodalAIRequest, MultimodalContentPart, ContentType, ImageData, AppError, ErrorSeverity } from '../../types';
 import { getAPIConfig, validateAPIConfig, getSanitizedConfig } from './config';
 import { buildMenuAnalysisPrompt, buildMultimodalPrompt, parseAPIResponse } from '../../utils/prompts';
 
@@ -35,7 +35,7 @@ export class GeminiService {
    * @param request - Structured request with menu items and preferences
    * @returns Promise resolving to analysis results
    */
-  async analyzeMenu(request: GeminiRequest): Promise<GeminiResponse> {
+  async analyzeMenu(request: AIAnalysisRequest): Promise<GeminiResponse> {
     const startTime = Date.now();
     
     try {
@@ -225,7 +225,7 @@ export class GeminiService {
    * @param request - Multimodal request with content parts (text and images)
    * @returns Promise resolving to analysis results
    */
-  async analyzeMenuMultimodal(request: MultimodalGeminiRequest): Promise<GeminiResponse> {
+  async analyzeMenuMultimodal(request: MultimodalAIRequest): Promise<GeminiResponse> {
     const startTime = Date.now();
 
     try {

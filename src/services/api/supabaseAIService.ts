@@ -6,14 +6,16 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { 
-  GeminiRequest, 
-  GeminiResponse, 
-  MultimodalGeminiRequest,
+import {
+  AIAnalysisRequest,
+  GeminiResponse,
+  MultimodalAIRequest,
   AIProvider,
   AppError,
-  ErrorSeverity 
+  ErrorSeverity,
+  ContentType
 } from '../../types';
+import { buildMultimodalPrompt } from '../../utils/prompts';
 import { IAIService } from './aiService';
 
 /**
@@ -88,7 +90,7 @@ export class SupabaseAIService implements IAIService {
    * @param request - Structured request with menu items and preferences
    * @returns Promise resolving to analysis results
    */
-  async analyzeMenu(request: GeminiRequest): Promise<GeminiResponse> {
+  async analyzeMenu(request: AIAnalysisRequest): Promise<GeminiResponse> {
     const startTime = Date.now();
     
     try {
@@ -138,16 +140,38 @@ export class SupabaseAIService implements IAIService {
    * @param request - Multimodal request with content parts (text and images)
    * @returns Promise resolving to analysis results
    */
-  async analyzeMenuMultimodal(request: MultimodalGeminiRequest): Promise<GeminiResponse> {
+  async analyzeMenuMultimodal(request: MultimodalAIRequest): Promise<GeminiResponse> {
     const startTime = Date.now();
 
     try {
       console.log(`Starting Supabase multimodal menu analysis for request ${request.requestId}`);
 
+      // Build multimodal prompt with proper system prompt (same as geminiService)
+      const multimodalPrompt = buildMultimodalPrompt(
+        request.dietaryPreferences,
+        request.contentParts,
+        request.requestId,
+        request.context
+      );
+
+      // Convert the multimodal prompt back to contentParts format for Supabase
+      const enhancedContentParts = multimodalPrompt.map(part => {
+        if ('text' in part) {
+          return { type: ContentType.TEXT, data: part.text };
+        } else if ('inlineData' in part && part.inlineData) {
+          return {
+            type: ContentType.IMAGE,
+            data: `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`
+          };
+        }
+        // Fallback for any other format
+        return { type: ContentType.TEXT, data: JSON.stringify(part) };
+      });
+
       const payload: SupabaseAIRequest = {
         type: 'analyze_multimodal',
         dietaryPreferences: request.dietaryPreferences,
-        contentParts: request.contentParts,
+        contentParts: enhancedContentParts,
         context: request.context,
         requestId: request.requestId,
         provider: this.config.provider

@@ -7,7 +7,7 @@
  */
 
 import { VertexAI } from '@google-cloud/vertexai';
-import { VertexAPIConfig, GeminiRequest, GeminiResponse, MultimodalGeminiRequest, MultimodalContentPart, ContentType, ImageData, AppError, ErrorSeverity } from '../../types';
+import { VertexAPIConfig, AIAnalysisRequest, GeminiResponse, MultimodalAIRequest, MultimodalContentPart, ContentType, ImageData, AppError, ErrorSeverity } from '../../types';
 import { buildMenuAnalysisPrompt, buildMultimodalPrompt, parseAPIResponse } from '../../utils/prompts';
 
 /**
@@ -53,7 +53,7 @@ export class VertexService {
    * @param request - Structured request with menu items and preferences
    * @returns Promise resolving to analysis results
    */
-  async analyzeMenu(request: GeminiRequest): Promise<GeminiResponse> {
+  async analyzeMenu(request: AIAnalysisRequest): Promise<GeminiResponse> {
     const startTime = Date.now();
     
     try {
@@ -249,7 +249,7 @@ export class VertexService {
    * @param request - Multimodal request with content parts (text and images)
    * @returns Promise resolving to analysis results
    */
-  async analyzeMenuMultimodal(request: MultimodalGeminiRequest): Promise<GeminiResponse> {
+  async analyzeMenuMultimodal(request: MultimodalAIRequest): Promise<GeminiResponse> {
     const startTime = Date.now();
 
     try {
