@@ -315,7 +315,18 @@ export class AIService implements IAIService {
  * Default AI service instance
  * Uses environment configuration to determine provider
  */
-export const aiService = new AIService();
+// Lazily create the default AI service to avoid any import-time side effects
+let _aiService: AIService | null = null;
+const ensureAIService = () => (_aiService ??= new AIService());
+
+export const aiService: AIService = new Proxy({} as AIService, {
+  get(_target, prop) {
+    const instance = ensureAIService();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const value = (instance as any)[prop];
+    return typeof value === 'function' ? value.bind(instance) : value;
+  },
+});
 
 /**
  * Legacy export for backward compatibility
