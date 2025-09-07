@@ -2,6 +2,20 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 
+// Lightweight CLI args
+function parseArgs(argv) {
+  const out = {};
+  for (let i = 2; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg.startsWith('--')) {
+      const [k, v] = arg.replace(/^--/, '').split('=');
+      out[k] = v === undefined ? true : v;
+    }
+  }
+  return out;
+}
+const argv = parseArgs(process.argv);
+
 // Test configuration - same as Jest test
 const TEST_MENU_ITEMS = [
   {
@@ -53,13 +67,19 @@ const CUSTOM_DIETARY_PREFERENCES = {
   onboardingCompleted: true
 };
 
-// Test configurations - same as Jest test
-const testConfigs = [
+// Test configurations - filter via CLI
+let testConfigs = [
   { provider: 'gemini', backend: 'local' },
   { provider: 'gemini', backend: 'supabase' },
   { provider: 'vertex', backend: 'local' },
   { provider: 'vertex', backend: 'supabase' },
 ];
+if (argv.provider && argv.provider !== 'all') {
+  testConfigs = testConfigs.filter(c => c.provider === argv.provider);
+}
+if (argv.backend && argv.backend !== 'all') {
+  testConfigs = testConfigs.filter(c => c.backend === argv.backend);
+}
 
 async function runTextAnalysisTests() {
   console.log('📋 TEXT ANALYSIS TESTS');
@@ -160,7 +180,7 @@ async function runImageAnalysisTests() {
   console.log('\n\n🖼️  IMAGE ANALYSIS TESTS');
   console.log('========================');
   
-  const testImagePath = 'tests/assets/test_menu.jpg';
+  const testImagePath = argv.image ? path.resolve(argv.image) : 'tests/assets/test_menu.jpg';
   
   if (!fs.existsSync(testImagePath)) {
     console.log(`⚠️  Test image not found at ${testImagePath}, skipping image tests`);
@@ -194,22 +214,69 @@ async function runImageAnalysisTests() {
       const imageMimeType = 'image/jpeg';
       const imageDataUrl = `data:${imageMimeType};base64,${base64Image}`;
       
+      const strict = !!argv['strict-system-prompt'];
+      const requestId = `image-comparison-${provider}-${backend}-${Date.now()}`;
+      const SYSTEM_PROMPT = `You are a dietary analysis expert helping users with food restrictions identify safe menu items.
+
+CRITICAL: Respond with valid JSON only. Keep explanations concise (max 50 words each).
+Analyze ALL menu items thoroughly - do not limit or prioritize items.
+
+Required JSON structure:
+{
+  "success": true,
+  "results": [
+    {
+      "itemId": "string",
+      "itemName": "string",
+      "suitability": "good" | "careful" | "avoid",
+      "explanation": "string (max 50 words)",
+      "questionsToAsk": ["string"] (only for "careful", max 2 questions),
+      "confidence": number (0-1),
+      "concerns": ["string"] (optional, max 3 items)
+    }
+  ],
+  "confidence": number (0-1),
+  "message": "string" (optional),
+  "requestId": "string",
+  "processingTime": 0
+}
+
+CATEGORIZATION:
+- "good": Clearly safe based on restrictions
+- "careful": Needs clarification (unclear ingredents, preparation methods)
+- "avoid": Violates restrictions
+
+For "careful" items, provide specific questions to ask restaurant staff.
+Always include confidence scores and detailed explanations.`;
+      const buildDietaryContext = (prefs) => `DIETARY RESTRICTIONS: ${prefs.dietaryType === 'vegan' ? 'Strict vegan diet\n- NO animal products: meat, poultry, fish, dairy, eggs, honey\n- NO animal-derived ingredients: gelatin, casein, whey, etc.\n- NO cross-contamination with animal products\n- Check cooking methods (shared grills, animal fats)' : prefs.dietaryType}`;
+      const analysisInstructions = `ANALYSIS INSTRUCTIONS:
+1. Analyze each menu item against the dietary restrictions
+2. Categorize as "good", "careful", or "avoid"
+3. Provide clear explanations for each categorization
+4. For "careful" items, suggest specific questions to ask staff
+5. Assign confidence scores based on information clarity
+6. Include request ID: ${requestId}
+
+Be thorough but concise. Focus on food safety and dietary compliance.`;
+
+      const contentParts = strict
+        ? [
+            { type: 'text', data: [SYSTEM_PROMPT, buildDietaryContext(CUSTOM_DIETARY_PREFERENCES), analysisInstructions].join('\n\n') },
+            { type: 'image', data: imageDataUrl },
+            { type: 'text', data: 'Analyze the attached menu image for dietary suitability.' },
+          ]
+        : [
+            { type: 'text', data: 'Please analyze this menu image and identify items suitable for my dietary restrictions.' },
+            { type: 'image', data: imageDataUrl },
+          ];
+
       const requestPayload = {
         type: 'analyze_multimodal',
         provider: provider,
         dietaryPreferences: CUSTOM_DIETARY_PREFERENCES,
-        contentParts: [
-          {
-            type: 'text',
-            data: 'Please analyze this menu image and identify items suitable for my dietary restrictions.'
-          },
-          {
-            type: 'image',
-            data: imageDataUrl
-          }
-        ],
+        contentParts,
         context: `Comprehensive image comparison test - ${provider} ${backend}`,
-        requestId: `image-comparison-${provider}-${backend}-${Date.now()}`
+        requestId,
       };
 
       console.log('📤 Sending multimodal request to Supabase...');

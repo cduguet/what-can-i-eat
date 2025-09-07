@@ -1,16 +1,16 @@
 # Test Suite
 
-This directory contains the test suite for the "What Can I Eat" application, with a focus on testing the multimodal Gemini API approach and related functionality.
+This directory contains both unit tests (Jest) and manual integration tests (Node scripts) for the "What Can I Eat" application.
 
-## Test Structure
+## Structure
 
 ```
 tests/
-├── assets/           # Test images and data files
-├── multimodal/       # Multimodal-specific tests (OCR, image analysis)
-├── integration/      # Integration tests (API calls, service interactions)
-├── utils/           # Test utilities and helper functions
-└── README.md        # This file
+├── assets/                      # Test images and fixtures
+├── manual/
+│   └── comprehensive-integration-test.js  # Canonical integration runner
+├── integration/                 # (Legacy) Jest-style integration tests (not run by default)
+└── README.md
 ```
 
 ## Directory Purposes
@@ -53,43 +53,41 @@ Shared test utilities and helpers:
 ```bash
 # Run all unit tests (limited to src/**)
 npm test
-
-# Run specific test file under src/**
-npm test -- src/services/api/__tests__/geminiService.test.ts
-
 # Run with coverage
 npm run test:coverage
 ```
 
-### Integration Tests (Manual)
+### Manual Integration Tests
+Canonical runner: `tests/manual/comprehensive-integration-test.js`
+
+Usage examples:
 ```bash
-# Text-only Gemini API integration test (Node script)
-node tests/integration/testGemini.js
+# Default run (text + image, all providers/backends)
+node tests/manual/comprehensive-integration-test.js
+
+# Use strict app SYSTEM_PROMPT for image tests against Vertex via Supabase
+node tests/manual/comprehensive-integration-test.js \
+  --provider=vertex --backend=supabase --mode=image --strict-system-prompt \
+  --image=tests/assets/test_menu.jpg
+
+# Run only text mode for Gemini via Supabase
+node tests/manual/comprehensive-integration-test.js --provider=gemini --backend=supabase --mode=text
 ```
 
-### Multimodal Tests (Manual, Recommended)
-```bash
-# Multimodal Gemini API integration test (image + text)
-node tests/multimodal/testGeminiMultimodal.js
-
-# Note: Jest runs only src/** unit tests. Integration and multimodal
-# scripts live under tests/integration and tests/manual and should be
-# run directly with Node to test real backends.
-```
+Flags:
+- `--provider=gemini|vertex|all` (default: all)
+- `--backend=local|supabase|all` (default: all)
+- `--mode=text|image|both` (default: both)
+- `--image=/path/to/image` (default: `tests/assets/test_menu.jpg`)
+- `--strict-system-prompt` Include the app’s SYSTEM_PROMPT + dietary context + analysis instructions in image requests (matches production behavior)
 
 ### Test Results
-Recent multimodal test results:
-- **Vegan Analysis**: 24 items detected (5 good, 6 careful, 13 avoid)
-- **Vegetarian Analysis**: 18 items detected (16 good, 2 careful, 0 avoid)
-- **Processing**: Direct image analysis without OCR preprocessing
+Typical outcomes on the bundled test image:
+- Vertex+Supabase (strict prompt): ~30 items detected from image
 
 ## Test Configuration
-
-Tests are configured via `jest.config.js` in the project root. Key settings:
-- Transforms via `babel-jest` for JS/TS/TSX
-- Test files pattern: only `src/**/__tests__/**/*` and `src/**/*.test.*`
-- Setup file: `jest.setup.js`
-- React Native/Expo shims mocked in setup
+Jest is configured in `jest.config.js` and limited to `src/**`.
+React Native/Expo shims are provided in `jest.setup.js`.
 
 ## Mock Data
 
@@ -109,11 +107,11 @@ Mock data is stored in the `utils/` directory and can be customized for differen
 - **Framework**: Jest with TypeScript support (ts-jest)
 - **Run with**: `npm test`
 
-### Node.js Scripts (Integration Tests)
-- **Location**: `tests/integration/` and `tests/multimodal/`
-- **Purpose**: Real API testing and integration validation
-- **Framework**: Plain Node.js scripts (no test framework)
-- **Run with**: `node tests/integration/testGemini.js`
+### Manual Integration Scripts
+- **Location**: `tests/manual/`
+- **Purpose**: Real API testing and integration validation against Supabase/Gemini/Vertex
+- **Framework**: Plain Node.js
+- **Run with**: `node tests/manual/comprehensive-integration-test.js`
 
 This dual approach allows:
 - Fast, mocked unit tests for development
@@ -129,15 +127,8 @@ This dual approach allows:
 5. **Isolation**: Ensure tests are independent and can run in any order
 
 ## Existing Test Files
-
-The following test files are currently available:
-- `src/services/api/__tests__/geminiService.test.ts` - Unit tests for Gemini service
-- `src/services/api/__tests__/supabaseService.test.ts` - Unit tests for Supabase service
-- `src/components/results/__tests__/ResultCard.test.tsx` - Component tests for ResultCard
-- `src/components/results/__tests__/ResultsSummary.test.tsx` - Component tests for ResultsSummary
-- `tests/integration/testGemini.js` - Integration test for Gemini API (text-only)
-- `tests/multimodal/testGeminiMultimodal.js` - **Multimodal integration test** (image + text)
-- `tests/multimodal/geminiMultimodal.test.ts` - Jest tests for multimodal API (TypeScript)
+- `src/services/api/__tests__/*` (unit tests)
+- `tests/manual/comprehensive-integration-test.js` (integration)
 
 ## Multimodal vs OCR Approach
 
@@ -149,9 +140,8 @@ The following test files are currently available:
 - **Test**: `node tests/multimodal/testGeminiMultimodal.js`
 
 ### 📜 Legacy OCR Approach (Deprecated)
-- Image → OCR → Text → Analysis pipeline
-- **Deprecated** in favor of multimodal approach
-- See `src/services/ocr/DEPRECATED.md` for migration guide
+Image → OCR → Text → Analysis is deprecated in favor of multimodal.
+See `src/services/ocr/DEPRECATED.md` for the migration notes.
 
 ## Adding New Tests
 
@@ -163,6 +153,12 @@ When adding new tests:
 4. Place multimodal tests in `tests/multimodal/`
 5. Add test assets to `tests/assets/`
 6. Update this README if the structure changes
+
+## Consolidation Notes
+- Deprecated/duplicated scripts removed:
+  - `tests/manual/comprehensive-ai-test.js`
+  - `tests/manual/test-image-analysis.js`
+  - `tests/manual/test-vertex-credentials.js`
 
 ## Continuous Integration
 
