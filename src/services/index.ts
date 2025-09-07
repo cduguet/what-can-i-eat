@@ -11,7 +11,7 @@ export type { AuthResult, AuthState, AccountUpgradeData, SocialProvider } from '
 
 // API services
 export { aiService, AIService } from './api/aiService';
-export { secureGeminiService, SecureGeminiService } from './api/supabaseService';
+// Note: aiService handles all providers (gemini, vertex, supabase) via configuration
 
 // Cache services
 export { offlineCache, OfflineCache } from './cache/offlineCache';
@@ -20,8 +20,11 @@ export type { CacheStats } from './cache/offlineCache';
 // Camera services
 export { cameraService } from './camera/cameraService';
 
-// OCR services
-export { ocrService } from './ocr/ocrService';
+// Menu services
+export { parseMenuText, fetchAndExtractMenuFromUrl } from './menu/menuInputService';
 
-// Default export for the secure service (recommended)
-export { secureGeminiService as defaultApiService } from './api/supabaseService';
+// Trial services
+export { trialService } from './trial/trialService';
+
+// Default export for the AI service (recommended)
+export { aiService as defaultApiService } from './api/aiService';
