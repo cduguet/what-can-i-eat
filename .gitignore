@@ -40,5 +40,7 @@ vertex-credentials.json
 # typescript
 *.tsbuildinfo
 
+# Test result files
+*-test-results.json
 
 .roo/
