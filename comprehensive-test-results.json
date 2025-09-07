@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-07T12:12:23.078Z",
+  "timestamp": "2025-09-07T12:15:58.595Z",
   "testConfig": {
     "testMenuItems": [
       {
@@ -47,7 +47,7 @@
       "dietaryType": "custom",
       "customRestrictions": "No gluten, no dairy, vegetarian, no spicy food",
       "spanishRestrictions": "Sin gluten, sin lácteos, vegetariano, sin comida picante",
-      "lastUpdated": "2025-09-07T12:12:02.323Z",
+      "lastUpdated": "2025-09-07T12:15:46.998Z",
       "onboardingCompleted": true
     }
   },
@@ -98,7 +98,7 @@
       ],
       "confidence": 0.87,
       "message": "Local gemini analysis completed successfully",
-      "requestId": "local-gemini-1757247122325",
+      "requestId": "local-gemini-1757247346999",
       "processingTime": 0,
       "formatValid": true,
       "testName": "Gemini Local",
@@ -158,9 +158,9 @@
           "itemId": "item_5",
           "itemName": "Vegetarian pasta primavera",
           "suitability": "careful",
-          "explanation": "This dish is vegetarian and non-spicy, but the pasta may contain gluten.  The sauce may also contain hidden dairy (e.g., in some cheese-based sauces).",
+          "explanation": "While vegetarian and non-spicy, pasta typically contains gluten.  The sauce may also contain hidden dairy ingredients (e.g., in some cheeses or cream-based sauces).",
           "questionsToAsk": [
-            "Is the pasta gluten-free?  Does the sauce contain any dairy products?"
+            "Is the pasta gluten-free?  Are there any dairy products in the sauce or pasta?"
           ],
           "confidence": 0.85,
           "concerns": [
@@ -170,8 +170,8 @@
       ],
       "confidence": 0.9,
       "message": "Analysis complete",
-      "requestId": "supabase-gemini-text-1757247122325",
-      "processingTime": 5708,
+      "requestId": "supabase-gemini-text-1757247346999",
+      "processingTime": 4368,
       "provider": "gemini",
       "backend": "supabase",
       "formatValid": true,
@@ -223,7 +223,7 @@
       ],
       "confidence": 0.87,
       "message": "Local vertex analysis completed successfully",
-      "requestId": "local-vertex-1757247128037",
+      "requestId": "local-vertex-1757247351373",
       "processingTime": 0,
       "formatValid": true,
       "testName": "Vertex Local",
@@ -238,8 +238,11 @@
           "itemName": "Bruschetta with tomatoes and basil",
           "suitability": "avoid",
           "explanation": "Bruschetta is served on toasted bread, which contains gluten.",
-          "questionsToAsk": [],
-          "confidence": 0.99,
+          "questionsToAsk": [
+            "Is the bread gluten-free?",
+            "Can the bruschetta be served on a gluten-free alternative?"
+          ],
+          "confidence": 0.95,
           "concerns": [
             "Gluten"
           ]
@@ -248,21 +251,28 @@
           "itemId": "2",
           "itemName": "Fried calamari with marinara sauce",
           "suitability": "avoid",
-          "explanation": "Fried calamari is typically breaded, which would contain gluten. It is also not vegetarian.",
-          "questionsToAsk": [],
-          "confidence": 0.99,
+          "explanation": "Fried calamari is typically breaded or battered, which likely contains gluten. Also, it is not vegetarian.",
+          "questionsToAsk": [
+            "Is the calamari breaded or battered?",
+            "If so, does the breading/batter contain gluten?"
+          ],
+          "confidence": 0.95,
           "concerns": [
             "Gluten",
-            "Not Vegetarian"
+            "Not vegetarian"
           ]
         },
         {
           "itemId": "3",
           "itemName": "Caesar salad with croutons and parmesan",
           "suitability": "avoid",
-          "explanation": "Caesar salad contains croutons (gluten) and parmesan cheese (dairy).",
-          "questionsToAsk": [],
-          "confidence": 0.99,
+          "explanation": "Caesar salad dressing often contains dairy. Croutons contain gluten, and parmesan cheese is dairy.",
+          "questionsToAsk": [
+            "Does the Caesar dressing contain dairy?",
+            "Can the salad be made without croutons and parmesan cheese?",
+            "Is there a dairy-free dressing option?"
+          ],
+          "confidence": 0.95,
           "concerns": [
             "Gluten",
             "Dairy"
@@ -272,24 +282,28 @@
           "itemId": "4",
           "itemName": "Grilled salmon with lemon butter",
           "suitability": "avoid",
-          "explanation": "Lemon butter sauce contains dairy.",
-          "questionsToAsk": [],
-          "confidence": 0.99,
+          "explanation": "Lemon butter sauce contains dairy. Also, it is not vegetarian.",
+          "questionsToAsk": [
+            "Is the lemon butter sauce made with real butter (dairy)?",
+            "Can the salmon be grilled without the lemon butter sauce, or with an alternative sauce that is dairy-free?"
+          ],
+          "confidence": 0.95,
           "concerns": [
-            "Dairy"
+            "Dairy",
+            "Not vegetarian"
           ]
         },
         {
           "itemId": "5",
           "itemName": "Vegetarian pasta primavera",
           "suitability": "careful",
-          "explanation": "Pasta typically contains gluten. The dish is vegetarian, but the pasta type and preparation method need to be verified to ensure it is gluten-free and dairy-free.",
+          "explanation": "Pasta typically contains gluten. The sauce may contain dairy. Need to confirm ingredients.",
           "questionsToAsk": [
             "Is the pasta gluten-free?",
-            "Is the pasta dairy-free?",
-            "Are there any dairy products used in the preparation of the vegetables or sauce?"
+            "Does the sauce contain dairy?",
+            "What kind of vegetables are used?"
           ],
-          "confidence": 0.95,
+          "confidence": 0.9,
           "concerns": [
             "Gluten",
             "Dairy"
@@ -298,8 +312,8 @@
       ],
       "confidence": 0.9,
       "message": "Analysis complete",
-      "requestId": "supabase-vertex-text-1757247128037",
-      "processingTime": 3884,
+      "requestId": "supabase-vertex-text-1757247351373",
+      "processingTime": 4742,
       "provider": "vertex",
       "backend": "supabase",
       "formatValid": true,
@@ -310,8 +324,8 @@
       "results": [],
       "confidence": 0.5,
       "message": "Could not parse AI response properly",
-      "requestId": "supabase-gemini-image-1757247131926",
-      "processingTime": 799,
+      "requestId": "supabase-gemini-image-1757247356118",
+      "processingTime": 918,
       "provider": "gemini",
       "backend": "supabase",
       "testName": "Gemini Supabase Image",
@@ -322,8 +336,8 @@
       "results": [],
       "confidence": 0.5,
       "message": "Could not parse AI response properly",
-      "requestId": "supabase-vertex-image-1757247132727",
-      "processingTime": 10349,
+      "requestId": "supabase-vertex-image-1757247357038",
+      "processingTime": 1554,
       "provider": "vertex",
       "backend": "supabase",
       "testName": "Vertex Supabase Image",
@@ -335,7 +349,7 @@
     "successful": 6,
     "failed": 0,
     "validFormat": 4,
-    "averageResponseTime": 3457,
+    "averageResponseTime": 1930,
     "interfaceFixWorking": true,
     "formatConsistent": false
   }
