@@ -6,6 +6,7 @@
  */
 
 import { GeminiAPIConfig, VertexAPIConfig, AIConfig, AIProvider } from '../../types';
+import Constants from 'expo-constants';
 
 /**
  * Default Gemini API configuration values
@@ -100,8 +101,9 @@ export const getAIProvider = (): AIProvider => {
  * @throws Error if required configuration is missing
  */
 export const getSupabaseConfig = () => {
-  const url = process.env[ENV_KEYS.EXPO_PUBLIC_SUPABASE_URL];
-  const anonKey = process.env[ENV_KEYS.EXPO_PUBLIC_SUPABASE_ANON_KEY];
+  const extra = (Constants?.expoConfig as any)?.extra || {};
+  const url = process.env[ENV_KEYS.EXPO_PUBLIC_SUPABASE_URL] || extra[ENV_KEYS.EXPO_PUBLIC_SUPABASE_URL];
+  const anonKey = process.env[ENV_KEYS.EXPO_PUBLIC_SUPABASE_ANON_KEY] || extra[ENV_KEYS.EXPO_PUBLIC_SUPABASE_ANON_KEY];
   
   if (!url) {
     throw new Error(

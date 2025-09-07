@@ -71,3 +71,8 @@ global.console = {
   warn: jest.fn(),
   error: jest.fn(),
 };
+
+// Mock expo-constants for Node/Jest environment
+jest.mock('expo-constants', () => ({
+  expoConfig: { extra: {} },
+}));
