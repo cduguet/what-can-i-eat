@@ -49,31 +49,32 @@ Shared test utilities and helpers:
 - Project dependencies installed (`npm install`)
 - Environment variables configured (see `.env.example`)
 
-### Unit Tests
+### Unit Tests (Jest)
 ```bash
-# Run all unit tests
+# Run all unit tests (limited to src/**)
 npm test
 
-# Run specific test file
-npm test -- tests/multimodal/ocr.test.js
+# Run specific test file under src/**
+npm test -- src/services/api/__tests__/geminiService.test.ts
 
 # Run with coverage
 npm run test:coverage
 ```
 
-### Integration Tests
+### Integration Tests (Manual)
 ```bash
-# Text-only Gemini API integration test
+# Text-only Gemini API integration test (Node script)
 node tests/integration/testGemini.js
 ```
 
-### Multimodal Tests (Recommended)
+### Multimodal Tests (Manual, Recommended)
 ```bash
 # Multimodal Gemini API integration test (image + text)
 node tests/multimodal/testGeminiMultimodal.js
 
-# Note: Jest tests have React Native compatibility issues
-# Use Node.js integration tests for reliable testing
+# Note: Jest runs only src/** unit tests. Integration and multimodal
+# scripts live under tests/integration and tests/manual and should be
+# run directly with Node to test real backends.
 ```
 
 ### Test Results
@@ -85,10 +86,10 @@ Recent multimodal test results:
 ## Test Configuration
 
 Tests are configured via `jest.config.js` in the project root. Key settings:
-- Test environment: Node.js
-- Test files pattern: `**/__tests__/**/*.test.(js|ts|tsx)`
+- Transforms via `babel-jest` for JS/TS/TSX
+- Test files pattern: only `src/**/__tests__/**/*` and `src/**/*.test.*`
 - Setup file: `jest.setup.js`
-- Coverage thresholds: 80% for statements, branches, functions, and lines
+- React Native/Expo shims mocked in setup
 
 ## Mock Data
 
