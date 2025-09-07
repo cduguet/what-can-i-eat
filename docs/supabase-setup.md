@@ -108,10 +108,7 @@ EXPO_PUBLIC_API_TIMEOUT=30000
 
 ### Backend Mode Switching
 
-The application automatically detects the backend mode from `EXPO_PUBLIC_BACKEND_MODE`:
-
-- `supabase`: Uses Supabase Edge Functions
-- `local`: Uses direct AI API calls (default)
+The client is configured to always use the Supabase backend for security. `EXPO_PUBLIC_BACKEND_MODE` is ignored at runtime in the client. Use local mode only for development tooling where explicitly supported.
 
 ## Usage Examples
 

@@ -13,7 +13,7 @@ What Can I Eat?
 **Features**
 - **Onboarding:** 4-step flow to set dietary preferences; defaults applied on completion.
 - **Inputs:** Camera scan, website URL, or pasted text.
-- **AI Analysis:** Integrates with Google Gemini via `@google/genai`.
+- **AI Analysis:** Supabase Edge Function proxy for Gemini/Vertex (no client AI keys).
 - **Results UI:** Color-coded cards, filters, summary, and accessibility support.
 - **Recent Activity:** Quick access to past analyses (cached).
 - **Developer Shortcuts:** On Home, tap “View Demo Results”; long-press settings icon to reset onboarding.
@@ -74,17 +74,18 @@ See `.env.example` for a template.
 **Architecture Overview**
 - **Navigation:** Stack navigation; shows onboarding until completed, then main app.
 - **Persistence:** AsyncStorage keys `onboarding_completed`, `user_preferences`, `user_settings`.
-- **AI Integration:** `src/services/api/geminiService.ts` with timeout/retry and response parsing; config from `src/services/api/config.ts` reads Expo public env vars.
+- **AI Integration:** Client calls go through `src/services/api/supabaseAIService.ts` (via `AIService` abstraction). The Supabase Edge Function handles provider calls and secrets. Client reads only Expo public env vars.
 - **Theming:** `src/theme/index.ts` defines modern light/dark palettes with semantic tokens and glass effects. Use `useTheme()` from `ThemeProvider`.
 
 **Testing**
-- Run: `npm test`
+- Unit tests: `npm test`
+- Manual integration: `npm run test:integration` (runs `tests/manual/comprehensive-integration-test.js`, supports flags `--provider`, `--backend`, `--mode`, `--image`, `--strict-system-prompt`). See `tests/README.md`.
 - Notes:
   - The repo configures Jest (`jest.config.js`) with RN preset, TypeScript via `ts-jest`, and a transform allowlist for RN/Expo packages.
   - If you see polyfill parse errors from RN packages, ensure your Node and npm match the Requirements above. Some environments may need a clean install (`rm -rf node_modules && npm install`).
 
 **Troubleshooting**
-- **“API key missing” at runtime:** Set `EXPO_PUBLIC_GEMINI_API_KEY` in `.env` and restart.
+- **“Supabase config missing” at runtime:** Ensure `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` are set (in `.env` or `app.json` → `expo.extra`). Client does not require Gemini/Vertex keys.
 - **Jest polyfill errors:** Confirm Node 18+, and that `transformIgnorePatterns` in `jest.config.js` includes RN/Expo packages; try a clean install.
 - **Expo iOS/Android emulator issues:** Ensure simulators are installed and running; try `npx expo start -c` to clear cache.
 
