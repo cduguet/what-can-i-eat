@@ -128,11 +128,11 @@ async function testSupabaseEdgeFunction(provider, menuItems, dietaryRestrictions
   const startTime = Date.now();
   
   try {
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+    const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Supabase configuration missing. Please set SUPABASE_URL and SUPABASE_ANON_KEY');
+      throw new Error('Supabase configuration missing. Please set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY');
     }
 
     // FIXED: Correct request format matching SupabaseAIRequest interface
@@ -291,10 +291,10 @@ async function main() {
   console.log(`Spanish: ${TEST_CONFIG.customDietaryRestrictions.spanishRestrictions}\n`);
 
   // Check environment variables
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+  if (!process.env.EXPO_PUBLIC_SUPABASE_URL || !process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY) {
     console.log('❌ Missing required environment variables for Supabase tests:');
-    console.log('   - SUPABASE_URL');
-    console.log('   - SUPABASE_ANON_KEY');
+    console.log('   - EXPO_PUBLIC_SUPABASE_URL');
+    console.log('   - EXPO_PUBLIC_SUPABASE_ANON_KEY');
     console.log('\nSkipping Supabase tests...\n');
   }
 
@@ -311,7 +311,7 @@ async function main() {
     try {
       if (combination.backend === 'supabase') {
         // Skip Supabase tests if environment not configured
-        if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+        if (!process.env.EXPO_PUBLIC_SUPABASE_URL || !process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY) {
           console.log('⏭️  Skipping - Supabase not configured');
           testNumber++;
           continue;
@@ -361,7 +361,7 @@ async function main() {
   console.log('='.repeat(50));
   
   for (const combination of TEST_COMBINATIONS.filter(c => c.backend === 'supabase')) {
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+    if (!process.env.EXPO_PUBLIC_SUPABASE_URL || !process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY) {
       console.log('⏭️  Skipping image tests - Supabase not configured');
       break;
     }
