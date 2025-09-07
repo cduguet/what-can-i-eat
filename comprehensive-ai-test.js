@@ -391,20 +391,20 @@ async function main() {
   console.log(`❌ Failed tests: ${failedTests.length}/${results.length}`);
   console.log(`📋 Valid format: ${validFormatTests.length}/${results.length}`);
   
+  // Calculate averages (moved outside conditional for scope)
+  const avgResponseTime = successfulTests.length > 0 ?
+    successfulTests.reduce((sum, r) => sum + (r.processingTime || 0), 0) / successfulTests.length : 0;
+  const avgItemsFound = successfulTests.length > 0 ?
+    successfulTests.reduce((sum, r) => sum + (r.results?.length || 0), 0) / successfulTests.length : 0;
+  const avgConfidence = successfulTests.length > 0 ?
+    successfulTests.reduce((sum, r) => sum + (r.confidence || 0), 0) / successfulTests.length : 0;
+
   if (successfulTests.length > 0) {
     console.log('\n🏆 Performance Summary:');
     successfulTests.forEach(result => {
       const type = result.isImageTest ? 'IMAGE' : 'TEXT';
       console.log(`  ${result.testName} (${type}): ${result.processingTime}ms (${result.results?.length || 0} items, confidence: ${result.confidence})`);
     });
-    
-    // Calculate averages
-    const avgResponseTime = successfulTests.length > 0 ?
-      successfulTests.reduce((sum, r) => sum + (r.processingTime || 0), 0) / successfulTests.length : 0;
-    const avgItemsFound = successfulTests.length > 0 ?
-      successfulTests.reduce((sum, r) => sum + (r.results?.length || 0), 0) / successfulTests.length : 0;
-    const avgConfidence = successfulTests.length > 0 ?
-      successfulTests.reduce((sum, r) => sum + (r.confidence || 0), 0) / successfulTests.length : 0;
     
     console.log(`\n📈 Averages:`);
     console.log(`  Response Time: ${Math.round(avgResponseTime)}ms`);

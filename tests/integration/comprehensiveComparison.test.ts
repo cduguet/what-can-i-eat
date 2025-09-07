@@ -95,7 +95,7 @@ describe('Comprehensive AI Provider and Backend Comparison', () => {
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY is required for testing');
     }
-    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS && !process.env.VERTEX_PROJECT_ID) {
+    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS && !process.env.EXPO_PUBLIC_VERTEX_PROJECT_ID) {
       console.warn('Vertex AI credentials not found, Vertex tests may fail');
     }
   });

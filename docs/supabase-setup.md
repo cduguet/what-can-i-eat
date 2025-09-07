@@ -52,15 +52,15 @@ The Edge Function requires these environment variables to be set in Supabase:
    - Your Google Gemini API key
    - Get from: https://makersuite.google.com/app/apikey
 
-2. **VERTEX_PROJECT_ID** (required when using Vertex AI provider)
+2. **EXPO_PUBLIC_VERTEX_PROJECT_ID** (required when using Vertex AI provider)
    - Your Google Cloud project ID
    - Example: `gen-lang-client-0473924583`
 
-3. **VERTEX_LOCATION** (required when using Vertex AI provider)
+3. **EXPO_PUBLIC_VERTEX_LOCATION** (required when using Vertex AI provider)
    - Google Cloud region for Vertex AI
    - Example: `europe-west1`
 
-4. **VERTEX_CREDENTIALS** (required when using Vertex AI provider)
+4. **EXPO_PUBLIC_VERTEX_CREDENTIALS** (required when using Vertex AI provider)
    - Service account credentials as JSON string
    - Get from Google Cloud Console > IAM & Admin > Service Accounts
 
@@ -79,9 +79,9 @@ The Edge Function requires these environment variables to be set in Supabase:
 ```bash
 # Set individual variables
 supabase secrets set GEMINI_API_KEY=your_api_key_here
-supabase secrets set VERTEX_PROJECT_ID=your_project_id
-supabase secrets set VERTEX_LOCATION=europe-west1
-supabase secrets set VERTEX_CREDENTIALS='{"type":"service_account",...}'
+supabase secrets set EXPO_PUBLIC_VERTEX_PROJECT_ID=your_project_id
+supabase secrets set EXPO_PUBLIC_VERTEX_LOCATION=europe-west1
+supabase secrets set EXPO_PUBLIC_VERTEX_CREDENTIALS='{"type":"service_account",...}'
 supabase secrets set AI_PROVIDER=gemini
 ```
 

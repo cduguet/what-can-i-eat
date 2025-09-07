@@ -1,50 +1,279 @@
 {
-  "timestamp": "2025-09-06T21:56:01.790Z",
-  "summary": {
-    "totalTests": 4,
-    "successful": 1,
-    "failed": 3,
-    "successRate": "25.0%",
-    "totalDuration": 634,
-    "averageDuration": 159
+  "timestamp": "2025-09-07T11:17:55.763Z",
+  "testConfig": {
+    "testMenuItems": [
+      {
+        "id": "1",
+        "name": "Bruschetta with tomatoes and basil",
+        "description": "Fresh tomatoes and basil on toasted bread",
+        "price": "$8",
+        "category": "appetizer",
+        "rawText": "Bruschetta with tomatoes and basil - $8"
+      },
+      {
+        "id": "2",
+        "name": "Fried calamari with marinara sauce",
+        "description": "Crispy fried squid rings with marinara dipping sauce",
+        "price": "$12",
+        "category": "appetizer",
+        "rawText": "Fried calamari with marinara sauce - $12"
+      },
+      {
+        "id": "3",
+        "name": "Caesar salad with croutons and parmesan",
+        "description": "Romaine lettuce with caesar dressing, croutons and parmesan cheese",
+        "price": "$10",
+        "category": "appetizer",
+        "rawText": "Caesar salad with croutons and parmesan - $10"
+      },
+      {
+        "id": "4",
+        "name": "Grilled salmon with lemon butter",
+        "description": "Fresh Atlantic salmon grilled with lemon butter sauce",
+        "price": "$24",
+        "category": "main",
+        "rawText": "Grilled salmon with lemon butter - $24"
+      },
+      {
+        "id": "5",
+        "name": "Vegetarian pasta primavera",
+        "description": "Pasta with fresh seasonal vegetables",
+        "price": "$16",
+        "category": "main",
+        "rawText": "Vegetarian pasta primavera - $16"
+      }
+    ],
+    "customDietaryRestrictions": {
+      "dietaryType": "custom",
+      "customRestrictions": "No gluten, no dairy, vegetarian, no spicy food",
+      "spanishRestrictions": "Sin gluten, sin lácteos, vegetariano, sin comida picante",
+      "lastUpdated": "2025-09-07T11:17:47.290Z",
+      "onboardingCompleted": true
+    }
   },
   "results": [
     {
-      "combination": "Gemini + Local Backend",
-      "success": false,
-      "duration": 3,
-      "provider": "gemini",
-      "backend": "local",
-      "error": "GEMINI_API_KEY not configured"
-    },
-    {
-      "combination": "Gemini + Supabase Backend",
-      "success": false,
-      "duration": 481,
-      "provider": "gemini",
-      "backend": "supabase",
-      "error": "Supabase Edge Function test failed: HTTP 500: Internal Server Error"
-    },
-    {
-      "combination": "Vertex + Local Backend",
       "success": true,
-      "duration": 0,
-      "provider": "vertex",
-      "backend": "local",
-      "result": {
-        "success": true,
-        "provider": "vertex",
-        "backend": "local",
-        "response": "Vertex AI local test simulated (requires proper SDK setup)"
-      }
+      "results": [
+        {
+          "itemName": "Bruschetta with tomatoes and basil",
+          "suitability": "good",
+          "confidence": 0.85,
+          "explanation": "Bruschetta with tomatoes and basil analysis for No gluten, no dairy, vegetarian, no spicy food",
+          "category": "appetizer",
+          "price": "$8"
+        },
+        {
+          "itemName": "Fried calamari with marinara sauce",
+          "suitability": "caution",
+          "confidence": 0.87,
+          "explanation": "Fried calamari with marinara sauce analysis for No gluten, no dairy, vegetarian, no spicy food",
+          "category": "appetizer",
+          "price": "$12"
+        },
+        {
+          "itemName": "Caesar salad with croutons and parmesan",
+          "suitability": "good",
+          "confidence": 0.89,
+          "explanation": "Caesar salad with croutons and parmesan analysis for No gluten, no dairy, vegetarian, no spicy food",
+          "category": "appetizer",
+          "price": "$10"
+        },
+        {
+          "itemName": "Grilled salmon with lemon butter",
+          "suitability": "caution",
+          "confidence": 0.9099999999999999,
+          "explanation": "Grilled salmon with lemon butter analysis for No gluten, no dairy, vegetarian, no spicy food",
+          "category": "main",
+          "price": "$24"
+        },
+        {
+          "itemName": "Vegetarian pasta primavera",
+          "suitability": "good",
+          "confidence": 0.9299999999999999,
+          "explanation": "Vegetarian pasta primavera analysis for No gluten, no dairy, vegetarian, no spicy food",
+          "category": "main",
+          "price": "$16"
+        }
+      ],
+      "confidence": 0.87,
+      "message": "Local gemini analysis completed successfully",
+      "requestId": "local-gemini-1757243867291",
+      "processingTime": 0,
+      "formatValid": true,
+      "testName": "Gemini Local",
+      "provider": "gemini",
+      "backend": "local"
     },
     {
-      "combination": "Vertex + Supabase Backend",
+      "success": true,
+      "results": [
+        {
+          "itemId": "item_1",
+          "itemName": "Bruschetta with tomatoes and basil",
+          "suitability": "careful",
+          "explanation": "The bread used for bruschetta typically contains gluten.  While the toppings are vegetarian and non-spicy, the gluten-free status needs confirmation.",
+          "questionsToAsk": [
+            "Is the bread used for the bruschetta gluten-free?"
+          ],
+          "confidence": 0.9,
+          "concerns": [
+            "Gluten in bread"
+          ]
+        },
+        {
+          "itemId": "item_2",
+          "itemName": "Fried calamari with marinara sauce",
+          "suitability": "avoid",
+          "explanation": "Calamari is seafood, making this item non-vegetarian.",
+          "questionsToAsk": [],
+          "confidence": 1,
+          "concerns": [
+            "Contains seafood (not vegetarian)"
+          ]
+        },
+        {
+          "itemId": "item_3",
+          "itemName": "Caesar salad with croutons and parmesan",
+          "suitability": "avoid",
+          "explanation": "This salad contains both dairy (parmesan cheese) and gluten (croutons).",
+          "questionsToAsk": [],
+          "confidence": 1,
+          "concerns": [
+            "Contains dairy (parmesan), contains gluten (croutons)"
+          ]
+        },
+        {
+          "itemId": "item_4",
+          "itemName": "Grilled salmon with lemon butter",
+          "suitability": "avoid",
+          "explanation": "Salmon is not vegetarian, and the lemon butter sauce likely contains dairy.",
+          "questionsToAsk": [],
+          "confidence": 0.95,
+          "concerns": [
+            "Contains seafood (not vegetarian), contains dairy (butter)"
+          ]
+        },
+        {
+          "itemId": "item_5",
+          "itemName": "Vegetarian pasta primavera",
+          "suitability": "careful",
+          "explanation": "This dish is vegetarian and non-spicy, but the pasta may contain gluten.  The sauce may also contain hidden dairy (e.g., in some cheese-based sauces).",
+          "questionsToAsk": [
+            "Is the pasta gluten-free?  Does the sauce contain any dairy products?"
+          ],
+          "confidence": 0.85,
+          "concerns": [
+            "Gluten in pasta, potential hidden dairy in sauce"
+          ]
+        }
+      ],
+      "confidence": 0.9,
+      "message": "Analysis complete",
+      "requestId": "supabase-gemini-text-1757243867291",
+      "processingTime": 5436,
+      "provider": "gemini",
+      "backend": "supabase",
+      "formatValid": true,
+      "testName": "Gemini Supabase"
+    },
+    {
+      "success": true,
+      "results": [
+        {
+          "itemName": "Bruschetta with tomatoes and basil",
+          "suitability": "good",
+          "confidence": 0.85,
+          "explanation": "Bruschetta with tomatoes and basil analysis for No gluten, no dairy, vegetarian, no spicy food",
+          "category": "appetizer",
+          "price": "$8"
+        },
+        {
+          "itemName": "Fried calamari with marinara sauce",
+          "suitability": "caution",
+          "confidence": 0.87,
+          "explanation": "Fried calamari with marinara sauce analysis for No gluten, no dairy, vegetarian, no spicy food",
+          "category": "appetizer",
+          "price": "$12"
+        },
+        {
+          "itemName": "Caesar salad with croutons and parmesan",
+          "suitability": "good",
+          "confidence": 0.89,
+          "explanation": "Caesar salad with croutons and parmesan analysis for No gluten, no dairy, vegetarian, no spicy food",
+          "category": "appetizer",
+          "price": "$10"
+        },
+        {
+          "itemName": "Grilled salmon with lemon butter",
+          "suitability": "caution",
+          "confidence": 0.9099999999999999,
+          "explanation": "Grilled salmon with lemon butter analysis for No gluten, no dairy, vegetarian, no spicy food",
+          "category": "main",
+          "price": "$24"
+        },
+        {
+          "itemName": "Vegetarian pasta primavera",
+          "suitability": "good",
+          "confidence": 0.9299999999999999,
+          "explanation": "Vegetarian pasta primavera analysis for No gluten, no dairy, vegetarian, no spicy food",
+          "category": "main",
+          "price": "$16"
+        }
+      ],
+      "confidence": 0.87,
+      "message": "Local vertex analysis completed successfully",
+      "requestId": "local-vertex-1757243872731",
+      "processingTime": 0,
+      "formatValid": true,
+      "testName": "Vertex Local",
+      "provider": "vertex",
+      "backend": "local"
+    },
+    {
       "success": false,
-      "duration": 150,
+      "results": [],
+      "confidence": 0,
+      "message": "Supabase API error: 500 Internal Server Error - {\"success\":false,\"error\":\"Vertex API error: 404 - {\\n  \\\"error\\\": {\\n    \\\"code\\\": 404,\\n    \\\"message\\\": \\\"Publisher Model `projects/gen-lang-client-0473924583/locations/us-central1/publishers/google/models/gemini-1.5-flash` was not found or your project does not have access to it. Please ensure you are using a valid model version. For more information, see: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions\\\",\\n    \\\"status\\\": \\\"NOT_FOUND\\\"\\n  }\\n}\\n\",\"timestamp\":\"2025-09-07T11:17:53.971Z\"}",
+      "requestId": "supabase-vertex-error-1757243873933",
+      "processingTime": 1202,
       "provider": "vertex",
       "backend": "supabase",
-      "error": "Supabase Edge Function test failed: HTTP 500: Internal Server Error"
+      "formatValid": true,
+      "testName": "Vertex Supabase"
+    },
+    {
+      "success": true,
+      "results": [],
+      "confidence": 0.5,
+      "message": "Could not parse AI response properly",
+      "requestId": "supabase-gemini-image-1757243873934",
+      "processingTime": 873,
+      "provider": "gemini",
+      "backend": "supabase",
+      "testName": "Gemini Supabase Image",
+      "isImageTest": true
+    },
+    {
+      "success": false,
+      "results": [],
+      "confidence": 0,
+      "message": "Supabase API error: 500 Internal Server Error - {\"success\":false,\"error\":\"Vertex API error: 404 - {\\n  \\\"error\\\": {\\n    \\\"code\\\": 404,\\n    \\\"message\\\": \\\"Publisher Model `projects/gen-lang-client-0473924583/locations/us-central1/publishers/google/models/gemini-1.5-flash` was not found or your project does not have access to it. Please ensure you are using a valid model version. For more information, see: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions\\\",\\n    \\\"status\\\": \\\"NOT_FOUND\\\"\\n  }\\n}\\n\",\"timestamp\":\"2025-09-07T11:17:55.796Z\"}",
+      "requestId": "supabase-vertex-error-1757243875763",
+      "processingTime": 954,
+      "provider": "vertex",
+      "backend": "supabase",
+      "testName": "Vertex Supabase Image",
+      "isImageTest": true
     }
-  ]
+  ],
+  "summary": {
+    "total": 6,
+    "successful": 4,
+    "failed": 2,
+    "validFormat": 4,
+    "averageResponseTime": 1577,
+    "interfaceFixWorking": true,
+    "formatConsistent": false
+  }
 }

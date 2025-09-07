@@ -43,9 +43,9 @@ const ENV_KEYS = {
   GEMINI_ENDPOINT: 'GEMINI_ENDPOINT',
   
   // Vertex AI configuration
-  VERTEX_PROJECT_ID: 'VERTEX_PROJECT_ID',
-  VERTEX_LOCATION: 'VERTEX_LOCATION',
-  VERTEX_CREDENTIALS: 'VERTEX_CREDENTIALS',
+  EXPO_PUBLIC_VERTEX_PROJECT_ID: 'EXPO_PUBLIC_VERTEX_PROJECT_ID',
+  EXPO_PUBLIC_VERTEX_LOCATION: 'EXPO_PUBLIC_VERTEX_LOCATION',
+  EXPO_PUBLIC_VERTEX_CREDENTIALS: 'EXPO_PUBLIC_VERTEX_CREDENTIALS',
   
   // Common configuration
   API_TIMEOUT: 'API_TIMEOUT',
@@ -194,19 +194,19 @@ export const getGeminiConfig = (timeout?: number, maxRetries?: number): GeminiAP
  */
 export const getVertexConfig = (timeout?: number, maxRetries?: number): VertexAPIConfig => {
   // Get required configuration from environment
-  const projectId = process.env[ENV_KEYS.VERTEX_PROJECT_ID];
-  const location = process.env[ENV_KEYS.VERTEX_LOCATION];
+  const projectId = process.env[ENV_KEYS.EXPO_PUBLIC_VERTEX_PROJECT_ID];
+  const location = process.env[ENV_KEYS.EXPO_PUBLIC_VERTEX_LOCATION];
   
   if (!projectId) {
     throw new Error(
-      `Missing required environment variable: ${ENV_KEYS.VERTEX_PROJECT_ID}. ` +
+      `Missing required environment variable: ${ENV_KEYS.EXPO_PUBLIC_VERTEX_PROJECT_ID}. ` +
       'Please set your Google Cloud project ID in your environment configuration.'
     );
   }
 
   if (!location) {
     throw new Error(
-      `Missing required environment variable: ${ENV_KEYS.VERTEX_LOCATION}. ` +
+      `Missing required environment variable: ${ENV_KEYS.EXPO_PUBLIC_VERTEX_LOCATION}. ` +
       'Please set your Google Cloud location in your environment configuration.'
     );
   }
@@ -215,7 +215,7 @@ export const getVertexConfig = (timeout?: number, maxRetries?: number): VertexAP
   const config: VertexAPIConfig = {
     projectId,
     location,
-    credentials: process.env[ENV_KEYS.VERTEX_CREDENTIALS],
+    credentials: process.env[ENV_KEYS.EXPO_PUBLIC_VERTEX_CREDENTIALS],
     timeout: timeout || DEFAULT_VERTEX_CONFIG.timeout,
     maxRetries: maxRetries || DEFAULT_VERTEX_CONFIG.maxRetries,
   };
