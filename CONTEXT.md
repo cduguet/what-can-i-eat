@@ -48,7 +48,7 @@ Data & Storage
 Environment & Scripts
 - Install: `npm install`
 - Run: `npm start` (or `npm run ios` / `android` / `web`).
-- Test: `npm test` (Jest), `node run-comprehensive-test.js` (comprehensive AI provider/backend testing).
+- Test: `npm test` (Jest), `node comprehensive-ai-test.js` (comprehensive AI provider/backend testing).
 
 ## Recent Changes
 
@@ -134,3 +134,4 @@ Coordination Entry Template
 - 2025-09-07: Fixed Supabase Edge Function interface mismatch; Files: `comprehensive-ai-test.js`, `docs/interface-fix-test-results.md`. Notes: Resolved "Unknown request type: undefined" error by adding required `type` and `provider` fields to request payload; comprehensive testing validates interface fix working with 6/6 tests properly formatted; remaining failures due to API key configuration, not interface issues.
 - 2025-09-07: Fixed iOS app Supabase configuration error - complete resolution; Files: `src/services/api/supabaseAIService.ts`. Notes: Updated createSupabaseAIService function to use EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY environment variables for proper Expo client-side access; resolves "Supabase configuration missing" and "Missing required environment variable: EXPO_PUBLIC_VERTEX_PROJECT_ID" runtime errors on iOS with Hermes engine; ensures consistent EXPO_PUBLIC_ prefixed variable usage across all environment variables and service functions.
 - 2025-09-07: Fixed comprehensive test script environment variable consistency; Files: `comprehensive-ai-test.js`. Notes: Updated all environment variable references to use EXPO_PUBLIC_ prefixes for consistency with iOS compatibility fixes; test script now properly loads .env file via dotenv.config() and uses consistent variable naming across all configuration checks; ensures test script works correctly with updated environment variable structure.
+- 2025-09-07: Cleaned up redundant test files; Files: `test-ai-fix.js`, `run-comprehensive-test.js` (removed), `CONTEXT.md`. Notes: Removed duplicate test scripts that had overlapping functionality with comprehensive-ai-test.js; kept main comprehensive test script as single source of truth for all 4 provider/backend combinations; updated documentation to reflect correct test command.
