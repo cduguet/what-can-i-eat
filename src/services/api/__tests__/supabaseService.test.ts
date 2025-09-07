@@ -10,8 +10,8 @@
  */
 
 // Ensure env vars are set before requiring the module under test
-process.env.SUPABASE_URL = process.env.SUPABASE_URL || 'https://mock-project.supabase.co';
-process.env.SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'mock-anon-key';
+process.env.EXPO_PUBLIC_SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://mock-project.supabase.co';
+process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'mock-anon-key';
 
 // Defer requiring the module until after env vars and mocks are ready
 let SecureGeminiService: typeof import('../supabaseService').SecureGeminiService;
