@@ -17,22 +17,33 @@ const mockEnv = {
 };
 
 // Mock the config module
-jest.mock('../config', () => ({
-  getAIConfig: jest.fn(() => ({
-    provider: AIProvider.GEMINI,
-    gemini: {
-      apiKey: 'test-gemini-key',
-      endpoint: 'https://test-endpoint.com',
+jest.mock('../config', () => {
+  const actual = jest.requireActual('../config');
+  return {
+    ...actual,
+    getAIConfig: jest.fn(() => ({
+      provider: 'gemini',
+      gemini: {
+        apiKey: 'test-gemini-key',
+        endpoint: 'https://test-endpoint.com',
+        timeout: 30000,
+        maxRetries: 3,
+      },
+    })),
+    validateAIConfig: jest.fn(() => true),
+    getSanitizedAIConfig: jest.fn((config) => ({
+      provider: config.provider,
+      gemini: config.gemini ? { ...config.gemini, apiKey: '[REDACTED]' } : undefined,
+    })),
+    getBackendMode: jest.fn(() => 'local'),
+    getSupabaseConfig: jest.fn(() => ({
+      url: 'http://localhost',
+      anonKey: 'anon',
+      provider: 'gemini',
       timeout: 30000,
-      maxRetries: 3,
-    },
-  })),
-  validateAIConfig: jest.fn(() => true),
-  getSanitizedAIConfig: jest.fn((config) => ({
-    provider: config.provider,
-    gemini: config.gemini ? { ...config.gemini, apiKey: '[REDACTED]' } : undefined,
-  })),
-}));
+    })),
+  };
+});
 
 // Mock the service implementations
 jest.mock('../geminiService', () => ({
@@ -62,7 +73,7 @@ describe('AIService', () => {
       expect(aiService.getProvider()).toBe(AIProvider.GEMINI);
     });
 
-    it('should initialize with custom config', () => {
+    it('should throw for Vertex local mode in client', () => {
       const customConfig: AIConfig = {
         provider: AIProvider.VERTEX,
         vertex: {
@@ -73,8 +84,7 @@ describe('AIService', () => {
         },
       };
 
-      const aiService = new AIService(customConfig);
-      expect(aiService.getProvider()).toBe(AIProvider.VERTEX);
+      expect(() => new AIService(customConfig)).toThrow('Vertex local mode is not supported');
     });
   });
 

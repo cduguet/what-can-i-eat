@@ -1,10 +1,5 @@
 import '@testing-library/jest-native/extend-expect';
 
-// Mock React Native modules safely
-jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper', () => ({}), {
-  virtual: true,
-});
-
 // Mock Expo modules
 jest.mock('expo-haptics', () => ({
   impactAsync: jest.fn(),
@@ -46,6 +41,9 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(),
   setItem: jest.fn(),
   removeItem: jest.fn(),
+  getAllKeys: jest.fn(),
+  multiGet: jest.fn(),
+  multiRemove: jest.fn(),
   clear: jest.fn(),
 }));
 

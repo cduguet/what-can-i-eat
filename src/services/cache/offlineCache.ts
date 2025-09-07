@@ -574,8 +574,17 @@ export class OfflineCache {
   }
 }
 
-// Export singleton instance
-export const offlineCache = new OfflineCache();
+// Lazily create a singleton instance to avoid side effects on import
+let _offlineCache: OfflineCache | null = null;
+const ensureOfflineCache = () => (_offlineCache ??= new OfflineCache());
 
-// Export default
+export const offlineCache: OfflineCache = new Proxy({} as OfflineCache, {
+  get(_target, prop) {
+    const instance = ensureOfflineCache();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const value = (instance as any)[prop];
+    return typeof value === 'function' ? value.bind(instance) : value;
+  },
+});
+
 export default offlineCache;

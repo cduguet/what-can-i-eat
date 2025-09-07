@@ -3,17 +3,11 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   transform: {
-    '^.+\\.(js|jsx)$': 'babel-jest',
-    '^.+\\.(ts|tsx)$': ['ts-jest', {
-      tsconfig: {
-        module: 'commonjs',
-        target: 'es2017',
-      },
-    }],
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   testMatch: [
-    '**/__tests__/**/*.(ts|tsx|js)',
-    '**/*.(test|spec).(ts|tsx|js)',
+    '<rootDir>/src/**/__tests__/**/*.[jt]s?(x)',
+    '<rootDir>/src/**/*.test.[jt]s?(x)'
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

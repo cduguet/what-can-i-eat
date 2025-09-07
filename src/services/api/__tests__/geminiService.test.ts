@@ -41,13 +41,14 @@ describe('GeminiService', () => {
     // Reset mocks
     jest.clearAllMocks();
     
-    // Create service instance
+    // Create service instance (constructor will new GoogleGenAI)
     geminiService = new GeminiService();
-    
-    // Get mock function
+
+    // Extract the mocked instance used by the service
     const { GoogleGenAI } = require('@google/genai');
-    const mockInstance = new GoogleGenAI();
-    mockGenerateContent = mockInstance.models.generateContent;
+    const mockedCtor = GoogleGenAI as jest.Mock;
+    const usedInstance = mockedCtor.mock.results[0]?.value;
+    mockGenerateContent = usedInstance.models.generateContent;
   });
 
   describe('analyzeMenu', () => {
@@ -133,6 +134,9 @@ describe('GeminiService', () => {
       mockGenerateContent.mockResolvedValue({
         text: 'API connection successful',
       });
+
+      // Add slight delay to simulate latency
+      mockGenerateContent.mockImplementationOnce(() => new Promise(resolve => setTimeout(() => resolve({ text: 'API connection successful' }), 5)));
 
       const result = await geminiService.testConnection();
 

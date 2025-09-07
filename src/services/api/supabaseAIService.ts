@@ -309,4 +309,18 @@ export function createSupabaseAIService(): SupabaseAIService {
 /**
  * Default Supabase AI service instance (created from environment variables)
  */
-export const supabaseAIService = createSupabaseAIService();
+// Lazily create a singleton instance to avoid side effects on module import
+let _supabaseAIService: SupabaseAIService | null = null;
+const ensureSupabaseAIService = () => (
+  _supabaseAIService ??= createSupabaseAIService()
+);
+
+// Proxy defers instantiation until a property is accessed
+export const supabaseAIService = new Proxy({} as SupabaseAIService, {
+  get(_target, prop, receiver) {
+    const instance = ensureSupabaseAIService();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const value = (instance as any)[prop];
+    return typeof value === 'function' ? value.bind(instance) : value;
+  },
+});

@@ -455,7 +455,17 @@ export class AuthService {
 }
 
 // Export singleton instance
-export const authService = new AuthService();
+// Lazily instantiated singleton wrapped in a Proxy to avoid side effects on import
+let _authService: AuthService | null = null;
+const ensureAuthService = () => (_authService ??= new AuthService());
 
-// Export default
+export const authService: AuthService = new Proxy({} as AuthService, {
+  get(_target, prop, _receiver) {
+    const instance = ensureAuthService();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const value = (instance as any)[prop];
+    return typeof value === 'function' ? value.bind(instance) : value;
+  },
+});
+
 export default authService;

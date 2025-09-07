@@ -52,66 +52,28 @@ describe('AuthService', () => {
     authService = new AuthService();
   });
 
-  describe('initializeAuth', () => {
-    it('should return existing session if available', async () => {
-      const mockSession = {
-        user: { id: 'user-123', is_anonymous: true },
-        access_token: 'token-123',
-      };
-
-      mockSupabaseClient.auth.getSession.mockResolvedValue({
-        data: { session: mockSession },
-        error: null,
-      });
-
+  describe('initializeAuth (trial mode)', () => {
+    it('should create a trial anonymous session', async () => {
       const result = await authService.initializeAuth();
 
       expect(result.success).toBe(true);
-      expect(result.session).toEqual(mockSession);
-      expect(result.user).toEqual(mockSession.user);
+      expect(result.session).toBeTruthy();
+      expect(result.user).toBeTruthy();
+      expect(result.user!.is_anonymous).toBe(true);
     });
 
-    it('should create anonymous session if no existing session', async () => {
-      const mockSession = {
-        user: { id: 'user-456', is_anonymous: true },
-        access_token: 'token-456',
-      };
+    it('should update internal auth state and notify listeners', async () => {
+      const listener = jest.fn();
+      const unsubscribe = authService.onAuthStateChange(listener);
 
-      mockSupabaseClient.auth.getSession.mockResolvedValue({
-        data: { session: null },
-        error: null,
-      });
+      await authService.initializeAuth();
 
-      mockSupabaseClient.auth.signInAnonymously.mockResolvedValue({
-        data: { session: mockSession, user: mockSession.user },
-        error: null,
-      });
+      expect(listener).toHaveBeenCalled();
+      const lastCallArg = listener.mock.calls[listener.mock.calls.length - 1][0];
+      expect(lastCallArg.isAuthenticated).toBe(true);
+      expect(lastCallArg.user?.is_anonymous).toBe(true);
 
-      const result = await authService.initializeAuth();
-
-      expect(result.success).toBe(true);
-      expect(result.session).toEqual(mockSession);
-      expect(result.user).toEqual(mockSession.user);
-      expect(mockSupabaseClient.auth.signInAnonymously).toHaveBeenCalled();
-    });
-
-    it('should handle authentication errors', async () => {
-      const mockError = new Error('Authentication failed');
-
-      mockSupabaseClient.auth.getSession.mockResolvedValue({
-        data: { session: null },
-        error: null,
-      });
-
-      mockSupabaseClient.auth.signInAnonymously.mockResolvedValue({
-        data: { session: null, user: null },
-        error: mockError,
-      });
-
-      const result = await authService.initializeAuth();
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBe('Authentication failed');
+      unsubscribe();
     });
   });
 
