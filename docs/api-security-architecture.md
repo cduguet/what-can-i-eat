@@ -327,10 +327,10 @@ CREATE POLICY "Service role update" ON users_quota
 ### 4. Mobile App Integration
 
 ```typescript
-// src/services/api/supabaseService.ts
+// src/services/api/supabaseAIService.ts
 import { createClient } from '@supabase/supabase-js'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { GeminiRequest, GeminiResponse } from '../../types'
+import { AIAnalysisRequest, AIAnalysisResponse } from '../../types'
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!
@@ -344,10 +344,10 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 })
 
-export class SecureGeminiService {
+export class SupabaseAIService {
   private startTime: number = 0;
 
-  async analyzeMenu(request: GeminiRequest): Promise<GeminiResponse> {
+  async analyzeMenu(request: AIAnalysisRequest): Promise<AIAnalysisResponse> {
     this.startTime = Date.now();
     
     try {
@@ -360,10 +360,13 @@ export class SecureGeminiService {
       }
 
       // Call Edge Function
-      const { data, error } = await supabase.functions.invoke('analyze-menu', {
+      const { data, error } = await supabase.functions.invoke('ai-menu-analysis', {
         body: {
+          type: 'analyze',
+          provider: 'gemini',
           dietaryPreferences: request.dietaryPreferences,
           menuItems: request.menuItems,
+          requestId: request.requestId,
         }
       })
 
@@ -394,7 +397,7 @@ export class SecureGeminiService {
     }
   }
 
-  private async getOfflineResponse(request: GeminiRequest): Promise<GeminiResponse> {
+  private async getOfflineResponse(request: AIAnalysisRequest): Promise<AIAnalysisResponse> {
     // Check local cache
     const cached = await this.checkLocalCache(request)
     if (cached) return cached
@@ -410,7 +413,7 @@ export class SecureGeminiService {
     }
   }
 
-  private async checkLocalCache(request: GeminiRequest): Promise<GeminiResponse | null> {
+  private async checkLocalCache(request: AIAnalysisRequest): Promise<AIAnalysisResponse | null> {
     // Implement local caching logic
     return null
   }
